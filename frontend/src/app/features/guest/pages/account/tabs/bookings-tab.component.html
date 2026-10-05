@@ -1,0 +1,106 @@
+<h2 class="h2 mb-16">{{ 'account.nav.bookings' | translate }}</h2>
+<app-tabs class="mb-16" variant="tabs-line" [items]="groupTabs" [active]="group()" (activeChange)="setGroup($event)" />
+
+@if (bookings.hasValue()) {
+  @let list = bookings.value();
+  <div class="stack mt-16">
+    @for (b of list.items; track b.id) {
+      <div class="card booking-card">
+        <div class="card-p row-top wrap body">
+          @if (cover(b.property); as url) {
+            <img class="cover" [src]="url" alt="" />
+          }
+          <div class="grow details">
+            <div class="row between top">
+              <div>
+                <div class="bb lg">{{ b.property | loc }}</div>
+                <div class="small muted row gap-4 mt-4 wrap">
+                  <app-icon name="map-pin" size="sm" />{{ b.property.city | loc }} • {{ b.unit.name }} • {{ b.guests | plural: 'common.guests' }} •
+                  <span class="ltr">{{ b.number }}</span>
+                </div>
+              </div>
+              <app-status-pill domain="booking" [code]="b.status" />
+            </div>
+            <div class="grid g3 mt-16 facts">
+              <div class="soft">
+                <div class="xs muted b">{{ 'account.booking.checkIn' | translate }}</div>
+                <div class="b small mt-4">{{ b.checkIn | appDate: 'medium' }}</div>
+              </div>
+              <div class="soft">
+                <div class="xs muted b">{{ 'account.booking.checkOut' | translate }}</div>
+                <div class="b small mt-4">{{ b.checkOut | appDate: 'medium' }}</div>
+              </div>
+              <div class="soft">
+                <div class="xs muted b">{{ 'account.booking.total' | translate }}</div>
+                <div class="bb small mt-4">{{ b.pricing.total | sar }}</div>
+              </div>
+            </div>
+            @if (hasKey(b)) {
+              <div class="mt-16 row between wrap key-strip">
+                <div class="row small b"><app-icon name="key-round" size="sm" class="gold" />{{ 'account.bookings.digitalKey' | translate }}</div>
+                <div class="xs row gap-4 faint">
+                  <app-icon name="clock" size="sm" />
+                  @if (b.status === 'CHECKED_IN') {
+                    {{ 'account.bookings.validUntil' | translate: { date: (b.checkOut | appDate: 'medium'), time: (b.checkOutTime | appDate: 'time') } }}
+                  } @else {
+                    {{ 'account.bookings.activatesOn' | translate: { date: (b.checkIn | appDate: 'medium'), time: (b.checkInTime | appDate: 'time') } }}
+                  }
+                </div>
+              </div>
+            }
+            @if (b.status === 'PENDING_PAYMENT' && b.holdExpiresAt) {
+              <div class="notice amber mt-16 xs">
+                <app-icon name="hourglass" size="sm" />
+                <div>{{ 'account.bookings.holdUntil' | translate: { time: (b.holdExpiresAt | appDate: 'dateTime') } }}</div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="row wrap actions">
+          <button type="button" class="btn btn-outline btn-xs" (click)="details.set(b)">
+            <app-icon name="file-text" size="sm" />{{ 'account.bookings.details' | translate }}
+          </button>
+          @if (hasInvoice(b)) {
+            <a class="btn btn-outline btn-xs" [routerLink]="['/invoice', b.id]"><app-icon name="receipt" size="sm" />{{ 'account.bookings.invoice' | translate }}</a>
+          }
+          <a class="btn btn-outline btn-xs" [routerLink]="['/property', b.property.id]">{{ 'account.bookings.bookAgain' | translate }}</a>
+          @if (b.status === 'PENDING_PAYMENT') {
+            <button type="button" class="btn btn-gold btn-xs" [disabled]="paying() !== null" (click)="payNow(b)">
+              <app-icon name="credit-card" size="sm" />{{ 'account.bookings.payNow' | translate }}
+            </button>
+          }
+          @if (b.status === 'CHECKED_IN') {
+            <a class="btn btn-primary btn-xs" [routerLink]="['/stay', b.id]"><app-icon name="key-round" size="sm" />{{ 'account.bookings.currentStay' | translate }}</a>
+          }
+          @if (b.status === 'CONFIRMED') {
+            <a class="btn btn-outline btn-xs" [routerLink]="['/stay', b.id]">{{ 'account.bookings.arrivalDetails' | translate }}</a>
+          }
+          @if (b.status === 'CONFIRMED' || b.status === 'PENDING_PAYMENT') {
+            <button type="button" class="btn btn-danger btn-xs" (click)="cancelling.set(b)">{{ 'account.bookings.cancel' | translate }}</button>
+          }
+          @if (reviewable().get(b.id); as points) {
+            <a class="btn btn-gold btn-xs" [routerLink]="['/review', b.id]">{{ 'account.bookings.review' | translate: { points } }}</a>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="card">
+        <app-empty-state icon="calendar" [title]="'account.bookings.emptyTitle' | translate" [subtitle]="'account.bookings.emptySub' | translate">
+          <a class="btn btn-primary mt-16" routerLink="/">{{ 'account.bookings.explore' | translate }}</a>
+        </app-empty-state>
+      </div>
+    }
+  </div>
+  <app-pager [page]="list.meta.page" [totalPages]="list.meta.totalPages" [disabled]="bookings.isLoading()" (pageChange)="page.set($event)" />
+} @else {
+  <div class="card mt-16">
+    <app-load-state [error]="bookings.error()" (retry)="bookings.reload()" />
+  </div>
+}
+
+@if (details(); as b) {
+  <app-booking-details-dialog [booking]="b" (closed)="details.set(null)" />
+}
+@if (cancelling(); as b) {
+  <app-cancel-booking-dialog [booking]="b" (closed)="cancelling.set(null)" (cancelled)="onCancelled()" />
+}

@@ -1,0 +1,30 @@
+/*
+ * The Rawaaf design system (tokens, components, responsive rules) is in styles/design-system.css,
+ * copied verbatim from the prototype. This file only adds what the Angular app needs on top.
+ */
+
+/* Direction-sensitive icons are drawn for RTL; mirror them in LTR. */
+[dir='ltr'] .ic-mirror {
+  transform: scaleX(-1);
+}
+
+/* Component hosts behave like the plain elements they replace. */
+app-icon.ic {
+  display: inline-block;
+}
+
+.d-block {
+  display: block;
+}
+
+.side-extra:empty {
+  display: none;
+}
+
+.demo-head {
+  padding: 6px 10px 10px;
+}
+
+.demo-divider {
+  margin: 8px 0;
+}

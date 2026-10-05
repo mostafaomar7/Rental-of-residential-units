@@ -1,0 +1,401 @@
+{
+  "operations": {
+    "titles": {
+      "bookings": "Bookings",
+      "booking": "Booking details",
+      "locks": "Smart access & locks",
+      "ops": "Tasks & incidents",
+      "reviews": "Reviews",
+      "payouts": "Payments & payouts"
+    },
+    "common": {
+      "unit": "Unit",
+      "property": "Property",
+      "done": "Done"
+    },
+    "bookings": {
+      "title": "Bookings",
+      "count": {
+        "one": "1 booking",
+        "other": "{{count}} bookings"
+      },
+      "searchPlaceholder": "Booking no., guest, mobile...",
+      "searchLabel": "Search bookings",
+      "property": "Property",
+      "allProperties": "All properties",
+      "from": "From",
+      "to": "To",
+      "empty": "No matching bookings",
+      "clearSearch": "Clear filters",
+      "cols": {
+        "id": "Booking no.",
+        "guest": "Guest",
+        "unit": "Unit",
+        "dates": "Dates",
+        "amount": "Amount",
+        "status": "Status"
+      }
+    },
+    "booking": {
+      "allBookings": "All bookings",
+      "subtitle": "{{property}} • {{unit}} • Created {{date}}",
+      "guest": "Guest",
+      "bookedBy": "Booked by {{name}} ({{mobile}})",
+      "guests": "Guests",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "nights": "Nights",
+      "specialRequests": "Special requests",
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "payment": "Payment",
+      "discount": "Discount",
+      "promo": "Promo {{code}}",
+      "cleaning": "Cleaning",
+      "freeCleaning": "Free (loyalty)",
+      "vat": "VAT {{rate}}%",
+      "total": "Total",
+      "cancelledBy": "Cancelled by {{by}} • {{date}}",
+      "refund": "Refunded {{amount}} ({{percent}}%)",
+      "actions": {
+        "checkIn": {
+          "action": "Check in",
+          "title": "Check the guest in?",
+          "message": "{{guest}} will be marked as staying now.",
+          "ok": "Check in",
+          "done": "Guest checked in"
+        },
+        "checkOut": {
+          "action": "Check out",
+          "title": "Check the guest out?",
+          "message": "The stay of {{guest}} ends now and the digital key stops working.",
+          "ok": "Check out",
+          "done": "Guest checked out"
+        },
+        "noShow": {
+          "action": "No-show",
+          "title": "Mark as no-show?",
+          "message": "{{guest}} did not arrive. The booking is closed according to the cancellation policy.",
+          "ok": "Mark no-show",
+          "done": "Booking marked as no-show"
+        }
+      },
+      "cancel": {
+        "action": "Cancel booking",
+        "title": "Cancel booking {{id}}",
+        "message": "The booking will be cancelled, the guest refunded in full ({{amount}}) and the digital key revoked. Host cancellations affect your reliability score.",
+        "reason": "Cancellation reason",
+        "reasonPlaceholder": "Explain why — the guest is told the reason",
+        "ok": "Cancel & refund"
+      },
+      "key": {
+        "title": "Digital key",
+        "noLock": "No smart lock on this unit — keys are handed over in person",
+        "notIssued": "No key issued yet",
+        "issue": "Issue key",
+        "revokedAt": "Revoked {{time}}",
+        "changeWindow": "Change validity",
+        "windowTitle": "Key validity",
+        "validFrom": "Valid from",
+        "validTo": "Valid until",
+        "windowHint": "Use it for an approved early check-in or late check-out.",
+        "reissue": "Reissue",
+        "reissueTitle": "Reissue the key?",
+        "reissueMessage": "The current code stops working and the guest receives a new one.",
+        "emergency": "Emergency code",
+        "emergencyTitle": "Emergency door code",
+        "emergencyMessage": "A one-off code is generated for this stay. Every emergency code is recorded in the audit log."
+      },
+      "compliance": {
+        "title": "Guest verification",
+        "verified": "Identity verified",
+        "provided": "Identity provided — awaiting verification",
+        "missing": "Identity not provided yet",
+        "required": "The digital key is released once the guest is verified",
+        "shomoos": "SHOMOOS",
+        "reference": "Reference",
+        "registeredAt": "Registered",
+        "blocksKey": "The key waits for the SHOMOOS registration",
+        "keyHold": "The digital key is on hold"
+      },
+      "policy": {
+        "title": "Policies accepted by the guest",
+        "accepted": "Version {{version}} • accepted {{date}}",
+        "cancellation": "Cancellation",
+        "rule": "{{percent}}% refund up to {{hours}} h before check-in",
+        "houseRules": "House rules",
+        "damage": "Damage policy"
+      },
+      "accessLog": "Access log of this stay",
+      "allLocks": "All locks",
+      "noEvents": "No access events yet",
+      "toast": {
+        "cancelled": "Booking cancelled and the guest refunded",
+        "keyReissued": "New key issued and sent to the guest",
+        "windowChanged": "Key validity updated"
+      }
+    },
+    "locks": {
+      "title": "Smart access & locks",
+      "subtitle": "{{count}} paired locks",
+      "empty": "No paired locks",
+      "emptyHint": "Pair a lock to give guests a digital key",
+      "noLock": "No smart lock is paired with this unit.",
+      "alerts": "{{count}} alerts",
+      "stats": {
+        "online": "Online",
+        "onlineSub": "Connected to their provider",
+        "offline": "Offline",
+        "offlineSub": "Needs a field visit",
+        "lowBattery": "Low battery",
+        "lowBatterySub": "Below {{percent}}%",
+        "failed": "Failed attempts",
+        "failedSub": "Last 7 days"
+      },
+      "table": "Locks",
+      "cols": {
+        "unit": "Unit",
+        "provider": "Provider",
+        "connection": "Connection",
+        "battery": "Battery",
+        "lastSync": "Last sync",
+        "actions": "Actions"
+      },
+      "sync": "Sync",
+      "testCode": "Test code",
+      "testCodeTitle": "Test code",
+      "codeValidity": "Valid {{from}} → {{to}}",
+      "mode": {
+        "ONLINE": "Online code",
+        "OFFLINE": "Offline code"
+      },
+      "unpair": "Unpair",
+      "unpairConfirm": {
+        "title": "Unpair the lock?",
+        "message": "The lock of “{{unit}}” will be unpaired and its active guest keys revoked."
+      },
+      "pair": {
+        "action": "Pair a lock",
+        "title": "Pair a smart lock",
+        "externalId": "Lock ID at the provider",
+        "externalIdHelp": "The serial / device ID shown in the provider's app",
+        "model": "Model (optional)",
+        "staticCode": "Fixed door code",
+        "staticCodeHelp": "Manual locks give every guest this code",
+        "remoteUnlock": "Supports remote unlock",
+        "offlineCodes": "Supports offline codes",
+        "submit": "Pair"
+      },
+      "recentEvents": "Latest access events",
+      "maintenanceTask": {
+        "action": "Maintenance task",
+        "title": "Smart lock maintenance / battery replacement"
+      },
+      "toast": {
+        "paired": "Lock paired",
+        "synced": "Sync complete — the lock is online",
+        "syncedOffline": "Sync complete — the lock is still offline",
+        "unpaired": "Lock unpaired — {{count}} keys revoked",
+        "taskCreated": "Maintenance task created"
+      }
+    },
+    "ops": {
+      "title": "Tasks & incidents",
+      "subtitle": "Cleaning, readiness, inspection, maintenance and guest requests",
+      "tabs": {
+        "tasks": "Task board",
+        "incidents": "Incidents",
+        "damages": "Damage cases",
+        "requests": "Stay requests"
+      }
+    },
+    "tasks": {
+      "hint": "Click a card for details, reassignment or rescheduling",
+      "new": "New task",
+      "emptyColumn": "No tasks",
+      "overdue": "Overdue",
+      "unassigned": "Unassigned",
+      "checklist": "Checklist",
+      "photos": "Photos",
+      "photoAlt": "Task photo",
+      "blockedReason": "Blocked",
+      "reviewNote": "Review note",
+      "cancel": "Cancel task",
+      "cancelTitle": "Cancel the task?",
+      "cancelMessage": "“{{title}}” will be cancelled and removed from the assignee's list.",
+      "form": {
+        "type": "Type",
+        "wholeProperty": "Whole property",
+        "title": "Title",
+        "titlePlaceholder": "e.g. Replace the AC filters",
+        "notes": "Notes",
+        "assignee": "Assignee",
+        "due": "Due",
+        "submit": "Create task",
+        "photographerByRawaaf": "Rawaaf assigns a certified photographer to the shoot; you'll be notified with their name."
+      },
+      "toast": {
+        "created": "Task created",
+        "updated": "Task updated",
+        "cancelled": "Task cancelled"
+      },
+      "awaitingPhotographer": "Awaiting a Rawaaf photographer"
+    },
+    "incidents": {
+      "title": "Incidents",
+      "empty": "No incidents here",
+      "cols": {
+        "incident": "Incident",
+        "category": "Category",
+        "severity": "Severity",
+        "reportedBy": "Reported by",
+        "status": "Status"
+      },
+      "reporter": {
+        "GUEST": "Guest",
+        "STAFF": "Field team"
+      },
+      "photoAlt": "Incident photo",
+      "start": "Start",
+      "resolve": "Resolve",
+      "resolveTitle": "Resolve the incident",
+      "resolution": "Resolution",
+      "resolutionPlaceholder": "What was done to fix it",
+      "toast": {
+        "updated": "Incident in progress",
+        "resolved": "Incident resolved"
+      }
+    },
+    "damages": {
+      "hint": "Damage found after a stay — the platform admin reviews each case and the guest may object.",
+      "open": "Open damage case",
+      "openTitle": "Open a damage case",
+      "openSubmit": "Open case",
+      "booking": "Booking",
+      "changeBooking": "Choose another booking",
+      "description": "What was damaged",
+      "amount": "Amount claimed (SAR)",
+      "maxClaim": "Up to {{amount}}",
+      "photos": "Photo evidence",
+      "addPhotos": "Add photos",
+      "guest": "Guest: {{name}}",
+      "claimed": "Claimed",
+      "approved": "Approved {{amount}}",
+      "photoAlt": "Damage photo",
+      "objection": "Guest objection:",
+      "adminNote": "Platform decision:",
+      "objectionUntil": "The guest can object until {{time}}",
+      "settled": "Settled via {{method}} • {{date}}",
+      "settlement": {
+        "WALLET": "guest wallet",
+        "EXTERNAL": "external payment"
+      },
+      "empty": "No damage cases",
+      "toast": {
+        "opened": "Damage case {{number}} opened",
+        "photosAdded": "{{count}} photos added"
+      }
+    },
+    "requests": {
+      "title": "Early check-in & late check-out",
+      "empty": "No requests here",
+      "cols": {
+        "booking": "Booking",
+        "type": "Request",
+        "time": "Requested time",
+        "fee": "Fee",
+        "status": "Status"
+      },
+      "approve": "Approve",
+      "approveTitle": "Approve the request?",
+      "approveMessage": "The guest of {{booking}} is charged the fee and the key validity is adjusted.",
+      "reject": "Reject",
+      "rejectTitle": "Reject the request",
+      "reason": "Reason (optional, shown to the guest)",
+      "toast": {
+        "approved": "Request approved",
+        "rejected": "Request rejected"
+      }
+    },
+    "reviews": {
+      "title": "Reviews",
+      "subtitle": "Replying quickly lifts your properties in search results",
+      "stats": {
+        "total": "Reviews",
+        "unanswered": "Without a reply"
+      },
+      "filters": {
+        "noReply": "Without a reply"
+      },
+      "photoAlt": "Guest photo",
+      "yourReply": "Your reply",
+      "replyPlaceholder": "Write a courteous reply to the guest...",
+      "replyLabel": "Reply to {{name}}'s review",
+      "reply": "Reply",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete your public reply?",
+      "suggest": "Suggest",
+      "suggestion": {
+        "positive": "Thank you {{name}} for your kind words — it was a pleasure hosting you and we look forward to your next visit!",
+        "negative": "We're sorry for the inconvenience, {{name}}. We have followed up on your feedback and hope to host you again for a better experience."
+      },
+      "empty": "No reviews match this filter",
+      "toast": {
+        "published": "Reply published",
+        "deleted": "Reply deleted"
+      }
+    },
+    "payouts": {
+      "title": "Payments & payouts",
+      "subtitle": "Earnings, commissions and monthly statements",
+      "pendingNet": "Awaiting settlement",
+      "pendingNetSub": "Net earnings not yet in a statement",
+      "statement": "Statement",
+      "downloadFor": "Download the {{month}} statement",
+      "grossFor": "Gross revenue ({{month}})",
+      "feesValue": "Payment fees {{fees}}",
+      "netTransfer": "Net payout",
+      "paidOn": "Paid {{date}}",
+      "statements": "Statements",
+      "period": "Period",
+      "gross": "Revenue",
+      "commission": "Commission",
+      "fees": "Fees",
+      "net": "Net",
+      "status": "Status",
+      "split": "Revenue split",
+      "ownerNet": "Owner net",
+      "platformCommission": "Rawaaf commission",
+      "netShort": "net",
+      "sarUnit": "SAR",
+      "monthlyRevenue": "Monthly revenue",
+      "revenue": "Revenue",
+      "empty": "No statements yet",
+      "earnings": "Earnings ledger",
+      "unsettledOnly": "Unsettled only",
+      "noEarnings": "No earnings yet",
+      "settled": "Settled",
+      "unsettled": "Pending",
+      "cols": {
+        "date": "Date",
+        "description": "Description",
+        "settled": "Statement"
+      },
+      "bankAccount": "Payout account",
+      "changeAccount": "Change account",
+      "addAccount": "Add account",
+      "bank": {
+        "title": "Payout bank account",
+        "accountName": "Account holder",
+        "bankName": "Bank",
+        "iban": "IBAN",
+        "ibanInvalid": "A Saudi IBAN starts with SA followed by 22 digits",
+        "verificationNotice": "A new IBAN is verified by the Rawaaf team before the next payout.",
+        "none": "No payout account yet — add one to receive your statements.",
+        "rejected": "Rejected: {{reason}}",
+        "saved": "Bank account saved — awaiting verification"
+      }
+    }
+  }
+}

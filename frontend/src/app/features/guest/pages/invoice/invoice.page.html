@@ -1,0 +1,95 @@
+@if (invoice.hasValue()) {
+  @let inv = invoice.value();
+  <div class="container no-print row between wrap toolbar">
+    <button type="button" class="btn btn-ghost btn-sm" (click)="back()">
+      <app-icon name="arrow-right" size="sm" [mirror]="true" />{{ 'common.back' | translate }}
+    </button>
+    <div class="row">
+      <button type="button" class="btn btn-outline btn-sm" [disabled]="downloading()" (click)="downloadPdf(inv.number)">
+        <app-icon name="file-down" size="sm" />{{ 'account.invoice.downloadPdf' | translate }}
+      </button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="print()">
+        <app-icon name="printer" size="sm" />{{ 'account.invoice.print' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <article class="invoice">
+    <div class="row between wrap top">
+      <div>
+        <app-logo />
+        <div class="xs muted mt-8 lh">
+          {{ inv.seller | loc }}<br />
+          {{ 'account.invoice.vatNumber' | translate }} <span class="ltr">{{ inv.seller.vatNumber }}</span><br />
+          {{ 'account.invoice.crNumber' | translate }} <span class="ltr">{{ inv.seller.crNumber }}</span><br />
+          {{ inv.seller.addressAr }}
+        </div>
+      </div>
+      <div class="end-col">
+        <div class="h2">{{ 'account.invoice.title' | translate }}</div>
+        <div class="small muted">{{ 'account.invoice.titleAlt' | translate }}</div>
+        <div class="small mt-8">{{ 'account.invoice.number' | translate }} <b class="ltr">{{ inv.number }}</b></div>
+        <div class="small">{{ 'account.invoice.date' | translate }} <b>{{ inv.issuedAt | appDate: 'medium' }}</b></div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="grid g2">
+      <div>
+        <div class="xs muted b">{{ 'account.invoice.customer' | translate }}</div>
+        <div class="b">{{ inv.buyer.name }}</div>
+        <div class="small muted ltr">{{ inv.buyer.mobile }}</div>
+      </div>
+      <div>
+        <div class="xs muted b">{{ 'account.invoice.booking' | translate }}</div>
+        <div class="b ltr">{{ inv.bookingNumber }}</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap mt-24">
+      <table class="tbl lines">
+        <thead>
+          <tr>
+            <th>{{ 'account.invoice.item' | translate }}</th>
+            <th>{{ 'account.invoice.qty' | translate }}</th>
+            <th>{{ 'account.invoice.unitPrice' | translate }}</th>
+            <th>{{ 'account.invoice.lineTotal' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (line of inv.lines; track $index) {
+            <tr>
+              <td>{{ line | loc: 'description' }}</td>
+              <td>{{ line.quantity | num }}</td>
+              <td>{{ line.amount / (line.quantity || 1) | sar }}</td>
+              <td>{{ line.amount | sar }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row between wrap mt-24 bottom">
+      <div>
+        <div class="xs muted b mb-8">{{ 'account.invoice.qr' | translate }}</div>
+        <div class="xs qr-payload">{{ inv.qrCode }}</div>
+        <button type="button" class="link xs no-print mt-4" (click)="clipboard.copy(inv.qrCode)">{{ 'account.invoice.copyQr' | translate }}</button>
+      </div>
+      <div class="totals">
+        <app-kv [label]="'account.invoice.net' | translate">{{ inv.subtotal | sar }}</app-kv>
+        <app-kv [label]="'account.invoice.vat' | translate: { rate: inv.vatPercent }">{{ inv.vat | sar }}</app-kv>
+        <div class="kv total">
+          <span>{{ 'account.booking.totalInclVat' | translate }}</span><span class="b">{{ inv.total | sar }}</span>
+        </div>
+      </div>
+    </div>
+  </article>
+} @else {
+  <div class="container">
+    <div class="card mt-24">
+      <app-load-state [error]="invoice.error()" (retry)="invoice.reload()">
+        <a class="btn btn-ghost mt-16" routerLink="/account/bookings">{{ 'account.nav.bookings' | translate }}</a>
+      </app-load-state>
+    </div>
+  </div>
+}

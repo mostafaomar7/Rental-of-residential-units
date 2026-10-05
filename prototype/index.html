@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>رواف — نموذج أولي</title>
+  <meta name="description" content="نموذج أولي تفاعلي لمنصة رواف للإقامات القصيرة والتشغيل الذكي — بيانات توضيحية">
+  <meta name="theme-color" content="#0A1931">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230A1931'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23C9A86A' font-family='Tahoma' font-weight='bold'%3E%D8%B1%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <script>
+    /* يعرض أي خطأ JavaScript كشريط أحمر أثناء المراجعة */
+    window.__errs = [];
+    window.addEventListener('error', function (e) {
+      window.__errs.push(e.message + ' @' + String(e.filename || '').split('/').pop() + ':' + e.lineno);
+      var d = document.getElementById('__err') || document.createElement('pre'); d.id = '__err';
+      d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:999;background:#b91c1c;color:#fff;font:12px monospace;padding:8px;margin:0;direction:ltr;white-space:pre-wrap';
+      d.textContent = 'JS ERROR: ' + window.__errs.join('\n'); (document.body || document.documentElement).appendChild(d);
+    });
+  </script>
+  <div id="app" aria-live="polite"></div>
+  <div id="float"></div>
+  <div id="modals"></div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <noscript><p style="padding:24px">يتطلب هذا النموذج تفعيل JavaScript.</p></noscript>
+
+  <script async src="https://cdn.jsdelivr.net/npm/lucide@0.453.0/dist/umd/lucide.min.js" onload="window.R && R.icons()"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/views-guest.js"></script>
+  <script src="js/views-guest2.js"></script>
+  <script src="js/views-operator.js"></script>
+  <script src="js/views-field.js"></script>
+  <script src="js/views-admin.js"></script>
+</body>
+</html>

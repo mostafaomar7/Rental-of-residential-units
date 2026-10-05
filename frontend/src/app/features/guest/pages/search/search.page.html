@@ -1,0 +1,161 @@
+@let c = criteria();
+
+<div class="container page">
+  <div class="page-h">
+    <div>
+      <h1>
+        @if (cityName(); as city) {
+          {{ 'guest.searchPage.heading' | translate: { city: (city | loc), from: (c.checkIn | appDate), to: (c.checkOut | appDate) } }}
+        } @else {
+          {{ 'guest.searchPage.heading' | translate: { city: ('guest.searchPage.allCities' | translate), from: (c.checkIn | appDate), to: (c.checkOut | appDate) } }}
+        }
+      </h1>
+      <p>
+        {{ nights() | plural: 'common.nights' }} • {{ c.guests | plural: 'common.guests' }}
+        @if (results.hasValue()) {
+          • <b class="green">{{ 'guest.searchPage.resultsCount' | translate: { count: results.value().meta.total } }}</b>
+        }
+      </p>
+    </div>
+    <div class="row">
+      <label class="small muted b" for="s-sort">{{ 'guest.searchPage.sort' | translate }}</label>
+      <select id="s-sort" class="select sort-select" (change)="update({ sort: $any($event.target).value })">
+        @for (s of sorts; track s) {
+          <option [value]="s" [selected]="s === c.sort">{{ 'guest.searchPage.sorts.' + s | translate }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="dash layout">
+    <aside>
+      <div class="card card-p stack filters">
+        <div class="row between">
+          <h2 class="h3">{{ 'guest.searchPage.filtersTitle' | translate }}</h2>
+          <a class="link small" routerLink="/search">{{ 'guest.searchPage.clear' | translate }}</a>
+        </div>
+
+        <div class="field">
+          <label for="s-q">{{ 'guest.searchPage.keyword' | translate }}</label>
+          <input id="s-q" class="input" [value]="c.q" [placeholder]="'guest.searchPage.keywordPlaceholder' | translate" (change)="update({ q: $any($event.target).value.trim() })" />
+        </div>
+
+        <div class="field">
+          <label for="s-city">{{ 'guest.searchPage.city' | translate }}</label>
+          <select id="s-city" class="select" (change)="update({ city: $any($event.target).value })">
+            <option value="" [selected]="!c.city">{{ 'guest.searchPage.allCities' | translate }}</option>
+            @for (city of catalog.cities(); track city.id) {
+              <option [value]="city.slug" [selected]="city.slug === c.city">{{ city | loc }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="grid g2 dates">
+          <div class="field">
+            <label for="s-in">{{ 'guest.dates.checkIn' | translate }}</label>
+            <input id="s-in" type="date" class="input" [min]="minDate" [value]="c.checkIn" (change)="update({ checkIn: $any($event.target).value || c.checkIn })" />
+          </div>
+          <div class="field">
+            <label for="s-out">{{ 'guest.dates.checkOut' | translate }}</label>
+            <input id="s-out" type="date" class="input" [min]="minDate" [value]="c.checkOut" (change)="update({ checkOut: $any($event.target).value || c.checkOut })" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="s-g">{{ 'guest.searchPage.guestsCount' | translate }}</label>
+          <div class="row">
+            <button type="button" class="btn btn-ghost btn-icon btn-sm" [attr.aria-label]="'guest.searchPage.decrease' | translate" (click)="stepGuests(-1)">
+              <app-icon name="minus" size="sm" />
+            </button>
+            <input id="s-g" class="input center guests-input" inputmode="numeric" [value]="c.guests" (change)="setGuests(+$any($event.target).value)" />
+            <button type="button" class="btn btn-ghost btn-icon btn-sm" [attr.aria-label]="'guest.searchPage.increase' | translate" (click)="stepGuests(1)">
+              <app-icon name="plus" size="sm" />
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="s-type">{{ 'guest.searchPage.type' | translate }}</label>
+          <select id="s-type" class="select" (change)="update({ type: $any($event.target).value })">
+            <option value="" [selected]="!c.type">{{ 'guest.home.allTypes' | translate }}</option>
+            @for (t of catalog.propertyTypes(); track t.id) {
+              <option [value]="t.code" [selected]="t.code === c.type">{{ t | loc }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="s-max">
+            {{ 'guest.searchPage.maxPrice' | translate }}
+            <b class="navy">{{ maxLabel() < price.max ? (maxLabel() | sar) : ('guest.searchPage.noLimit' | translate) }}</b>
+          </label>
+          <input
+            id="s-max"
+            type="range"
+            class="range"
+            [min]="price.min"
+            [max]="price.max"
+            [step]="price.step"
+            [value]="c.maxPrice"
+            (input)="maxLabel.set(+$any($event.target).value)"
+            (change)="update({ maxPrice: +$any($event.target).value })"
+          />
+        </div>
+
+        <div class="field">
+          <label for="s-model">{{ 'guest.searchPage.operatingModel' | translate }}</label>
+          <select id="s-model" class="select" (change)="update({ model: $any($event.target).value })">
+            <option value="" [selected]="!c.model">{{ 'common.all' | translate }}</option>
+            @for (m of models; track m) {
+              <option [value]="m" [selected]="m === c.model">{{ 'domain.api.operatingModel.' + m | translate }}</option>
+            }
+          </select>
+        </div>
+
+        @if (catalog.amenities().length) {
+          <div class="field">
+            <span class="lbl">{{ 'guest.searchPage.amenities' | translate }}</span>
+            <div class="chips">
+              @for (a of catalog.amenities(); track a.id) {
+                <button type="button" class="chip chip-sm" [class.on]="c.amenities.includes(a.code)" [attr.aria-pressed]="c.amenities.includes(a.code)" (click)="toggleAmenity(a.code)">
+                  {{ a | loc }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <div>
+      @if (results.hasValue()) {
+        @let page = results.value();
+        @if (page.items.length) {
+          <div class="units results">
+            @for (p of page.items; track p.id) {
+              <app-property-card [property]="p" [queryParams]="detailParams()">
+                @if (p.stay; as stay) {
+                  <div class="soft xs mt-12 row between">
+                    <span>{{ stay.nights | plural: 'common.nights' }}</span>
+                    <b class="navy">{{ 'guest.searchPage.stayTotal' | translate: { total: (stay.total | sar) } }}</b>
+                  </div>
+                }
+              </app-property-card>
+            }
+          </div>
+          <app-pager [page]="page.meta.page" [totalPages]="page.meta.totalPages" [disabled]="results.isLoading()" (pageChange)="update({ page: $event })" />
+        } @else {
+          <div class="card">
+            <app-empty-state icon="search-x" [title]="'guest.searchPage.empty.title' | translate" [subtitle]="'guest.searchPage.empty.body' | translate">
+              <a class="btn btn-primary mt-16" routerLink="/search">{{ 'guest.searchPage.empty.clear' | translate }}</a>
+            </app-empty-state>
+          </div>
+        }
+      } @else {
+        <div class="card">
+          <app-load-state [error]="results.error()" (retry)="results.reload()" />
+        </div>
+      }
+    </div>
+  </div>
+</div>

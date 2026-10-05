@@ -1,0 +1,144 @@
+{
+  "status": {
+    "booking": {
+      "PENDING_PAYMENT": "Awaiting payment",
+      "CONFIRMED": "Confirmed",
+      "CHECKED_IN": "Checked in",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "EXPIRED": "Expired",
+      "NO_SHOW": "No-show"
+    },
+    "payment": {
+      "PENDING": "Pending",
+      "PAID": "Paid",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled",
+      "REFUNDED": "Refunded",
+      "PARTIALLY_REFUNDED": "Partially refunded"
+    },
+    "key": {
+      "ACTIVE": "Active",
+      "PENDING": "Being sent to the lock",
+      "PREPARING": "Preparing",
+      "NOT_AVAILABLE": "No smart lock",
+      "IDENTITY_REQUIRED": "Identity required",
+      "COMPLIANCE_PENDING": "Lodger registration pending",
+      "COMPLIANCE_FAILED": "Lodger registration failed",
+      "REVOKED": "Revoked",
+      "EXPIRED": "Expired",
+      "FAILED": "Failed"
+    },
+    "lock": {
+      "ONLINE": "Online",
+      "OFFLINE": "Offline",
+      "UNKNOWN": "Unknown"
+    },
+    "access": {
+      "success": "Success",
+      "failed": "Failed"
+    },
+    "task": {
+      "TODO": "To do",
+      "IN_PROGRESS": "In progress",
+      "SUBMITTED": "Submitted",
+      "DONE": "Done",
+      "BLOCKED": "Blocked",
+      "CANCELLED": "Cancelled"
+    },
+    "incident": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved"
+    },
+    "damage": {
+      "OPENED": "Opened",
+      "UNDER_REVIEW": "Under review",
+      "GUEST_NOTIFIED": "Guest notified",
+      "DISPUTED": "Disputed",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "SETTLED": "Settled",
+      "CLOSED": "Closed"
+    },
+    "campaign": {
+      "DRAFT": "Draft",
+      "ACTIVE": "Active",
+      "PAUSED": "Paused",
+      "ARCHIVED": "Archived"
+    },
+    "user": {
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended"
+    },
+    "refund": {
+      "PENDING": "Pending",
+      "SUCCEEDED": "Succeeded",
+      "FAILED": "Failed"
+    },
+    "property": {
+      "DRAFT": "Draft",
+      "PENDING_REVIEW": "Under review",
+      "PUBLISHED": "Published",
+      "REJECTED": "Rejected",
+      "SUSPENDED": "Suspended"
+    },
+    "severity": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical"
+    },
+    "stayRequest": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled"
+    },
+    "statement": {
+      "ISSUED": "Issued",
+      "PAID": "Paid"
+    },
+    "bankAccount": {
+      "PENDING": "Pending verification",
+      "VERIFIED": "Verified",
+      "REJECTED": "Rejected"
+    },
+    "recommendation": {
+      "PENDING": "Pending",
+      "APPLIED": "Applied",
+      "REJECTED": "Rejected",
+      "EXPIRED": "Expired"
+    },
+    "integrationCall": {
+      "PENDING": "Pending",
+      "RUNNING": "Running",
+      "SUCCEEDED": "Succeeded",
+      "FAILED": "Failed",
+      "DEAD": "Dead"
+    },
+    "integrationHealth": {
+      "OK": "Healthy",
+      "DEGRADED": "Degraded",
+      "ATTENTION": "Needs review",
+      "NOT_CONFIGURED": "Not configured"
+    },
+    "delivery": {
+      "PENDING": "Pending",
+      "SENDING": "Sending",
+      "SENT": "Sent",
+      "FAILED": "Failed"
+    },
+    "review": {
+      "PUBLISHED": "Published",
+      "HIDDEN": "Hidden"
+    },
+    "nafath": {
+      "WAITING": "Waiting",
+      "COMPLETED": "Verified",
+      "REJECTED": "Rejected",
+      "EXPIRED": "Expired",
+      "FAILED": "Failed"
+    }
+  }
+}

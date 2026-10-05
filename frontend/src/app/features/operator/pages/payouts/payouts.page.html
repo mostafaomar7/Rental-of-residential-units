@@ -1,0 +1,206 @@
+<app-page-header [title]="'operations.payouts.title' | translate" [subtitle]="'operations.payouts.subtitle' | translate">
+  @if (current(); as cur) {
+    <button type="button" class="btn btn-ghost" [disabled]="downloading.busy()" (click)="download(cur)">
+      <app-icon name="download" size="sm" />{{ 'operations.payouts.statement' | translate }}
+    </button>
+  }
+</app-page-header>
+
+<div class="grid g4">
+  <app-stat-tile
+    icon="wallet"
+    tone="gold"
+    [value]="earnings.hasValue() ? (earnings.value().meta.pendingNet | sar) : '—'"
+    [label]="'operations.payouts.pendingNet' | translate"
+    [sub]="'operations.payouts.pendingNetSub' | translate"
+  />
+  @if (current(); as cur) {
+    <app-stat-tile icon="banknote" [value]="cur.gross | sar" [label]="'operations.payouts.grossFor' | translate: { month: (cur.period | appDate: 'month') }" />
+    <app-stat-tile icon="percent" tone="red" [value]="cur.commission | sar" [label]="'operations.payouts.commission' | translate" [sub]="'operations.payouts.feesValue' | translate: { fees: (cur.paymentFees | sar) }" />
+    <app-stat-tile
+      icon="landmark"
+      tone="black"
+      [value]="cur.net | sar"
+      [label]="'operations.payouts.netTransfer' | translate"
+      [sub]="cur.paidAt ? ('operations.payouts.paidOn' | translate: { date: (cur.paidAt | appDate) }) : ('status.statement.' + cur.status | translate)"
+    />
+  }
+</div>
+
+<div class="grid g-2-1 mt-24 cards-grid">
+  <div class="card card-p">
+    <div class="card-h">
+      <h3>{{ 'operations.payouts.statements' | translate }}</h3>
+    </div>
+    @if (statements.isLoading()) {
+      <app-loading />
+    } @else if (statements.error()) {
+      <app-load-error [error]="statements.error()" (retry)="statements.reload()" />
+    } @else if (statements.hasValue() && statements.value().length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'operations.payouts.period' | translate }}</th>
+              <th>{{ 'operations.payouts.gross' | translate }}</th>
+              <th>{{ 'operations.payouts.commission' | translate }}</th>
+              <th>{{ 'operations.payouts.fees' | translate }}</th>
+              <th>{{ 'operations.payouts.net' | translate }}</th>
+              <th>{{ 'operations.payouts.status' | translate }}</th>
+              <th><span class="sr-only">{{ 'operations.payouts.statement' | translate }}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of statements.value(); track s.id) {
+              <tr>
+                <td class="b">
+                  {{ s.period | appDate: 'month' }}
+                  <div class="xs muted ltr">{{ s.number }}</div>
+                </td>
+                <td>{{ s.gross | sar }}</td>
+                <td class="red nowrap">- {{ s.commission | sar }}</td>
+                <td class="red nowrap">- {{ s.paymentFees | sar }}</td>
+                <td class="bb">{{ s.net | sar }}</td>
+                <td>
+                  <app-status-pill domain="statement" [code]="s.status" />
+                  <div class="xs muted">{{ (s.paidAt ?? s.issuedAt) | appDate }}</div>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-ghost btn-xs"
+                    [disabled]="downloading.busy()"
+                    [attr.aria-label]="'operations.payouts.downloadFor' | translate: { month: (s.period | appDate: 'month') }"
+                    (click)="download(s)"
+                  >
+                    <app-icon name="download" size="sm" />
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="banknote" [title]="'operations.payouts.empty' | translate" />
+    }
+  </div>
+
+  <div class="stack">
+    @if (current()) {
+      <div class="card card-p">
+        <h3 class="h3 mb-12">{{ 'operations.payouts.split' | translate }}</h3>
+        <app-donut-chart
+          [parts]="split()"
+          [center]="netShare() + '%'"
+          [centerSub]="'operations.payouts.netShort' | translate"
+          [unit]="' ' + ('operations.payouts.sarUnit' | translate)"
+          [label]="'operations.payouts.split' | translate"
+        />
+      </div>
+    }
+    <div class="hero-card">
+      <div class="row between">
+        <div class="row small b gold"><app-icon name="landmark" size="sm" />{{ 'operations.payouts.bankAccount' | translate }}</div>
+        @if (account(); as acc) {
+          <app-status-pill domain="bankAccount" [code]="acc.status" />
+        }
+      </div>
+      @if (bank.isLoading()) {
+        <app-loading />
+      } @else if (bank.error()) {
+        <app-load-error [error]="bank.error()" (retry)="bank.reload()" />
+      } @else if (account(); as acc) {
+        <div class="bb lg mt-8 ltr">{{ acc.iban }}</div>
+        <div class="small bank-sub">{{ acc.bankName }} • {{ acc.accountName }}</div>
+        @if (acc.status === 'REJECTED' && acc.rejectionReason) {
+          <div class="small mt-8">{{ 'operations.payouts.bank.rejected' | translate: { reason: acc.rejectionReason } }}</div>
+        }
+      } @else {
+        <div class="small bank-sub mt-8">{{ 'operations.payouts.bank.none' | translate }}</div>
+      }
+      <button type="button" class="btn btn-glass btn-sm mt-16" (click)="editingBank.set(true)">
+        {{ (account() ? 'operations.payouts.changeAccount' : 'operations.payouts.addAccount') | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (revenueBars().length) {
+  <div class="card card-p mt-24">
+    <div class="card-h">
+      <h3>{{ 'operations.payouts.monthlyRevenue' | translate }}</h3>
+      <div class="legend">
+        <span><i class="legend-navy"></i>{{ 'operations.payouts.revenue' | translate }}</span>
+      </div>
+    </div>
+    <app-bar-chart [items]="revenueBars()" [showValues]="true" />
+  </div>
+}
+
+<div class="card card-p mt-24">
+  <div class="card-h">
+    <h3>{{ 'operations.payouts.earnings' | translate }}</h3>
+    <label class="check">
+      <input type="checkbox" [checked]="unsettledOnly()" (change)="toggleUnsettled()" />
+      <span class="small">{{ 'operations.payouts.unsettledOnly' | translate }}</span>
+    </label>
+  </div>
+  @if (earnings.isLoading()) {
+    <app-loading />
+  } @else if (earnings.error()) {
+    <app-load-error [error]="earnings.error()" (retry)="earnings.reload()" />
+  } @else if (earnings.hasValue() && earnings.value().items.length) {
+    @let ledger = earnings.value();
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>{{ 'operations.payouts.cols.date' | translate }}</th>
+            <th>{{ 'operations.payouts.cols.description' | translate }}</th>
+            <th>{{ 'operations.payouts.gross' | translate }}</th>
+            <th>{{ 'operations.payouts.commission' | translate }}</th>
+            <th>{{ 'operations.payouts.fees' | translate }}</th>
+            <th>{{ 'operations.payouts.net' | translate }}</th>
+            <th>{{ 'operations.payouts.cols.settled' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of ledger.items; track e.id) {
+            <tr>
+              <td class="small nowrap">{{ e.earnedOn | appDate }}</td>
+              <td class="small">
+                <div class="b">{{ e | loc: 'description' }}</div>
+                <div class="xs muted">
+                  {{ 'domain.api.earningType.' + e.type | translate }}
+                  @if (e.property; as p) {
+                    • {{ p.nameAr }}
+                  }
+                  @if (e.bookingNumber) {
+                    • <span class="ltr">{{ e.bookingNumber }}</span>
+                  }
+                </div>
+              </td>
+              <td class="nowrap">{{ e.gross | sar }}</td>
+              <td class="red nowrap">- {{ e.commission | sar }}</td>
+              <td class="red nowrap">- {{ e.paymentFees | sar }}</td>
+              <td class="bb nowrap">{{ e.net | sar }}</td>
+              <td>
+                <span class="pill" [class]="e.statementId ? 'pill-green' : 'pill-amber'">
+                  {{ (e.statementId ? 'operations.payouts.settled' : 'operations.payouts.unsettled') | translate }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pager [meta]="ledger.meta" (pageChange)="earningsPage.set($event)" />
+  } @else {
+    <app-empty-state icon="receipt" [title]="'operations.payouts.noEarnings' | translate" />
+  }
+</div>
+
+@if (editingBank()) {
+  <app-bank-account-modal [account]="account()" (closed)="editingBank.set(false)" (saved)="onBankSaved($event)" />
+}

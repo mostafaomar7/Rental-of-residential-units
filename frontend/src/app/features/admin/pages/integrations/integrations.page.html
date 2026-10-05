@@ -1,0 +1,100 @@
+<app-page-header [title]="'admin.integrations.title' | translate" [subtitle]="'admin.integrations.subtitle' | translate">
+  <button type="button" class="btn btn-ghost" [disabled]="health.isLoading()" (click)="refresh()"><app-icon name="refresh-cw" size="sm" />{{ 'admin.integrations.checkAll' | translate }}</button>
+</app-page-header>
+
+<app-resource-state [resource]="health" />
+@if (health.hasValue()) {
+  <div class="grid g3">
+    @for (x of health.value(); track x.provider) {
+      <app-integration-card [integration]="x" (showCalls)="showCalls(x.provider, $event)" />
+    } @empty {
+      <div class="card"><app-empty-state icon="plug" [title]="'admin.integrations.empty' | translate" /></div>
+    }
+  </div>
+}
+
+<div class="card card-p mt-24">
+  <div class="card-h">
+    <h3>{{ 'admin.integrations.callsTitle' | translate }}</h3>
+  </div>
+  <div class="row wrap mb-16">
+    <select class="select filter" [attr.aria-label]="'admin.integrations.cols.provider' | translate" [(ngModel)]="provider">
+      <option value="">{{ 'admin.integrations.allProviders' | translate }}</option>
+      @for (p of providers; track p) {
+        <option [value]="p">{{ 'domain.integrations.' + p.toLowerCase() + '.name' | translate }}</option>
+      }
+    </select>
+    <select class="select filter" [attr.aria-label]="'admin.integrations.cols.status' | translate" [(ngModel)]="status">
+      <option value="">{{ 'admin.integrations.allStatuses' | translate }}</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ 'status.integrationCall.' + s | translate }}</option>
+      }
+    </select>
+    <input
+      class="input filter-input ltr"
+      [placeholder]="'admin.integrations.cols.operation' | translate"
+      [attr.aria-label]="'admin.integrations.cols.operation' | translate"
+      [value]="operation()"
+      (change)="operation.set($any($event.target).value.trim())"
+    />
+    <input
+      class="input filter-input ltr"
+      [placeholder]="'admin.integrations.entityFilter' | translate"
+      [attr.aria-label]="'admin.integrations.entityFilter' | translate"
+      [value]="entityId()"
+      (change)="entityId.set($any($event.target).value.trim())"
+    />
+  </div>
+
+  <app-resource-state [resource]="calls" />
+  @if (calls.hasValue()) {
+    @let page = calls.value();
+    @if (page.items.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'admin.integrations.cols.created' | translate }}</th>
+              <th>{{ 'admin.integrations.cols.provider' | translate }}</th>
+              <th>{{ 'admin.integrations.cols.operation' | translate }}</th>
+              <th>{{ 'admin.integrations.cols.entity' | translate }}</th>
+              <th>{{ 'admin.integrations.cols.status' | translate }}</th>
+              <th>{{ 'admin.integrations.cols.attempts' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of page.items; track c.id) {
+              <tr>
+                <td class="small nowrap">{{ c.createdAt | appDate: 'dateTime' }}</td>
+                <td class="small">{{ 'domain.integrations.' + c.provider.toLowerCase() + '.name' | translate }}</td>
+                <td><span class="kbd">{{ c.operation }}</span></td>
+                <td class="xs ltr">{{ c.entityType }}<br /><span class="muted">{{ c.entityId }}</span></td>
+                <td>
+                  <app-status-pill domain="integrationCall" [code]="c.status" />
+                  @if (c.lastError) {
+                    <div class="xs red mt-4 truncate err" [attr.title]="c.lastError">{{ c.lastError }}</div>
+                  }
+                </td>
+                <td class="small">{{ c.attempts }} / {{ c.maxAttempts }}</td>
+                <td class="nowrap">
+                  <button type="button" class="btn btn-ghost btn-xs" (click)="viewing.set(c.id)">{{ 'admin.integrations.details' | translate }}</button>
+                  @if (retryable.includes(c.status)) {
+                    <button type="button" class="btn btn-primary btn-xs" [disabled]="retrying() === c.id" (click)="retry(c)">{{ 'admin.integrations.retry' | translate }}</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="check-check" [title]="'admin.integrations.callsEmpty' | translate" />
+    }
+    <app-pager [meta]="page.meta" (pageChange)="currentPage.set($event)" />
+  }
+</div>
+
+@if (viewing(); as id) {
+  <app-integration-call-modal [callId]="id" (retried)="refresh()" (closed)="viewing.set(null)" />
+}

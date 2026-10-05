@@ -1,0 +1,66 @@
+<div class="stack-lg">
+  <div class="hero-card wallet-hero">
+    <div class="row between wrap">
+      <div>
+        <div class="small soft-white">{{ 'account.wallet.balanceTitle' | translate }}</div>
+        <div class="balance">
+          @if (wallet.balance() !== null) {
+            {{ wallet.balance() | num: 2 }} <span class="lg gold">{{ 'account.wallet.currency' | translate }}</span>
+          } @else if (wallet.error()) {
+            <button type="button" class="btn btn-glass btn-sm" (click)="wallet.reload()">{{ 'guest.load.retry' | translate }}</button>
+          } @else {
+            <span class="spin"></span>
+          }
+        </div>
+        <div class="xs faint">{{ 'account.wallet.balanceSub' | translate }}</div>
+      </div>
+      <span class="li-ic wallet-ic"><app-icon name="wallet" size="lg" /></span>
+    </div>
+    <div class="row wrap mt-24">
+      @for (amount of presets(); track amount) {
+        <button type="button" class="btn btn-gold" [disabled]="busy()" (click)="confirmTopUp(amount)">+{{ amount | sar }}</button>
+      }
+      <button type="button" class="btn btn-glass" [disabled]="busy()" (click)="customOpen.set(true)">{{ 'account.wallet.otherAmount' | translate }}</button>
+    </div>
+    <div class="glass mt-16 small row">
+      <app-icon name="credit-card" size="sm" />{{ 'account.wallet.gatewayNote' | translate }}
+    </div>
+  </div>
+
+  <div class="card card-p">
+    <div class="card-h">
+      <h3>{{ 'account.wallet.history' | translate }}</h3>
+      @if (transactions.hasValue()) {
+        <span class="xs muted">{{ 'account.wallet.txCount' | translate: { count: transactions.value().meta.total } }}</span>
+      }
+    </div>
+    @if (transactions.hasValue()) {
+      @let page = transactions.value();
+      <div class="rows">
+        @for (t of page.items; track t.id) {
+          <div class="row between tx">
+            <div class="row gap-12">
+              <span class="li-ic" [class.green]="t.amount > 0" [class.red]="t.amount < 0" [class.gold]="t.amount === 0">
+                <app-icon [name]="t.amount > 0 ? 'arrow-down-left' : t.amount < 0 ? 'arrow-up-right' : 'gift'" size="sm" />
+              </span>
+              <div>
+                <div class="b small">{{ t | loc: 'description' }}</div>
+                <div class="xs muted">{{ t.createdAt | appDate: 'dateTime' }} • {{ 'domain.api.walletTx.' + t.type | translate }}</div>
+              </div>
+            </div>
+            <div class="bb small ltr" [class.green]="t.amount > 0">{{ t.amount > 0 ? '+' : '' }}{{ t.amount | sar }}</div>
+          </div>
+        } @empty {
+          <app-empty-state icon="receipt" [title]="'account.wallet.emptyTitle' | translate" />
+        }
+      </div>
+      <app-pager [page]="page.meta.page" [totalPages]="page.meta.totalPages" [disabled]="transactions.isLoading()" (pageChange)="pageNo.set($event)" />
+    } @else {
+      <app-load-state [error]="transactions.error()" (retry)="transactions.reload()" />
+    }
+  </div>
+</div>
+
+@if (customOpen()) {
+  <app-topup-dialog [busy]="busy()" (submitted)="topUp($event)" (closed)="customOpen.set(false)" />
+}

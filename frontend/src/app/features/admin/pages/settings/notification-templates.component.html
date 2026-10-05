@@ -1,0 +1,81 @@
+<app-resource-state [resource]="templates" />
+@if (templates.hasValue()) {
+  <div class="grid g-2-1 layout">
+    <div class="card card-p">
+      @if (selected(); as t) {
+        <div class="card-h">
+          <div>
+            <h3><span class="kbd">{{ t.key }}</span></h3>
+            <div class="xs muted mt-4">
+              @if (t.updatedAt) {
+                {{ 'admin.templates.updatedAt' | translate: { time: (t.updatedAt | appDate: 'dateTime') } }}
+              }
+            </div>
+          </div>
+          @if (t.isCustomised) {
+            <span class="pill pill-gold">{{ 'admin.settings.customised' | translate }}</span>
+          }
+        </div>
+
+        @let d = draft();
+        <div class="grid g2">
+          <app-field [label]="'admin.templates.titleAr' | translate" for="nt-title-ar">
+            <input id="nt-title-ar" class="input" dir="rtl" [ngModel]="d.titleAr" (ngModelChange)="setText('titleAr', $event)" />
+          </app-field>
+          <app-field [label]="'admin.templates.titleEn' | translate" for="nt-title-en">
+            <input id="nt-title-en" class="input" dir="ltr" [ngModel]="d.titleEn" (ngModelChange)="setText('titleEn', $event)" />
+          </app-field>
+          <app-field [label]="'admin.templates.bodyAr' | translate" for="nt-body-ar">
+            <textarea id="nt-body-ar" class="textarea" dir="rtl" [ngModel]="d.bodyAr" (ngModelChange)="setText('bodyAr', $event)"></textarea>
+          </app-field>
+          <app-field [label]="'admin.templates.bodyEn' | translate" for="nt-body-en">
+            <textarea id="nt-body-en" class="textarea" dir="ltr" [ngModel]="d.bodyEn" (ngModelChange)="setText('bodyEn', $event)"></textarea>
+          </app-field>
+        </div>
+
+        @if (t.variables.length) {
+          <div class="xs muted b mt-8 mb-8">{{ 'admin.templates.variables' | translate }}</div>
+          <div class="chips">
+            @for (v of t.variables; track v) {
+              <button type="button" class="chip chip-sm ltr" [attr.aria-label]="'admin.templates.copyVariable' | translate: { name: v }" (click)="clipboard.copy(token(v))">{{ token(v) }}</button>
+            }
+          </div>
+        }
+
+        <div class="row wrap mt-16">
+          <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="save(t)">{{ 'common.save' | translate }}</button>
+          @if (t.isCustomised) {
+            <button type="button" class="btn btn-ghost" [disabled]="busy()" (click)="reset(t)"><app-icon name="rotate-ccw" size="sm" />{{ 'admin.settings.reset' | translate }}</button>
+          }
+        </div>
+      } @else {
+        <app-empty-state icon="message-square" [title]="'admin.templates.pick' | translate" />
+      }
+    </div>
+
+    <div class="card card-p-sm">
+      <div class="stack-sm list">
+        @for (t of templates.value(); track t.key) {
+          <button type="button" class="li tpl" [class.on]="t.key === selectedKey()" (click)="selectedKey.set(t.key)">
+            <div class="grow">
+              <div class="small b ltr truncate">{{ t.key }}</div>
+              <div class="row wrap mt-4">
+                @for (c of t.channels; track c) {
+                  <span class="pill pill-gray">{{ 'admin.templates.channels.' + c | translate }}</span>
+                }
+                @if (t.critical) {
+                  <span class="pill pill-red">{{ 'admin.templates.critical' | translate }}</span>
+                }
+                @if (t.isCustomised) {
+                  <span class="pill pill-gold">{{ 'admin.settings.customised' | translate }}</span>
+                }
+              </div>
+            </div>
+          </button>
+        } @empty {
+          <app-empty-state icon="message-square" [title]="'admin.templates.empty' | translate" />
+        }
+      </div>
+    </div>
+  </div>
+}

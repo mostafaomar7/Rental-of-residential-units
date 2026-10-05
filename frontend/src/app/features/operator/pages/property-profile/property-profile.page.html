@@ -1,0 +1,62 @@
+<a class="link small" routerLink="/operator/properties">
+  <app-icon name="arrow-right" size="sm" [mirror]="true" /> {{ 'operator.profile.allUnits' | translate }}
+</a>
+
+@if (resource.isLoading() && !resource.hasValue()) {
+  <app-loading />
+} @else if (resource.error()) {
+  <app-load-error [error]="resource.error()" (retry)="resource.reload()" />
+} @else if (resource.hasValue()) {
+  @let p = resource.value();
+  <div class="card card-p mt-12 row gap-16 wrap">
+    @if (cover(); as src) {
+      <img class="cover" [src]="src" alt="" />
+    }
+    <div class="grow">
+      <div class="row wrap">
+        <app-status-pill domain="property" [code]="p.status" />
+        @if (p.operations.operatingModel; as model) {
+          <span class="pill" [class]="model === 'SUPERVISED' ? 'pill-navy' : 'pill-gray'">{{ 'domain.api.operatingModel.' + model | translate }}</span>
+        }
+      </div>
+      <h1 class="h2 mt-8">{{ p.identity | loc }}</h1>
+      <div class="small muted">
+        {{ p.identity.type | loc }}
+        @if (p.identity.city; as city) {
+          • {{ city | loc }}
+        }
+        @if (p.identity.district; as district) {
+          • {{ district | loc }}
+        }
+        • {{ 'operator.profile.license' | translate: { license: p.identity.tourismLicenseNo ?? '—' } }}
+      </div>
+    </div>
+    @if (p.status === 'PUBLISHED') {
+      <a class="btn btn-ghost btn-sm" [routerLink]="['/property', p.id]" target="_blank">
+        <app-icon name="external-link" size="sm" />{{ 'operator.profile.previewAsGuest' | translate }}
+      </a>
+    }
+  </div>
+
+  <div class="mt-16"><app-tab-links [items]="tabs()" /></div>
+
+  <div class="card card-p mt-16">
+    @switch (activeTab()) {
+      @case ('identity') {
+        <app-identity-tab [property]="p" (saved)="onSaved($event)" />
+      }
+      @case ('content') {
+        <app-content-tab [property]="p" (saved)="onSaved($event)" />
+      }
+      @case ('commercial') {
+        <app-commercial-tab [property]="p" (saved)="onSaved($event)" (changed)="resource.reload()" />
+      }
+      @case ('operations') {
+        <app-operations-tab [property]="p" (saved)="onSaved($event)" />
+      }
+      @case ('governance') {
+        <app-governance-tab [property]="p" (saved)="onSaved($event)" (changed)="resource.reload()" />
+      }
+    }
+  </div>
+}

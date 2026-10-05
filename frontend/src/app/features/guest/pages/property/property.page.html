@@ -1,0 +1,102 @@
+@if (property.hasValue()) {
+  @let p = property.value();
+  @let name = p | loc;
+  <div class="container page">
+    <nav class="row small muted" [attr.aria-label]="'guest.property.breadcrumb' | translate">
+      <a routerLink="/" class="b">{{ 'guest.nav.units' | translate }}</a>
+      <app-icon name="chevron-left" size="sm" [mirror]="true" />
+      <span>{{ p.city | loc }}</span>
+      <app-icon name="chevron-left" size="sm" [mirror]="true" />
+      <span class="truncate">{{ name }}</span>
+    </nav>
+
+    <div class="mt-12"><app-property-gallery [photos]="p.photos" [title]="name" /></div>
+
+    <div class="row between wrap mt-24 head">
+      <div>
+        <div class="row wrap">
+          @if (p.operatingModel; as model) {
+            <span class="pill" [class]="model === 'SUPERVISED' ? 'pill-navy' : 'pill-gold'">{{ 'domain.api.operatingModel.' + model | translate }}</span>
+          }
+          <span class="pill pill-gray">{{ p.type | loc }}</span>
+        </div>
+        <h1 class="h1 mt-8">{{ name }}</h1>
+        <div class="row wrap muted small mt-4">
+          <app-icon name="map-pin" size="sm" />{{ p.city | loc }}
+          @if (p.district) {
+            • {{ p.district | loc }}
+          }
+          <span>•</span>
+          <span class="star"><app-icon name="star" size="sm" [fill]="true" /></span>
+          <b class="navy">{{ p.rating.average | num }}</b>
+          {{ 'guest.property.reviewsCount' | translate: { count: p.rating.count } }}
+        </div>
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-outline btn-icon btn-sm" [attr.aria-label]="'guest.property.share' | translate" (click)="share()">
+          <app-icon name="share-2" size="sm" />
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline btn-icon btn-sm"
+          [attr.aria-label]="'guest.nav.favorites' | translate"
+          [attr.aria-pressed]="isFavorite()"
+          [disabled]="favorites.isBusy(p.id)"
+          (click)="toggleFavorite()"
+        >
+          <app-icon name="heart" size="sm" [class.red]="isFavorite()" />
+        </button>
+      </div>
+    </div>
+
+    <div class="grid g-2-1 mt-24 body">
+      <div class="card card-p">
+        <div class="tabs-line mb-16" role="tablist">
+          @for (t of tabs; track t) {
+            <button type="button" role="tab" class="tab" [class.on]="tab() === t" [attr.aria-selected]="tab() === t" (click)="tab.set(t)">
+              {{ 'guest.property.tabs.' + t | translate: { count: p.rating.count } }}
+            </button>
+          }
+        </div>
+
+        @switch (tab()) {
+          @case ('details') {
+            <app-property-details-tab [property]="p" [unit]="unit()" (unitChange)="selectUnit($event)" />
+          }
+          @case ('availability') {
+            @if (unit(); as u) {
+              <app-unit-availability [unitId]="u.id" [stay]="stay()" (stayChange)="updateStay($event)" />
+            }
+          }
+          @case ('amenities') {
+            <div class="grid g2">
+              @for (a of p.amenities; track a.code) {
+                <div class="amen"><span class="gl">✦</span>{{ a | loc }}</div>
+              } @empty {
+                <p class="small muted">{{ 'guest.property.noAmenities' | translate }}</p>
+              }
+            </div>
+          }
+          @case ('policies') {
+            <app-property-policies-tab [policies]="p.policies" />
+          }
+          @case ('reviews') {
+            <app-property-reviews-tab [propertyId]="p.id" />
+          }
+        }
+      </div>
+
+      @if (unit(); as u) {
+        <app-property-booking-box [property]="p" [unit]="u" [stay]="stay()" (stayChange)="updateStay($event)" (unitChange)="selectUnit($event)" />
+      }
+    </div>
+  </div>
+} @else {
+  <div class="container">
+    <div class="card mt-24">
+      <app-load-state [error]="property.error()" (retry)="property.reload()">
+        <a class="btn btn-ghost mt-16" routerLink="/">{{ 'guest.property.back' | translate }}</a>
+      </app-load-state>
+    </div>
+  </div>
+}

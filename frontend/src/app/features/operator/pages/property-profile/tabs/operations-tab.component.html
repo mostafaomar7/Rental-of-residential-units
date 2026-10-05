@@ -1,0 +1,79 @@
+@let p = property();
+
+<h3 class="h3 mb-16">{{ 'operator.profile.ops.modelTitle' | translate }}</h3>
+<app-radio-cards [options]="modelOptions" [selected]="p.operations.operatingModel ?? undefined" (picked)="setModel($event)" />
+
+<div class="grid g2 mt-24">
+  @if (session.isOwner()) {
+    <div>
+      <h3 class="h3 mb-8">{{ 'operator.profile.ops.operators' | translate }}</h3>
+      <p class="xs muted mb-8">{{ 'operator.profile.ops.operatorsHint' | translate }}</p>
+      <div class="rows">
+        @for (o of p.operations.operators; track o.id) {
+          <div class="row between person">
+            <div>
+              <div class="b small">{{ o.fullName }}</div>
+              <div class="xs muted ltr">{{ o.mobile }}</div>
+            </div>
+            <button type="button" class="btn btn-danger btn-xs" [disabled]="peopleAction.busy()" (click)="removeOperator(o)">
+              {{ 'operator.profile.ops.remove' | translate }}
+            </button>
+          </div>
+        } @empty {
+          <div class="xs muted">{{ 'operator.profile.ops.noOperators' | translate }}</div>
+        }
+      </div>
+      <div class="row mt-12">
+        <input
+          #mobile
+          class="input ltr mobile-input"
+          type="tel"
+          inputmode="tel"
+          placeholder="05XXXXXXXX"
+          [value]="operatorMobile()"
+          [attr.aria-label]="'operator.profile.ops.operatorMobile' | translate"
+          (input)="operatorMobile.set(mobile.value)"
+          (keydown.enter)="addOperator()"
+        />
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="peopleAction.busy() || !operatorMobile().trim()" (click)="addOperator()">
+          <app-icon name="user-plus" size="sm" />{{ 'operator.profile.ops.addOperator' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <div>
+    <h3 class="h3 mb-8">{{ 'operator.profile.ops.supervisors' | translate }}</h3>
+    <p class="xs muted mb-8">{{ 'operator.profile.ops.supervisorsHint' | translate }}</p>
+    @if (supervisors.isLoading()) {
+      <app-loading />
+    } @else if (supervisors.error()) {
+      <app-load-error [error]="supervisors.error()" (retry)="supervisors.reload()" />
+    } @else if (supervisors.hasValue()) {
+      <div class="rows">
+        @for (s of supervisors.value(); track s.id) {
+          <div class="row between person">
+            <div>
+              <div class="b small">{{ s.fullName }}</div>
+              <div class="xs muted ltr">{{ s.mobile }}</div>
+            </div>
+            <button type="button" class="btn btn-danger btn-xs" [disabled]="peopleAction.busy()" (click)="removeSupervisor(s)">
+              {{ 'operator.profile.ops.remove' | translate }}
+            </button>
+          </div>
+        } @empty {
+          <div class="xs muted">{{ 'operator.profile.ops.noSupervisors' | translate }}</div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<h3 class="h3 mt-24 mb-16">{{ 'operator.profile.ops.locksTitle' | translate }}</h3>
+<div class="stack">
+  @for (u of p.commercial.units; track u.id) {
+    <app-unit-lock-card [unit]="u" />
+  } @empty {
+    <app-empty-state icon="key-round" [title]="'operator.profile.ops.noUnits' | translate" />
+  }
+</div>

@@ -1,0 +1,102 @@
+<app-page-header [title]="'admin.audit.title' | translate" [subtitle]="'admin.audit.subtitle' | translate">
+  <button type="button" class="btn btn-ghost" [disabled]="!logs.hasValue() || !logs.value().items.length" (click)="export()">
+    <app-icon name="download" size="sm" />{{ 'admin.audit.export' | translate }}
+  </button>
+</app-page-header>
+
+<div class="card card-p">
+  <div class="row wrap mb-16">
+    <input
+      class="input filter-input ltr"
+      [placeholder]="'admin.audit.cols.action' | translate"
+      [attr.aria-label]="'admin.audit.cols.action' | translate"
+      [value]="action()"
+      (change)="action.set($any($event.target).value.trim())"
+    />
+    <input
+      class="input filter-input ltr"
+      [placeholder]="'admin.audit.cols.entityType' | translate"
+      [attr.aria-label]="'admin.audit.cols.entityType' | translate"
+      [value]="entityType()"
+      (change)="entityType.set($any($event.target).value.trim())"
+    />
+    <input
+      class="input filter-input ltr"
+      [placeholder]="'admin.audit.cols.entityId' | translate"
+      [attr.aria-label]="'admin.audit.cols.entityId' | translate"
+      [value]="entityId()"
+      (change)="entityId.set($any($event.target).value.trim())"
+    />
+    <input
+      class="input filter-input ltr"
+      [placeholder]="'admin.audit.actorFilter' | translate"
+      [attr.aria-label]="'admin.audit.actorFilter' | translate"
+      [value]="actorId()"
+      (change)="actorId.set($any($event.target).value.trim())"
+    />
+    <input class="input date" type="date" [attr.aria-label]="'admin.audit.from' | translate" [(ngModel)]="from" />
+    <input class="input date" type="date" [attr.aria-label]="'admin.audit.to' | translate" [(ngModel)]="to" />
+    <button type="button" class="btn btn-ghost btn-sm" (click)="clearFilters()">{{ 'admin.audit.clear' | translate }}</button>
+  </div>
+
+  <app-resource-state [resource]="logs" />
+  @if (logs.hasValue()) {
+    @let page = logs.value();
+    @if (page.items.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'admin.audit.cols.time' | translate }}</th>
+              <th>{{ 'admin.audit.cols.action' | translate }}</th>
+              <th>{{ 'admin.audit.cols.entity' | translate }}</th>
+              <th>{{ 'admin.audit.cols.actor' | translate }}</th>
+              <th>{{ 'admin.audit.cols.ip' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of page.items; track a.id) {
+              <tr>
+                <td class="small nowrap">{{ a.createdAt | appDate: 'dateTime' }}</td>
+                <td><span class="kbd">{{ a.action }}</span></td>
+                <td class="xs ltr">
+                  {{ a.entityType }}<br /><span class="muted">{{ a.entityId }}</span>
+                </td>
+                <td class="xs ltr">
+                  @if (a.actorId) {
+                    <button type="button" class="kbd" [attr.aria-label]="'admin.audit.filterActor' | translate" (click)="actorId.set(a.actorId)">{{ a.actorId }}</button>
+                  } @else {
+                    {{ 'admin.audit.system' | translate }}
+                  }
+                </td>
+                <td class="xs muted ltr">{{ a.ip || ('common.none' | translate) }}</td>
+                <td>
+                  <button type="button" class="btn btn-ghost btn-xs" (click)="viewing.set(a)">{{ 'admin.audit.details' | translate }}</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="scroll-text" [title]="'admin.audit.empty' | translate" />
+    }
+    <app-pager [meta]="page.meta" (pageChange)="currentPage.set($event)" />
+  }
+</div>
+
+@if (viewing(); as a) {
+  <app-modal size="lg" [title]="a.action" [subtitle]="(a.createdAt | appDate: 'dateTime') + ' • ' + a.entityType" (closed)="viewing.set(null)">
+    <div class="grid g2">
+      <div>
+        <div class="bb mb-8">{{ 'admin.audit.before' | translate }}</div>
+        <pre class="code">{{ a.before | json }}</pre>
+      </div>
+      <div>
+        <div class="bb mb-8">{{ 'admin.audit.after' | translate }}</div>
+        <pre class="code">{{ a.after | json }}</pre>
+      </div>
+    </div>
+  </app-modal>
+}

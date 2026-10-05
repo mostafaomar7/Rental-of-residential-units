@@ -1,0 +1,215 @@
+<app-page-header
+  [title]="(session.isOwner() ? 'operator.dashboard.greetingOwner' : 'operator.dashboard.greetingOperator') | translate: { name: session.userName() }"
+  [subtitle]="'operator.dashboard.subtitle' | translate: { date: (today | appDate: 'long') }"
+>
+  <app-tabs [items]="periods" [active]="period()" (activeChange)="setPeriod($event)" />
+  <button type="button" class="btn btn-ghost" [disabled]="exporting.busy()" (click)="exportCsv()">
+    <app-icon name="download" size="sm" />{{ 'operator.dashboard.export' | translate }}
+  </button>
+</app-page-header>
+
+@if (kpis.error()) {
+  <div class="card card-p">
+    <app-load-error [error]="kpis.error()" (retry)="kpis.reload()" />
+  </div>
+} @else if (!kpis.hasValue()) {
+  <app-loading />
+} @else {
+  @let k = kpis.value();
+  @let s = k.summary;
+  @let ops = k.operations;
+  <div class="grid g4">
+    @let occTrend = trend(k, 'occupancyRate');
+    <app-stat-tile
+      icon="percent"
+      [value]="rate(s.occupancyRate)"
+      [label]="'operator.dashboard.kpi.occupancy' | translate"
+      [trend]="occTrend?.text"
+      [trendDown]="!!occTrend?.down"
+      [sub]="'operator.dashboard.kpi.nights' | translate: { sold: (s.nightsSold | num), available: (s.nightsAvailable | num) }"
+    />
+    @let revTrend = trend(k, 'revenue');
+    <app-stat-tile
+      icon="banknote"
+      tone="gold"
+      [value]="formatSar(s.revenue)"
+      [label]="'operator.dashboard.kpi.revenue' | translate"
+      [trend]="revTrend?.text"
+      [trendDown]="!!revTrend?.down"
+      [sub]="'operator.dashboard.kpi.vsPrevious' | translate"
+    />
+    @let adrTrend = trend(k, 'adr');
+    <app-stat-tile
+      icon="tag"
+      [value]="s.adr === null ? '—' : formatSar(s.adr)"
+      [label]="'operator.dashboard.kpi.adr' | translate"
+      [trend]="adrTrend?.text"
+      [trendDown]="!!adrTrend?.down"
+    />
+    @let revparTrend = trend(k, 'revpar');
+    <app-stat-tile
+      icon="trending-up"
+      tone="black"
+      [value]="s.revpar === null ? '—' : formatSar(s.revpar)"
+      [label]="'operator.dashboard.kpi.revpar' | translate"
+      [trend]="revparTrend?.text"
+      [trendDown]="!!revparTrend?.down"
+      [sub]="'operator.dashboard.kpi.revparSub' | translate"
+    />
+    @let bookingsTrend = trend(k, 'bookings');
+    <app-stat-tile
+      icon="calendar-check"
+      [value]="s.bookings | num"
+      [label]="'operator.dashboard.kpi.bookings' | translate"
+      [trend]="bookingsTrend?.text"
+      [trendDown]="!!bookingsTrend?.down"
+      [sub]="'operator.dashboard.kpi.vsPrevious' | translate"
+    />
+    <app-stat-tile
+      icon="calendar-x"
+      tone="red"
+      [value]="s.cancelledBookings | num"
+      [label]="'operator.dashboard.kpi.cancellations' | translate"
+      [sub]="'operator.dashboard.kpi.cancelRate' | translate: { rate: rate(s.cancellationRate) }"
+    />
+    <app-stat-tile
+      icon="star"
+      tone="gold"
+      [value]="s.averageRating === null ? '—' : (s.averageRating | num: 2)"
+      [label]="'operator.dashboard.kpi.rating' | translate"
+      [sub]="'operator.dashboard.kpi.ratingSub' | translate: { count: s.reviews }"
+    />
+    <app-stat-tile
+      icon="users"
+      [value]="s.activeGuests | num"
+      [label]="'operator.dashboard.kpi.guests' | translate"
+      [sub]="'operator.dashboard.kpi.repeatGuests' | translate: { rate: rate(s.repeatGuestRate) }"
+    />
+  </div>
+
+  <div class="grid g-2-1 mt-24 gap-24">
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'operator.dashboard.revenue' | translate }}</h3>
+        <div class="legend">
+          <span><i class="lg-navy"></i>{{ 'operator.dashboard.grossRevenue' | translate }}</span>
+        </div>
+      </div>
+      @if (chart(); as c) {
+        @if (c.values.length) {
+          <app-line-chart
+            [values]="c.values"
+            [labels]="c.labels"
+            [formatY]="formatCompact"
+            [formatTip]="formatSar"
+            [label]="'operator.dashboard.revenueBy.' + c.granularity | translate"
+          />
+        } @else {
+          <app-empty-state icon="trending-up" [title]="'operator.dashboard.noRevenue' | translate" />
+        }
+      }
+    </div>
+
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'operator.dashboard.operations' | translate }}</h3>
+        <a class="link small" routerLink="/operator/ops">{{ 'operator.dashboard.openOps' | translate }}</a>
+      </div>
+      <app-kv [label]="'operator.dashboard.ops.tasksDue' | translate">{{ ops.tasksDue | num }}</app-kv>
+      <app-kv [label]="'operator.dashboard.ops.tasksDone' | translate">{{ ops.tasksDone | num }}</app-kv>
+      <app-kv [label]="'operator.dashboard.ops.tasksOverdue' | translate">
+        <span [class.red]="ops.tasksOverdue > 0">{{ ops.tasksOverdue | num }}</span>
+      </app-kv>
+      <app-kv [label]="'operator.dashboard.ops.onTime' | translate">{{ rate(ops.onTimeRate) }}</app-kv>
+      <app-kv [label]="'operator.dashboard.ops.completedStays' | translate">{{ ops.completedStays | num }}</app-kv>
+      <app-kv [label]="'operator.dashboard.ops.incidents' | translate">
+        {{ ops.incidents | num }}
+        @if (ops.incidentsPer100Stays !== null) {
+          <span class="xs muted">({{ 'operator.dashboard.ops.per100' | translate: { value: (ops.incidentsPer100Stays | num) } }})</span>
+        }
+      </app-kv>
+      <app-kv [label]="'operator.dashboard.ops.damageCases' | translate">
+        {{ ops.damageCases | num }}
+        @if (ops.damageCasesPer100Stays !== null) {
+          <span class="xs muted">({{ 'operator.dashboard.ops.per100' | translate: { value: (ops.damageCasesPer100Stays | num) } }})</span>
+        }
+      </app-kv>
+    </div>
+  </div>
+}
+
+<div class="grid g-2-1 mt-24 gap-24">
+  <div class="card card-p">
+    <div class="card-h">
+      <h3>{{ 'operator.dashboard.byProperty' | translate }}</h3>
+    </div>
+    @if (byProperty.error()) {
+      <app-load-error [error]="byProperty.error()" (retry)="byProperty.reload()" />
+    } @else if (!byProperty.hasValue()) {
+      <app-loading />
+    } @else if (byProperty.value().items.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'operator.dashboard.cols.property' | translate }}</th>
+              <th>{{ 'operator.dashboard.cols.bookings' | translate }}</th>
+              <th>{{ 'operator.dashboard.cols.occupancy' | translate }}</th>
+              <th>{{ 'operator.dashboard.cols.revenue' | translate }}</th>
+              <th>{{ 'operator.dashboard.cols.adr' | translate }}</th>
+              <th>{{ 'operator.dashboard.cols.rating' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of byProperty.value().items; track row.property.id) {
+              <tr>
+                <td>
+                  <a class="b" [routerLink]="['/operator/property', row.property.id]">{{ row.property | loc }}</a>
+                  <div class="xs muted">
+                    {{ row.property.city?.nameAr ?? '—' }}
+                    @if (row.property.operatingModel; as model) {
+                      • {{ 'domain.api.operatingModel.' + model | translate }}
+                    }
+                  </div>
+                </td>
+                <td>{{ row.bookings | num }}</td>
+                <td>
+                  <div class="row">
+                    <div class="bar thin occ-bar"><div [style.width.%]="row.occupancyRate ?? 0"></div></div>
+                    <span class="xs b">{{ rate(row.occupancyRate) }}</span>
+                  </div>
+                </td>
+                <td class="b nowrap">{{ row.revenue | sar }}</td>
+                <td class="nowrap">{{ row.adr === null ? '—' : (row.adr | sar) }}</td>
+                <td>{{ row.averageRating === null ? '—' : (row.averageRating | num: 2) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="building-2" [title]="'operator.dashboard.noProperties' | translate" />
+    }
+  </div>
+
+  <div class="card card-p">
+    <div class="card-h">
+      <h3>{{ 'operator.dashboard.alertsTitle' | translate }}</h3>
+      <span class="pill pill-red">{{ alerts().length }}</span>
+    </div>
+    <div class="stack-sm">
+      @for (a of alerts(); track $index) {
+        <div class="li">
+          <span class="li-ic" [class]="a.tone"><app-icon [name]="a.icon" size="sm" /></span>
+          <div class="grow">
+            <div class="b small">{{ a.title | translate: a.titleParams }}</div>
+            <div class="xs muted">{{ a.sub | translate: a.subParams }}</div>
+          </div>
+          <a class="btn btn-ghost btn-xs" [routerLink]="a.link">{{ a.action | translate }}</a>
+        </div>
+      } @empty {
+        <app-empty-state icon="check-check" [title]="'operator.dashboard.noAlerts' | translate" />
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,133 @@
+{
+  "domain": {
+    "integrations": {
+      "shomoos": {
+        "name": "SHOMOOS",
+        "desc": "Automatic reporting of lodger data to the security authorities"
+      },
+      "nafath": {
+        "name": "NAFATH",
+        "desc": "Guest and owner identity verification via the national SSO"
+      },
+      "ewaa": {
+        "name": "EWAA",
+        "desc": "Sync of unit licences and occupancy data with the Ministry of Tourism platform"
+      },
+      "locks": {
+        "name": "Smart-lock provider",
+        "desc": "TTLock / Igloohome / Nuki — code issuance and access log"
+      },
+      "payments": {
+        "name": "Payment gateway",
+        "desc": "mada, Apple Pay, credit cards, refunds"
+      },
+      "sms": {
+        "name": "SMS & WhatsApp",
+        "desc": "OTP codes, booking notifications, access codes"
+      }
+    },
+    "api": {
+      "role": {
+        "GUEST": "Guest",
+        "OWNER": "Owner",
+        "OPERATOR": "Operator",
+        "SUPERVISOR": "Supervisor",
+        "PHOTOGRAPHER": "Photographer",
+        "ADMIN": "Admin"
+      },
+      "operatingModel": {
+        "SUPERVISED": "Supervised",
+        "SELF_SERVICE": "Self-service"
+      },
+      "taskType": {
+        "READINESS": "Readiness",
+        "INSPECTION": "Inspection",
+        "CLEANING": "Cleaning",
+        "MAINTENANCE": "Maintenance",
+        "PHOTO_SHOOT": "Photo shoot"
+      },
+      "incidentCategory": {
+        "MAINTENANCE": "Maintenance",
+        "CLEANLINESS": "Cleanliness",
+        "LOCK": "Lock",
+        "INTERNET": "Internet",
+        "NOISE": "Noise",
+        "SAFETY": "Safety",
+        "DAMAGE": "Damage",
+        "OTHER": "Other"
+      },
+      "documentType": {
+        "TITLE_DEED": "Title deed",
+        "LEASE": "Lease",
+        "TOURISM_LICENSE": "Tourism licence",
+        "OPERATOR_AUTHORIZATION": "Operator authorisation",
+        "OTHER": "Other"
+      },
+      "blockReason": {
+        "MAINTENANCE": "Maintenance",
+        "OWNER_USE": "Owner use",
+        "OTHER": "Other"
+      },
+      "stayRequestType": {
+        "EARLY_CHECK_IN": "Early check-in",
+        "LATE_CHECK_OUT": "Late check-out"
+      },
+      "paymentMethod": {
+        "GATEWAY": "Card / mada / Apple Pay",
+        "WALLET": "Wallet"
+      },
+      "walletTx": {
+        "TOPUP": "Top-up",
+        "BOOKING_PAYMENT": "Booking payment",
+        "REFUND": "Refund",
+        "CASHBACK": "Cashback",
+        "CASHBACK_REVERSAL": "Cashback reversal",
+        "REWARD_REDEMPTION": "Points redemption",
+        "REFERRAL_BONUS": "Referral bonus",
+        "ADJUSTMENT": "Adjustment",
+        "STAY_REQUEST_FEE": "Early check-in / late check-out fee",
+        "DAMAGE_CHARGE": "Damage charge"
+      },
+      "pointsTx": {
+        "WELCOME": "Welcome",
+        "BOOKING": "Booking",
+        "BOOKING_REVERSAL": "Booking reversal",
+        "REVIEW": "Review",
+        "REDEMPTION": "Redemption",
+        "ADJUSTMENT": "Adjustment"
+      },
+      "earningType": {
+        "BOOKING": "Booking",
+        "STAY_REQUEST": "Stay request",
+        "DAMAGE": "Damage",
+        "ADJUSTMENT": "Adjustment"
+      },
+      "lockProvider": {
+        "TTLOCK": "TTLock",
+        "IGLOOHOME": "igloohome",
+        "NUKI": "Nuki",
+        "MANUAL": "Manual (fixed code)",
+        "SIMULATOR": "Simulator"
+      },
+      "pricingEventType": {
+        "HOLIDAY": "Holiday",
+        "EVENT": "Event",
+        "SEASON": "Season",
+        "SCHOOL_HOLIDAY": "School holiday",
+        "OTHER": "Other"
+      },
+      "cancelledBy": {
+        "GUEST": "Guest",
+        "HOST": "Host",
+        "ADMIN": "Admin",
+        "SYSTEM": "System"
+      },
+      "identityType": {
+        "NATIONAL_ID": "National ID",
+        "IQAMA": "Iqama",
+        "PASSPORT": "Passport",
+        "GCC_ID": "GCC ID"
+      }
+    }
+  }
+}

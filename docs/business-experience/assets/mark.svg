@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="منصة الإقامة الذكية">
+  <rect width="64" height="64" rx="10" fill="#0B0C0E"/>
+  <path d="M13 30.5 32 15l19 15.5V50H13z" fill="none" stroke="#C8A46B" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="32" cy="33.5" r="4.6" fill="#E3C58E"/>
+  <path d="M30.1 36.4 28.6 44h6.8l-1.5-7.6z" fill="#E3C58E"/>
+  <path d="M8 30.5h4M52 30.5h4" stroke="#86B4C4" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+</svg>

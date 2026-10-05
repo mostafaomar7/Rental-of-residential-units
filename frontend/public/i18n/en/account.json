@@ -1,0 +1,599 @@
+{
+  "account": {
+    "titles": {
+      "booking": "Complete booking",
+      "account": "My account",
+      "stay": "Current stay",
+      "review": "Review your stay",
+      "invoice": "Invoice"
+    },
+    "loginWall": {
+      "booking": "Sign in to complete your booking",
+      "sub": "This page is available after signing in with your mobile number",
+      "button": "Sign in"
+    },
+    "booking": {
+      "backToUnit": "Back to the unit",
+      "title": "Book {{title}}",
+      "stepOf": "Step {{step}} of {{total}}",
+      "stepsLabel": "Booking steps",
+      "steps": {
+        "dates": "Dates & guests",
+        "guest": "Guest details & verification",
+        "policies": "Policies",
+        "payment": "Payment",
+        "confirmation": "Confirmation"
+      },
+      "continue": "Continue",
+      "continueToPayment": "Continue to payment",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "guests": "Guests",
+      "total": "Total",
+      "totalInclVat": "Total incl. VAT",
+      "rewardsNote": "<b>{{cashback}}</b> cashback back to your wallet + <b>{{points}}</b> loyalty points",
+      "dates": {
+        "title": "Choose your dates and guests",
+        "checkInLabel": "Check-in ({{time}})",
+        "checkOutLabel": "Check-out ({{time}})",
+        "guestsLabel": "Number of guests",
+        "maxGuests": "Maximum {{max}}",
+        "available": "Available",
+        "availableRange": "{{nights}} from {{from}} to {{to}}",
+        "unavailable": "Not available",
+        "priceBreakdown": "Price breakdown",
+        "checkoutAdjusted": "Check-out moved to the day after check-in",
+        "unitLabel": "Unit"
+      },
+      "guest": {
+        "title": "Main guest details",
+        "fullName": "Full name",
+        "phone": "Mobile number",
+        "verifyTitle": "Identity verification",
+        "verifyHint": "Identity verification is required before the digital key is issued, and is used for mandatory guest reporting.",
+        "verified": "Verified via Nafath",
+        "verifyButton": "Verify with Nafath",
+        "requests": "Special requests (optional)",
+        "requestsHelp": "Arrival time, a baby cot… the host will do their best",
+        "nafathRequiredHint": "Required to complete this booking",
+        "nafathLaterHint": "You can also verify later, before check-in"
+      },
+      "policies": {
+        "title": "Review and accept the policies",
+        "intro": "Please read the property's policies — accepting them creates your booking and holds the dates while you pay.",
+        "ackPolicies": "I have read and accept the house rules, damage policy and cancellation policy"
+      },
+      "payment": {
+        "title": "Payment method",
+        "wallet": "Rawaaf wallet — balance {{balance}}",
+        "walletSub": "Paid instantly from your balance",
+        "lowBalance": "Insufficient balance",
+        "lowBalanceHint": "You need {{amount}} more. Pay by card instead.",
+        "processing": "Processing payment…",
+        "confirmAndPay": "Confirm and pay {{amount}}",
+        "gatewaySub": "mada, Visa, Mastercard or Apple Pay — on the secure payment page",
+        "payByCard": "Pay by card",
+        "holdNotice": "Booking {{number}} is held for you — complete payment within {{time}}",
+        "holdExpired": "The hold on these dates has expired",
+        "startAgain": "Start again",
+        "changeBooking": "Change booking"
+      },
+      "done": {
+        "title": "Booking confirmed!",
+        "number": "Booking number",
+        "digitalKey": "Digital key",
+        "instructionsTitle": "Entry instructions",
+        "instructions": {
+          "dontShare": "Don't share the code with anyone — every entry is logged",
+          "locationBefore": "The exact address is in your booking details",
+          "help": "For help, contact us on WhatsApp, 24/7",
+          "keyOnStayPage": "Your door code and remote unlock appear on the stay page once the key is active"
+        },
+        "addToCalendar": "Add to calendar",
+        "calendarDownloaded": "Calendar file (.ics) downloaded",
+        "myBookings": "View my bookings",
+        "invoice": "Invoice",
+        "stayPage": "Stay page",
+        "toast": "Booking {{id}} confirmed"
+      },
+      "errors": {
+        "unavailable": "The unit isn't available for these dates",
+        "nafathRequired": "Nafath identity verification is required to continue",
+        "ackRequired": "You must accept the policies to continue",
+        "priceChanged": "The price has changed — please review the new total and continue again",
+        "policyChanged": "The policies were updated — please read and accept them again"
+      },
+      "number": "Booking number",
+      "noUnits": "This property has no bookable units",
+      "promo": {
+        "label": "Promo code",
+        "placeholder": "e.g. WELCOME50",
+        "apply": "Apply",
+        "remove": "Remove",
+        "applied": "Code {{code}} applied",
+        "notApplicable": "This code can't be used for this stay"
+      },
+      "freeCleaning": {
+        "label": "Use a free cleaning",
+        "available": "You have {{count}} free cleaning(s) from loyalty"
+      }
+    },
+    "nafath": {
+      "title": "Verify with Nafath",
+      "subtitle": "National Single Sign-On",
+      "logo": "Nafath",
+      "instructions": "Open the <b>Nafath</b> app on your phone and choose the following number to confirm your identity:",
+      "waiting": "Waiting for approval in the app…",
+      "secondsShort": "s",
+      "retry": "Try again",
+      "verifiedTitle": "Identity verified",
+      "verifiedSub": "Your identity is now linked to your account",
+      "done": "Verified via Nafath",
+      "idLabel": "National ID / Iqama number",
+      "idHelp": "10 digits, starting with 1 or 2",
+      "idInvalid": "Enter a valid 10-digit ID number",
+      "send": "Send request to Nafath",
+      "failedTitle": {
+        "REJECTED": "The request was rejected in Nafath",
+        "EXPIRED": "Verification timed out",
+        "FAILED": "Nafath verification failed — please try again"
+      },
+      "failedSub": "Please try again"
+    },
+    "key": {
+      "reveal": "Show code",
+      "hide": "Hide code",
+      "validRange": "Active from {{from}} at {{fromTime}} until {{to}} at {{toTime}}"
+    },
+    "calendar": {
+      "summary": "Rawaaf stay — {{title}}",
+      "description": "Rawaaf booking {{id}}"
+    },
+    "nav": {
+      "overview": "Overview",
+      "bookings": "My bookings",
+      "favorites": "Favorites",
+      "wallet": "Digital wallet",
+      "points": "Points & rewards",
+      "reviews": "My reviews",
+      "settings": "Settings",
+      "logout": "Sign out",
+      "identity": "Identity",
+      "claims": "Damage claims"
+    },
+    "sidebar": {
+      "nafathVerified": "Nafath verified",
+      "loyaltyReward": "Loyalty reward",
+      "freeCleaning": {
+        "one": "One more booking and you get a free cleaning!",
+        "other": "{{count}} more bookings and you get a free cleaning!"
+      },
+      "freeCleaningReady": {
+        "one": "You have a free cleaning to use!",
+        "other": "You have {{count}} free cleanings to use!"
+      }
+    },
+    "overview": {
+      "currentStayUntil": "Your current stay • until {{date}} {{time}}",
+      "openDoorMore": "Open the door & more",
+      "walletBalance": "Wallet balance",
+      "cashbackSub": "+ {{rate}}% cashback",
+      "myPoints": "My points",
+      "publishedReviews": "published reviews",
+      "recentBookings": "Recent bookings",
+      "viewAll": "View all",
+      "tierLevel": "{{tier}} tier",
+      "topTier": "Highest tier",
+      "pointsToUpgrade": "{{count}} points to {{tier}}",
+      "progress": "Progress",
+      "earnRule": "Earn {{points}} points per SAR 100 booked • {{rate}}% cashback added to your wallet",
+      "rateLastStay": "Rate your last stay",
+      "rateLastStaySub": "Tell us about {{title}} and earn {{points}} bonus points",
+      "rateNow": "Rate now"
+    },
+    "bookings": {
+      "digitalKey": "Digital key:",
+      "validUntil": "Valid until {{date}} {{time}}",
+      "activatesOn": "Activates {{date}} {{time}}",
+      "details": "Details",
+      "invoice": "Invoice",
+      "bookAgain": "Book again",
+      "currentStay": "My current stay",
+      "arrivalDetails": "Arrival details",
+      "cancel": "Cancel",
+      "review": "Review stay +{{points}} pts",
+      "emptyTitle": "No bookings yet",
+      "emptySub": "Start by exploring available units",
+      "explore": "Explore units",
+      "groups": {
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "cancelled": "Cancelled"
+      },
+      "payNow": "Pay now",
+      "holdUntil": "Awaiting payment — dates held until {{time}}"
+    },
+    "details": {
+      "title": "Booking {{id}}",
+      "stay": "Stay",
+      "status": "Status",
+      "nights": "Nights",
+      "city": "City",
+      "payment": "Payment",
+      "createdAt": "Booked on",
+      "policies": "Policy acknowledgement",
+      "policyAckAt": "Accepted at",
+      "policyVersion": "Policy version",
+      "unit": "Unit",
+      "address": "Address",
+      "cancellation": "Cancellation",
+      "cancelledAt": "Cancelled at",
+      "cancelledBy": "Cancelled by",
+      "cancellationPolicy": "Cancellation policy",
+      "specialRequests": "Special requests"
+    },
+    "cancel": {
+      "title": "Cancel booking {{id}}?",
+      "paid": "Amount paid",
+      "refund": "Refund",
+      "reversal": "The cashback ({{cashback}}) and {{points}} points earned on this booking will be reversed; {{deducted}} is deducted from the refund.",
+      "confirm": "Confirm cancellation",
+      "done": "Booking cancelled — {{amount}} refunded",
+      "summary": "You're cancelling {{hours}} hours before check-in: you get a <b>{{percent}}% refund</b> under the booking's cancellation policy.",
+      "unpaid": "This booking hasn't been paid — cancelling releases the dates.",
+      "reason": "Reason (optional)"
+    },
+    "favorites": {
+      "emptyTitle": "No favorites yet",
+      "emptySub": "Tap the heart on any unit to save it here",
+      "browse": "Browse units"
+    },
+    "wallet": {
+      "balanceTitle": "Rawaaf wallet balance",
+      "currency": "SAR",
+      "balanceSub": "Cashback on every booking • never expires",
+      "otherAmount": "Other amount",
+      "history": "Transaction history",
+      "txCount": "{{count}} transactions",
+      "emptyTitle": "No transactions yet",
+      "topupTitle": "Top up wallet",
+      "topupConfirm": "You'll be taken to the secure payment page to pay {{amount}}.",
+      "topupNow": "Top up now",
+      "customTitle": "Top up a custom amount",
+      "amountLabel": "Amount (SAR)",
+      "amountPlaceholder": "e.g. 250",
+      "amountHelp": "Minimum {{min}}, maximum {{max}}",
+      "topupButton": "Top up",
+      "invalidAmount": "Enter an amount between {{min}} and {{max}}",
+      "gatewayNote": "Top-ups are paid on the secure payment page (mada, Visa, Mastercard, Apple Pay)"
+    },
+    "points": {
+      "pointsCount": "{{count}} points",
+      "worth": "Worth {{amount}}",
+      "redeem": "Redeem {{points}} points = {{amount}}",
+      "rules": "Earn {{earn}} points per SAR 100 booked. Every {{points}} points = {{amount}} added to your wallet instantly. Reviewing a stay = {{review}} points.",
+      "redeemed": "{{points}} points redeemed — {{amount}} added to your wallet",
+      "referralTitle": "Your referral code",
+      "copyCode": "Copy code",
+      "codeCopied": "Referral code copied",
+      "referralHint": "Invite a friend: they get {{amount}} and you get {{amount}} on their first booking.",
+      "shareWhatsapp": "Share on WhatsApp",
+      "shareText": "Book your stay with Rawaaf and get {{amount}} with code {{code}}",
+      "tiersTitle": "Tiers",
+      "currentTier": "Your current tier:",
+      "yourTier": "Your tier",
+      "reached": "Reached",
+      "referralStats": "Invited {{invited}} • rewarded {{rewarded}}",
+      "fromPoints": "From {{points}} points",
+      "tierCashback": "{{rate}}% cashback on every booking",
+      "history": "Points history",
+      "emptyHistory": "No points activity yet"
+    },
+    "reviews": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "ownerReply": "Owner's reply:",
+      "emptyTitle": "You haven't written any reviews yet",
+      "emptySub": "You can review a unit after completing a stay",
+      "editTitle": "Edit review",
+      "rating": "Rating",
+      "comment": "Comment",
+      "saveEdit": "Save changes",
+      "updated": "Review updated",
+      "deleteTitle": "Delete review?",
+      "deleteMessage": "Deleting a review can't be undone.",
+      "deleted": "Review deleted",
+      "photos": "Photos",
+      "pendingReward": "+{{points}} points"
+    },
+    "settings": {
+      "profile": "Profile",
+      "name": "Name",
+      "phone": "Mobile",
+      "email": "Email",
+      "language": "Language",
+      "languages": {
+        "ar": "العربية",
+        "en": "English"
+      },
+      "save": "Save changes",
+      "saved": "Profile saved",
+      "nafathVerified": "Identity verified via Nafath",
+      "notifications": "Notifications",
+      "notif": {
+        "whatsapp": {
+          "title": "WhatsApp",
+          "sub": "Receive codes and updates on WhatsApp"
+        },
+        "inApp": {
+          "title": "In-app notifications",
+          "sub": "Always on — bookings, keys and requests"
+        },
+        "sms": {
+          "title": "SMS",
+          "sub": "Booking confirmations and key reminders by text"
+        },
+        "email": {
+          "title": "Email",
+          "sub": "Invoices and booking updates by email",
+          "needsEmail": "Add an email address to your profile first"
+        }
+      },
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "dangerZone": "Danger zone",
+      "dangerHint": "Deleting your account removes your personal data and signs you out. This cannot be undone.",
+      "deleteAccount": "Delete account",
+      "deleteTitle": "Permanently delete your account?",
+      "deleteMessage": "Type <b>{{word}}</b> to confirm. You will be signed out.",
+      "deleteWord": "DELETE",
+      "deleteWordLabel": "Confirmation word",
+      "deleteWordMismatch": "Type “{{word}}” to confirm",
+      "deleted": "Account deleted",
+      "loggedOut": "Signed out",
+      "changeMobile": "Change"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "phoneInvalid": "Invalid mobile number",
+      "emailInvalid": "Invalid email address"
+    },
+    "photos": {
+      "add": "Add photo",
+      "attached": "Attached photo",
+      "remove": "Remove photo",
+      "limit": "Up to {{max}} photos"
+    },
+    "stay": {
+      "currentStay": "Your current stay",
+      "stayDetails": "Stay details",
+      "dateRange": "{{from}} → {{to}}",
+      "nightsLeft": {
+        "one": "1 night left",
+        "other": "{{count}} nights left"
+      },
+      "wifi": "Wi-Fi",
+      "wifiPassword": "Password:",
+      "copyWifi": "Copy password",
+      "wifiCopied": "Wi-Fi password copied",
+      "checkoutTime": "Check-out time",
+      "viewGuide": "View guide",
+      "support": "24/7 support",
+      "whatsapp": "WhatsApp",
+      "requests": "Stay requests",
+      "earlyHint": "From {{time}} • {{fee}}",
+      "lateHint": "Until {{time}} • {{fee}}",
+      "reportIssue": "Report an issue",
+      "reportIssueHint": "Maintenance, cleaning, lock…",
+      "earlyOnlyBefore": "Early check-in can only be requested before arrival day",
+      "yourKey": "Your digital key",
+      "unlock": {
+        "label": {
+          "idle": "Open door",
+          "busy": "Opening…",
+          "open": "Unlocked"
+        },
+        "status": {
+          "idle": "Get close to the door, then tap to open online",
+          "busy": "Connecting to the smart lock…",
+          "open": "Door open — it will lock automatically in 8 seconds",
+          "relocked": "Locked automatically"
+        },
+        "toast": "Door unlocked — welcome",
+        "failed": "The door didn't open — try again or use the code"
+      },
+      "orEnterPin": "Or enter the code on the lock keypad",
+      "validUntil": "Valid until {{date}} • don't share the code",
+      "activatesInDays": {
+        "zero": "Activates today",
+        "one": "Activates in 1 day",
+        "other": "Activates in {{count}} days"
+      },
+      "activatesAutomatically": "The key activates automatically on {{date}} at {{time}}",
+      "stayEnded": "This stay has ended ({{status}})",
+      "reviewStay": "Review your stay +{{points}} pts",
+      "selfCheckout": "Self check-out",
+      "selfCheckoutHint": "When leaving, check out here — the key is disabled and the unit is inspected.",
+      "checkoutButton": "Check out",
+      "guide": {
+        "title": "House guide",
+        "empty": "The host hasn't added a house guide yet."
+      },
+      "request": {
+        "hint": "Subject to availability. The fee is refunded if the request is declined or cancelled.",
+        "send": "Send request",
+        "sent": "Request sent — we'll let you know",
+        "title": {
+          "EARLY_CHECK_IN": "Request early check-in",
+          "LATE_CHECK_OUT": "Request late check-out"
+        },
+        "timeLabel": {
+          "EARLY_CHECK_IN": "Requested check-in time",
+          "LATE_CHECK_OUT": "Requested check-out time"
+        },
+        "fee": "Fee: {{fee}}, taken from your wallet",
+        "noSlots": "No time slots are available for this request.",
+        "cancel": "Cancel",
+        "cancelled": "Request cancelled — fee refunded"
+      },
+      "issue": {
+        "title": "Report an issue",
+        "subtitle": "Your report goes straight to the operations team",
+        "category": "Category",
+        "severity": "Urgency",
+        "description": "Describe the issue",
+        "placeholder": "e.g. The bedroom A/C isn't cooling",
+        "submit": "Send report",
+        "descriptionRequired": "Please add a short description of the issue",
+        "receivedTitle": "Report received",
+        "receivedBody": "The operations team has been notified and will follow up with you.",
+        "ok": "OK"
+      },
+      "checkout": {
+        "title": "Check out",
+        "subtitle": "A quick checklist before you leave",
+        "items": {
+          "ac": "I turned off the A/C and lights",
+          "windows": "I closed the windows and outer doors",
+          "waste": "I put the rubbish in the bins",
+          "belongings": "I made sure I haven't left anything behind",
+          "door": "I closed the unit door behind me"
+        },
+        "notice": "The digital key is disabled immediately and the unit is inspected after you leave.",
+        "confirm": "Confirm check-out",
+        "incomplete": "Please complete the checklist first",
+        "done": "Thanks for staying! You're checked out and the key is disabled"
+      },
+      "wifiLater": "Shown once you check in",
+      "incidents": "Reported issues",
+      "incidentsHint": "Followed up by the operations team",
+      "incidentsEmpty": "No issues reported",
+      "offlineKey": "Offline code — works even if the lock is not connected",
+      "keyStatus": {
+        "identity": "Verify your identity to activate the key",
+        "visitorIdentity": "Visitor? Add your passport or GCC ID",
+        "compliancePending": "We're registering your stay with the authorities — the key activates shortly",
+        "complianceFailed": "We couldn't register your stay — please contact support",
+        "preparing": "Your key is being prepared",
+        "unavailable": "The digital key is not available"
+      },
+      "notStarted": {
+        "title": "Your stay starts {{date}}",
+        "hint": "The stay screen and digital key open on arrival day.",
+        "days": {
+          "one": "1 day to go",
+          "other": "{{count}} days to go"
+        }
+      },
+      "notActive": {
+        "title": "This stay isn't active",
+        "hint": "The stay has ended or the booking was cancelled — find the details and invoice in your bookings."
+      }
+    },
+    "review": {
+      "rateYourStay": "Rate your stay",
+      "pointsNotice": "Publish your review and get <b>{{points}} points</b> added to your balance instantly",
+      "alreadyReviewed": "Thanks! You've already reviewed this stay.",
+      "overall": "Overall rating",
+      "commentLabel": "How was your stay?",
+      "commentPlaceholder": "Share your experience: cleanliness, smart entry, service…",
+      "addPhotos": "Add photos (optional)",
+      "publish": "Publish review +{{points}} pts",
+      "later": "Later",
+      "published": "Thanks! Your review is live and {{points}} points were added",
+      "starsLabel": "{{count}} stars",
+      "notYet": "You can review this stay after check-out.",
+      "photosFailed": "Your review is published, but the photos couldn't be uploaded"
+    },
+    "invoice": {
+      "print": "Print / save PDF",
+      "vatNumber": "VAT number:",
+      "title": "Simplified Tax Invoice",
+      "titleAlt": "فاتورة ضريبية مبسطة",
+      "number": "Invoice no.:",
+      "date": "Date:",
+      "customer": "Customer",
+      "booking": "Booking",
+      "item": "Item",
+      "qty": "Qty",
+      "unitPrice": "Unit price",
+      "lineTotal": "Amount",
+      "qr": "ZATCA QR code (TLV)",
+      "net": "Subtotal before VAT",
+      "vat": "VAT ({{rate}}%)",
+      "crNumber": "CR number:",
+      "downloadPdf": "Download PDF",
+      "copyQr": "Copy QR payload"
+    },
+    "identity": {
+      "onFile": "Identity on file",
+      "verified": "Verified",
+      "unverified": "Not verified",
+      "type": "ID type",
+      "number": "ID number",
+      "name": "Name on ID",
+      "nameEn": "Full name in English (optional)",
+      "nationality": "Nationality",
+      "nationalityHelp": "3-letter country code, e.g. EGY",
+      "dateOfBirth": "Date of birth",
+      "source": "Source",
+      "sources": {
+        "NAFATH": "Nafath",
+        "MANUAL": "Entered manually"
+      },
+      "verifiedAt": "Verified at",
+      "nafathTitle": "Citizens and residents: verify with Nafath",
+      "nafathHint": "You'll confirm a number in the Nafath app",
+      "manualTitle": "Visitors: passport or GCC ID",
+      "manualHint": "Needed for mandatory guest reporting before the digital key is issued.",
+      "save": "Save identity",
+      "saved": "Identity saved",
+      "incomplete": "Fill in the ID number, nationality and date of birth",
+      "invalidField": "Check this field"
+    },
+    "claims": {
+      "booking": "Booking {{number}}",
+      "evidence": "Evidence photo",
+      "claimed": "Amount claimed",
+      "approved": "Amount approved",
+      "deadline": "Objection deadline",
+      "settled": "Settled on",
+      "yourObjection": "Your objection:",
+      "decision": "Decision:",
+      "accept": "Accept",
+      "object": "Object",
+      "acceptTitle": "Accept this claim?",
+      "acceptMessage": "{{amount}} will be settled for this damage claim.",
+      "accepted": "Claim accepted",
+      "objectTitle": "Object to claim {{number}}",
+      "objectLabel": "Why do you object?",
+      "objectHelp": "At least {{min}} characters — Rawaaf reviews the case impartially",
+      "sendObjection": "Send objection",
+      "objected": "Objection sent",
+      "objectionTooShort": "Write at least {{min}} characters",
+      "emptyTitle": "No damage claims",
+      "emptySub": "Claims about your stays would appear here"
+    },
+    "password": {
+      "setTitle": "Set a password",
+      "changeTitle": "Change password",
+      "hint": "Optional — lets you sign in with your mobile and a password as well as a code.",
+      "current": "Current password",
+      "new": "New password",
+      "tooShort": "At least {{min}} characters",
+      "currentRequired": "Enter your current password",
+      "save": "Save password",
+      "saved": "Password saved"
+    },
+    "mobile": {
+      "title": "Change mobile number",
+      "newNumber": "New mobile number",
+      "help": "We'll text a verification code to the new number",
+      "sendCode": "Send code",
+      "codeSent": "Enter the code sent to {{mobile}}",
+      "code": "Verification code",
+      "confirm": "Confirm",
+      "changed": "Mobile number updated"
+    }
+  }
+}

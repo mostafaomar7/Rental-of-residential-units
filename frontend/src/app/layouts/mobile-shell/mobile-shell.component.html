@@ -1,0 +1,48 @@
+<div class="phone-stage">
+  <div class="phone-side">
+    <div class="row between">
+      <app-logo [badge]="badge()" />
+      <app-lang-switch />
+    </div>
+    <h1 class="h2 mt-24">{{ appName() }}</h1>
+    <p class="muted mt-8 lh">{{ appDescription() }}</p>
+    <div class="notice gold mt-16 small">
+      <app-icon name="smartphone" />
+      <div>{{ 'common.mobileFirstNotice' | translate }}</div>
+    </div>
+    <div class="mt-16"><ng-content select="[side-links]" /></div>
+  </div>
+
+  <div class="phone" role="application" [attr.aria-label]="appName()">
+    <div class="app-h">
+      <div class="row between">
+        @if (back(); as backLink) {
+          <a class="btn btn-glass btn-icon btn-sm" [routerLink]="backLink" [attr.aria-label]="'common.back' | translate">
+            <app-icon name="arrow-right" [mirror]="true" />
+          </a>
+        } @else {
+          <span class="logo-mark app-mark">{{ 'app.mark' | translate }}</span>
+        }
+        <div class="grow title-block">
+          <div class="xs sub">{{ subtitle() }}</div>
+          <div class="bb truncate">{{ title() }}</div>
+        </div>
+        <ng-content select="[head-right]" />
+        @if (showAvatar()) {
+          <span class="avatar-xs">{{ userInitial() }}</span>
+        }
+      </div>
+      <ng-content select="[header-extra]" />
+    </div>
+
+    <div class="app-b"><ng-content /></div>
+
+    <nav class="app-tabs">
+      @for (tab of tabs(); track tab.link) {
+        <a [routerLink]="tab.link" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: !!tab.exact }">
+          <app-icon [name]="tab.icon" size="lg" />{{ tab.label | translate }}
+        </a>
+      }
+    </nav>
+  </div>
+</div>

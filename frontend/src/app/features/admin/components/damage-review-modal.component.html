@@ -1,0 +1,146 @@
+@let d = current();
+<app-modal size="lg" [title]="'admin.disputes.caseTitle' | translate: { number: d.number }" [subtitle]="(d.property | loc) + ' • ' + d.booking.number" (closed)="closed.emit()">
+  <div class="grid g2">
+    <div>
+      <div class="bb mb-8">{{ 'admin.disputes.evidence' | translate }}</div>
+      <div class="thumbs-row">
+        @for (photo of d.photos; track photo.id) {
+          <button type="button" class="zoom-btn" [attr.aria-label]="'admin.photos.preview' | translate" (click)="zoomed.set(photo.url)">
+            <img class="evidence" [authSrc]="photo.thumbUrl" alt="" />
+          </button>
+        } @empty {
+          <span class="small muted">{{ 'admin.disputes.noPhotos' | translate }}</span>
+        }
+      </div>
+      <p class="small lh mt-8" dir="auto">{{ d.description }}</p>
+
+      <div class="mt-16">
+        <app-kv [label]="'admin.disputes.cols.guest' | translate">{{ d.booking.guestName }}</app-kv>
+        <app-kv [label]="'admin.disputes.stay' | translate">{{ 'admin.common.range' | translate: { from: (d.booking.checkIn | appDate), to: (d.booking.checkOut | appDate) } }}</app-kv>
+        <app-kv [label]="'admin.disputes.claimed' | translate">{{ d.amountClaimed | sar }}</app-kv>
+        @if (d.amountApproved != null) {
+          <app-kv [label]="'admin.disputes.approvedAmount' | translate">{{ d.amountApproved | sar }}</app-kv>
+        }
+        @if (d.objectionDeadline) {
+          <app-kv [label]="'admin.disputes.objectionDeadline' | translate">{{ d.objectionDeadline | appDate: 'dateTime' }}</app-kv>
+        }
+        @if (d.settlement; as s) {
+          <app-kv [label]="'admin.disputes.settlement' | translate">
+            {{ 'admin.disputes.methods.' + s.method | translate }}
+            @if (s.ref) {
+              • <span class="ltr">{{ s.ref }}</span>
+            }
+          </app-kv>
+        }
+      </div>
+    </div>
+
+    <div>
+      <div class="bb mb-8">{{ 'admin.disputes.guestResponse' | translate: { name: d.booking.guestName } }}</div>
+      @if (d.objection) {
+        <div class="owner-reply response" dir="auto">{{ d.objection }}</div>
+      } @else {
+        <div class="soft small muted">{{ 'admin.disputes.noResponse' | translate }}</div>
+      }
+
+      @if (d.reviewNote) {
+        <div class="xs muted b mt-12">{{ 'admin.disputes.reviewNote' | translate }}</div>
+        <p class="small lh" dir="auto">{{ d.reviewNote }}</p>
+      }
+      @if (d.finalNote) {
+        <div class="xs muted b mt-12">{{ 'admin.disputes.finalNote' | translate }}</div>
+        <p class="small lh" dir="auto">{{ d.finalNote }}</p>
+      }
+
+      <div class="divider"></div>
+      @switch (d.status) {
+        @case ('OPENED') {
+          <div class="soft small">{{ 'admin.disputes.hints.opened' | translate }}</div>
+        }
+        @case ('GUEST_NOTIFIED') {
+          <div class="notice amber small">
+            <app-icon name="hourglass" />
+            <div>{{ 'admin.disputes.hints.guestNotified' | translate }}</div>
+          </div>
+        }
+        @case ('APPROVED') {
+          <app-field [label]="'admin.disputes.method' | translate" for="dr-method">
+            <select id="dr-method" class="select" [(ngModel)]="method">
+              <option value="WALLET">{{ 'admin.disputes.methods.WALLET' | translate }}</option>
+              <option value="EXTERNAL">{{ 'admin.disputes.methods.EXTERNAL' | translate }}</option>
+            </select>
+          </app-field>
+          <app-field [label]="'admin.disputes.reference' | translate" for="dr-ref" [help]="'admin.disputes.referenceHelp' | translate">
+            <input id="dr-ref" class="input ltr" [(ngModel)]="reference" />
+          </app-field>
+        }
+        @case ('SETTLED') {
+          <span class="small muted row">{{ 'admin.disputes.settledCase' | translate }} <app-status-pill domain="damage" [code]="d.status" /></span>
+        }
+        @case ('CLOSED') {
+          <span class="small muted row">{{ 'admin.disputes.closedCase' | translate }} <app-status-pill domain="damage" [code]="d.status" /></span>
+        }
+        @default {
+          @if (d.status === 'UNDER_REVIEW' || d.status === 'DISPUTED') {
+            <app-field [label]="'admin.disputes.amountLabel' | translate" for="dr-amount" [help]="'admin.disputes.claimedHelp' | translate: { amount: d.amountClaimed | sar }">
+              <input id="dr-amount" class="input" type="number" min="0" [(ngModel)]="amount" />
+            </app-field>
+          }
+          <app-field [label]="'admin.disputes.decisionNote' | translate" for="dr-note">
+            <textarea id="dr-note" class="textarea note" [(ngModel)]="note"></textarea>
+          </app-field>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="bb mb-8">{{ 'admin.disputes.history' | translate }}</div>
+  <div class="rows">
+    @for (e of events(); track $index) {
+      <div class="row-top gap-12 event">
+        <span class="xs muted nowrap">{{ e.at | appDate: 'dateTime' }}</span>
+        <div class="grow">
+          <div class="row wrap small">
+            @if (e.from) {
+              <app-status-pill domain="damage" [code]="e.from" />
+              <app-icon name="arrow-left" size="sm" [mirror]="true" />
+            }
+            <app-status-pill domain="damage" [code]="e.to" />
+          </div>
+          @if (e.note) {
+            <div class="small mt-4" dir="auto">{{ e.note }}</div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <ng-container modal-footer>
+    @switch (d.status) {
+      @case ('OPENED') {
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="startReview()">{{ 'admin.disputes.startReview' | translate }}</button>
+      }
+      @case ('UNDER_REVIEW') {
+        <button type="button" class="btn btn-success" [disabled]="busy()" (click)="approve()">{{ 'admin.disputes.approveAmount' | translate }}</button>
+        <button type="button" class="btn btn-danger" [disabled]="busy()" (click)="reject()">{{ 'admin.disputes.rejectCase' | translate }}</button>
+      }
+      @case ('DISPUTED') {
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="decide()">{{ 'admin.disputes.finalDecision' | translate }}</button>
+      }
+      @case ('APPROVED') {
+        <button type="button" class="btn btn-success" [disabled]="busy()" (click)="settle()">{{ 'admin.disputes.markSettled' | translate }}</button>
+      }
+      @case ('REJECTED') {
+        <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="close()">{{ 'admin.disputes.closeCase' | translate }}</button>
+      }
+    }
+    <button type="button" class="btn btn-ghost" (click)="closed.emit()">{{ 'common.close' | translate }}</button>
+  </ng-container>
+</app-modal>
+
+@if (zoomed(); as url) {
+  <app-modal size="xl" [title]="'admin.photos.preview' | translate" (closed)="zoomed.set(null)">
+    <img class="zoomed" [authSrc]="url" alt="" />
+  </app-modal>
+}

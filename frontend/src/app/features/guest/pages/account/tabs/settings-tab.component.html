@@ -1,0 +1,99 @@
+@let u = user();
+<h2 class="h2 mb-16">{{ 'account.nav.settings' | translate }}</h2>
+<div class="stack">
+  <div class="card card-p">
+    <h3 class="h3 mb-16">{{ 'account.settings.profile' | translate }}</h3>
+    <div class="grid g2">
+      <app-field [label]="'account.settings.name' | translate" for="st-name">
+        <input id="st-name" class="input" autocomplete="name" [value]="form().fullName" (input)="edit('fullName', $any($event.target).value)" />
+      </app-field>
+      <app-field [label]="'account.settings.email' | translate" for="st-email">
+        <input id="st-email" class="input ltr" type="email" autocomplete="email" [value]="form().email" (input)="edit('email', $any($event.target).value)" />
+      </app-field>
+      <app-field [label]="'account.settings.phone' | translate" for="st-phone">
+        <div class="row">
+          <input id="st-phone" class="input ltr" readonly [value]="u?.mobile ?? ''" />
+          <button type="button" class="btn btn-ghost" (click)="dialog.set('mobile')">{{ 'account.settings.changeMobile' | translate }}</button>
+        </div>
+      </app-field>
+      <app-field [label]="'account.settings.language' | translate" for="st-lang">
+        <select id="st-lang" class="select" (change)="setLanguage($any($event.target).value)">
+          @for (l of languages; track l) {
+            <option [value]="l" [selected]="l === lang.lang()">{{ 'account.settings.languages.' + l | translate }}</option>
+          }
+        </select>
+      </app-field>
+    </div>
+    <div class="row mt-16 wrap">
+      <button type="button" class="btn btn-primary" [disabled]="savingProfile()" (click)="saveProfile()">{{ 'account.settings.save' | translate }}</button>
+      @if (u?.nafathVerified) {
+        <span class="pill pill-green"><app-icon name="badge-check" />{{ 'account.settings.nafathVerified' | translate }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="card card-p">
+    <h3 class="h3 mb-8">{{ 'account.settings.notifications' | translate }}</h3>
+    @if (preferences.hasValue()) {
+      @let prefs = preferences.value();
+      <div class="setting-row">
+        <div>
+          <div class="b small">{{ 'account.settings.notif.inApp.title' | translate }}</div>
+          <div class="xs muted">{{ 'account.settings.notif.inApp.sub' | translate }}</div>
+        </div>
+        <app-toggle [checked]="prefs.inApp" [disabled]="true" [label]="'account.settings.notif.inApp.title' | translate" />
+      </div>
+      @for (k of channels; track k) {
+        <div class="setting-row">
+          <div>
+            <div class="b small">{{ 'account.settings.notif.' + k + '.title' | translate }}</div>
+            <div class="xs muted">
+              {{ (k === 'email' && !prefs.hasEmail ? 'account.settings.notif.email.needsEmail' : 'account.settings.notif.' + k + '.sub') | translate }}
+            </div>
+          </div>
+          <app-toggle
+            [checked]="prefs[k]"
+            [disabled]="savingChannel() !== null || (k === 'email' && !prefs.hasEmail)"
+            [label]="'account.settings.notif.' + k + '.title' | translate"
+            (checkedChange)="setChannel(k, $event)"
+          />
+        </div>
+      }
+    } @else {
+      <app-load-state [error]="preferences.error()" (retry)="preferences.reload()" />
+    }
+  </div>
+
+  <div class="card card-p">
+    <h3 class="h3">{{ (u?.hasPassword ? 'account.password.changeTitle' : 'account.password.setTitle') | translate }}</h3>
+    <p class="small muted mt-4">{{ 'account.password.hint' | translate }}</p>
+    <form class="grid g2 mt-16" (submit)="$event.preventDefault(); savePassword()">
+      @if (u?.hasPassword) {
+        <app-field [label]="'account.password.current' | translate" for="pw-cur">
+          <input id="pw-cur" class="input ltr" type="password" autocomplete="current-password" [value]="currentPassword()" (input)="currentPassword.set($any($event.target).value)" />
+        </app-field>
+      }
+      <app-field [label]="'account.password.new' | translate" for="pw-new" [help]="'account.password.tooShort' | translate: { min: minPassword }">
+        <input id="pw-new" class="input ltr" type="password" autocomplete="new-password" [value]="newPassword()" (input)="newPassword.set($any($event.target).value)" />
+      </app-field>
+    </form>
+    <button type="button" class="btn btn-primary mt-16" [disabled]="savingPassword()" (click)="savePassword()">{{ 'account.password.save' | translate }}</button>
+  </div>
+
+  <div class="card card-p">
+    <h3 class="h3">{{ 'account.settings.dangerZone' | translate }}</h3>
+    <p class="small muted mt-4">{{ 'account.settings.dangerHint' | translate }}</p>
+    <button type="button" class="btn btn-danger mt-16" (click)="dialog.set('delete')">
+      <app-icon name="trash-2" size="sm" />{{ 'account.settings.deleteAccount' | translate }}
+    </button>
+  </div>
+</div>
+
+@switch (dialog()) {
+  @case ('delete') {
+    <app-delete-account-dialog (closed)="dialog.set(null)" />
+  }
+  @case ('mobile') {
+    <app-mobile-change-dialog (closed)="dialog.set(null)" />
+  }
+}

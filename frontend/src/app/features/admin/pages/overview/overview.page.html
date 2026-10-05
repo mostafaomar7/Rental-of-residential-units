@@ -1,0 +1,215 @@
+@let q = queues.counts();
+@let d = dashboard();
+
+<app-page-header
+  [title]="'admin.overview.title' | translate"
+  [subtitle]="d ? ('admin.overview.subtitle' | translate: { from: d.period.from | appDate: 'medium', to: d.period.to | appDate: 'medium' }) : ''"
+>
+  <select class="select period" [attr.aria-label]="'admin.overview.period' | translate" [(ngModel)]="periodDays">
+    @for (p of periods; track p) {
+      <option [ngValue]="p">{{ 'admin.overview.periods.d' + p | translate }}</option>
+    }
+  </select>
+  <button type="button" class="btn btn-ghost" [disabled]="exporting()" (click)="exportCsv()"><app-icon name="file-down" size="sm" />{{ 'admin.overview.export' | translate }}</button>
+</app-page-header>
+
+<app-resource-state [resource]="kpis" />
+
+@if (d) {
+  @let s = d.summary;
+  <div class="grid g4">
+    @let revenue = trend('revenue');
+    <app-stat-tile
+      icon="banknote"
+      tone="gold"
+      [value]="s.revenue | sar"
+      [label]="'admin.overview.kpi.revenue' | translate"
+      [trend]="revenue?.text"
+      [trendDown]="!!revenue?.down"
+      [sub]="'admin.overview.kpi.vsPrevious' | translate"
+    />
+    @let bookings = trend('bookings');
+    <app-stat-tile
+      icon="calendar-check"
+      [value]="s.bookings | num"
+      [label]="'admin.overview.kpi.bookings' | translate"
+      [trend]="bookings?.text"
+      [trendDown]="!!bookings?.down"
+      [sub]="'admin.overview.kpi.nightsSold' | translate: { count: (s.nightsSold | num) }"
+    />
+    @let occupancy = trend('occupancyRate');
+    <app-stat-tile
+      icon="bed-double"
+      tone="gold"
+      [value]="pct(s.occupancyRate)"
+      [label]="'admin.overview.kpi.occupancy' | translate"
+      [trend]="occupancy?.text"
+      [trendDown]="!!occupancy?.down"
+      [sub]="'admin.overview.kpi.nightsAvailable' | translate: { count: (s.nightsAvailable | num) }"
+    />
+    @let revpar = trend('revpar');
+    <app-stat-tile
+      icon="percent"
+      tone="black"
+      [value]="s.revpar == null ? '—' : (s.revpar | sar)"
+      [label]="'admin.overview.kpi.revpar' | translate"
+      [trend]="revpar?.text"
+      [trendDown]="!!revpar?.down"
+      [sub]="'admin.overview.kpi.adr' | translate: { amount: s.adr == null ? '—' : (s.adr | sar) }"
+    />
+    @let cancellations = trend('cancellationRate', true);
+    <app-stat-tile
+      icon="calendar-x"
+      tone="red"
+      [value]="pct(s.cancellationRate)"
+      [label]="'admin.overview.kpi.cancellationRate' | translate"
+      [trend]="cancellations?.text"
+      [trendDown]="!!cancellations?.down"
+      [sub]="'admin.overview.kpi.cancelled' | translate: { count: (s.cancelledBookings | num) }"
+    />
+    @let guests = trend('activeGuests');
+    <app-stat-tile
+      icon="users"
+      [value]="s.activeGuests | num"
+      [label]="'admin.overview.kpi.activeGuests' | translate"
+      [trend]="guests?.text"
+      [trendDown]="!!guests?.down"
+      [sub]="'admin.overview.kpi.repeatGuests' | translate: { pct: pct(s.repeatGuestRate) }"
+    />
+    @let rating = trend('averageRating');
+    <app-stat-tile
+      icon="star"
+      tone="black"
+      [value]="s.averageRating == null ? '—' : (s.averageRating | num: 2)"
+      [label]="'admin.overview.kpi.rating' | translate"
+      [trend]="rating?.text"
+      [trendDown]="!!rating?.down"
+      [sub]="'admin.overview.kpi.reviews' | translate: { count: (s.reviews | num) }"
+    />
+    @let ops = d.operations;
+    <app-stat-tile
+      icon="clipboard-check"
+      tone="green"
+      [value]="pct(ops.onTimeRate)"
+      [label]="'admin.overview.kpi.onTime' | translate"
+      [sub]="'admin.overview.kpi.tasksDone' | translate: { done: (ops.tasksDone | num), due: (ops.tasksDue | num) }"
+    />
+  </div>
+}
+
+<div class="grid g3 mt-16">
+  <app-queue-tile icon="badge-check" tone="amber" [count]="q.properties" [label]="'admin.overview.queues.properties' | translate" link="/admin/verification" />
+  <app-queue-tile
+    icon="landmark"
+    tone="navy"
+    [count]="q.bankAccounts"
+    [label]="'admin.overview.queues.bankAccounts' | translate"
+    link="/admin/verification"
+    [queryParams]="{ tab: 'bank' }"
+  />
+  <app-queue-tile icon="images" tone="blue" [count]="photoQueue()" [label]="'admin.overview.queues.photos' | translate" link="/admin/photos" />
+  <app-queue-tile icon="scale" tone="gold" [count]="q.disputes" [label]="'admin.overview.queues.disputes' | translate" link="/admin/disputes" />
+  <app-queue-tile icon="rotate-ccw" tone="red" [count]="q.failedRefunds" [label]="'admin.overview.queues.failedRefunds' | translate" link="/admin/finance" [queryParams]="{ tab: 'refunds' }" />
+  <app-queue-tile icon="plug" tone="red" [count]="q.integrationIssues" [label]="'admin.overview.queues.integrations' | translate" link="/admin/integrations" />
+</div>
+
+@if (d) {
+  <div class="grid g-2-1 mt-24 gap-24">
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'admin.overview.revenueChart' | translate }}</h3>
+        <div class="legend"><span><i class="legend-navy"></i>{{ 'admin.overview.granularity.' + d.trend.granularity | translate }}</span></div>
+      </div>
+      @if (revenueValues().length) {
+        <app-line-chart [values]="revenueValues()" [labels]="trendLabels()" [formatTip]="formatSar" [label]="'admin.overview.revenueChart' | translate" />
+      } @else {
+        <p class="small muted">{{ 'admin.overview.noTrend' | translate }}</p>
+      }
+    </div>
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'admin.overview.byCity' | translate }}</h3>
+      </div>
+      <app-resource-state [resource]="byProperty" />
+      @if (byProperty.hasValue()) {
+        @if (cityParts().length) {
+          <app-donut-chart [parts]="cityParts()" [center]="d.summary.bookings | num" [centerSub]="'admin.overview.bookingUnit' | translate" [label]="'admin.overview.byCity' | translate" />
+        } @else {
+          <p class="small muted">{{ 'admin.overview.noBookings' | translate }}</p>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="grid g2 mt-24 gap-24">
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'admin.overview.bookingsChart' | translate }}</h3>
+      </div>
+      @if (bookingBars().length) {
+        <app-bar-chart [items]="bookingBars()" />
+      } @else {
+        <p class="small muted">{{ 'admin.overview.noTrend' | translate }}</p>
+      }
+    </div>
+    @let ops = d.operations;
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'admin.overview.operations.title' | translate }}</h3>
+      </div>
+      <div class="grid g2">
+        <div class="soft">
+          <div class="xs muted b">{{ 'admin.overview.operations.tasksDue' | translate }}</div>
+          <div class="bb">{{ ops.tasksDue | num }}</div>
+        </div>
+        <div class="soft">
+          <div class="xs muted b">{{ 'admin.overview.operations.tasksOverdue' | translate }}</div>
+          <div class="bb" [class.red]="ops.tasksOverdue > 0">{{ ops.tasksOverdue | num }}</div>
+        </div>
+        <div class="soft">
+          <div class="xs muted b">{{ 'admin.overview.operations.completedStays' | translate }}</div>
+          <div class="bb">{{ ops.completedStays | num }}</div>
+        </div>
+        <div class="soft">
+          <div class="xs muted b">{{ 'admin.overview.operations.incidents' | translate }}</div>
+          <div class="bb">{{ ops.incidents | num }}</div>
+          <div class="xs muted">{{ 'admin.overview.operations.per100' | translate: { value: ops.incidentsPer100Stays == null ? '—' : (ops.incidentsPer100Stays | num) } }}</div>
+        </div>
+        <div class="soft">
+          <div class="xs muted b">{{ 'admin.overview.operations.damageCases' | translate }}</div>
+          <div class="bb">{{ ops.damageCases | num }}</div>
+          <div class="xs muted">{{ 'admin.overview.operations.per100' | translate: { value: ops.damageCasesPer100Stays == null ? '—' : (ops.damageCasesPer100Stays | num) } }}</div>
+        </div>
+        <div class="soft">
+          <div class="xs muted b">{{ 'admin.overview.operations.onTime' | translate }}</div>
+          <div class="bb">{{ pct(ops.onTimeRate) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="card card-p mt-24">
+  <div class="card-h">
+    <h3>{{ 'admin.overview.integrationsTitle' | translate }}</h3>
+    <a class="btn btn-ghost btn-xs" routerLink="/admin/integrations">{{ 'admin.overview.integrationsLink' | translate }}</a>
+  </div>
+  <app-resource-state [resource]="integrations" />
+  @if (integrations.hasValue()) {
+    <div class="grid g3">
+      @for (x of integrations.value(); track x.provider) {
+        <div class="soft">
+          <div class="row between">
+            <span class="b">{{ 'domain.integrations.' + x.provider.toLowerCase() + '.name' | translate }}</span>
+            <app-status-pill domain="integrationHealth" [code]="x.status" />
+          </div>
+          <div class="xs muted mt-4">
+            {{ 'admin.overview.integrationLine' | translate: { ok: (x.last24h.succeeded | num), failed: (x.last24h.failed | num), pending: (x.queue.pending | num) } }}
+          </div>
+        </div>
+      } @empty {
+        <p class="small muted">{{ 'admin.integrations.empty' | translate }}</p>
+      }
+    </div>
+  }
+</div>

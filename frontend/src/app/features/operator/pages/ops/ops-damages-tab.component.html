@@ -1,0 +1,85 @@
+<div class="row between wrap mb-16">
+  <div class="small muted">{{ 'operations.damages.hint' | translate }}</div>
+  <button type="button" class="btn btn-primary btn-sm" (click)="opening.set(true)">
+    <app-icon name="plus" size="sm" />{{ 'operations.damages.open' | translate }}
+  </button>
+</div>
+
+@if (resource.isLoading()) {
+  <app-loading />
+} @else if (resource.error()) {
+  <app-load-error [error]="resource.error()" (retry)="resource.reload()" />
+} @else if (resource.hasValue() && resource.value().items.length) {
+  @let list = resource.value();
+  <div class="stack">
+    @for (d of list.items; track d.id) {
+      <article class="card card-p">
+        <div class="row between wrap">
+          <div>
+            <div class="row">
+              <span class="b ltr">{{ d.number }}</span>
+              <app-status-pill domain="damage" [code]="d.status" />
+            </div>
+            <div class="small muted mt-4">
+              {{ d.property | loc }} •
+              <a class="ltr" [routerLink]="['/operator/booking', d.booking.id]">{{ d.booking.number }}</a> •
+              {{ 'operations.damages.guest' | translate: { name: d.booking.guestName } }} •
+              {{ d.createdAt | appDate: 'medium' }}
+            </div>
+          </div>
+          <div class="end">
+            <div class="xs muted b">{{ 'operations.damages.claimed' | translate }}</div>
+            <div class="h3">{{ d.amountClaimed | sar }}</div>
+            @if (d.amountApproved !== null) {
+              <div class="xs green b">{{ 'operations.damages.approved' | translate: { amount: (d.amountApproved | sar) } }}</div>
+            }
+          </div>
+        </div>
+
+        <p class="small lh mt-8">{{ d.description }}</p>
+        @if (d.photos.length) {
+          <div class="thumbs-row mt-12">
+            @for (photo of d.photos; track photo.id) {
+              <img class="evidence" [authSrc]="photo.thumbUrl" [alt]="'operations.damages.photoAlt' | translate" />
+            }
+          </div>
+        }
+
+        @if (d.objection) {
+          <div class="owner-reply">
+            <div class="xs b gold-dark">{{ 'operations.damages.objection' | translate }}</div>
+            {{ d.objection }}
+          </div>
+        }
+        @if (d.reviewNote || d.finalNote) {
+          <div class="owner-reply">
+            <div class="xs b gold-dark">{{ 'operations.damages.adminNote' | translate }}</div>
+            {{ d.finalNote ?? d.reviewNote }}
+          </div>
+        }
+        @if (d.objectionDeadline && d.status === 'GUEST_NOTIFIED') {
+          <div class="xs muted mt-8">{{ 'operations.damages.objectionUntil' | translate: { time: (d.objectionDeadline | appDate: 'dateTime') } }}</div>
+        }
+        @if (d.settlement; as s) {
+          <div class="xs muted mt-8">{{ 'operations.damages.settled' | translate: { method: ('operations.damages.settlement.' + s.method | translate), date: (s.at | appDate: 'medium') } }}</div>
+        }
+
+        @if (canAddPhotos(d)) {
+          <label class="btn btn-ghost btn-sm upload-btn mt-12">
+            <app-icon name="image-plus" size="sm" />{{ 'operations.damages.addPhotos' | translate }}
+            <input type="file" accept="image/*" multiple [disabled]="uploading.busy()" (change)="onPhotos(d, $event)" />
+          </label>
+        }
+      </article>
+    }
+  </div>
+  <app-pager [meta]="list.meta" (pageChange)="page.set($event)" />
+} @else {
+  <div class="card card-p">
+    <app-empty-state icon="shield-alert" [title]="'operations.damages.empty' | translate" />
+  </div>
+}
+
+@if (opening()) {
+  <app-open-damage-dialog (closed)="opening.set(false)" (opened)="onOpened()" />
+}

@@ -1,0 +1,77 @@
+@let p = property();
+@let name = p | loc;
+
+<article class="ucard">
+  <div class="ucard-img">
+    <a [routerLink]="['/property', p.id]" [queryParams]="queryParams()" [attr.aria-label]="name">
+      @if (cover(); as url) {
+        <img [src]="url" [alt]="name" loading="lazy" />
+      }
+    </a>
+    <div class="ucard-top">
+      <span class="pill pill-white"><span class="star"><app-icon name="star" size="sm" [fill]="true" /></span>{{ p.rating | num }} ({{ p.reviewsCount }})</span>
+      <button
+        type="button"
+        class="fav-btn"
+        [class.on]="isFavorite()"
+        [attr.aria-pressed]="isFavorite()"
+        [attr.aria-label]="'guest.favorites.toggle' | translate"
+        [disabled]="favoriteBusy()"
+        (click)="toggleFavorite()"
+      >
+        <app-icon name="heart" />
+      </button>
+    </div>
+    @if (p.price.discountPercent) {
+      <div class="ucard-br">
+        <span class="badge-disc">{{ 'guest.card.discount' | translate: { percent: p.price.discountPercent } }}</span>
+      </div>
+    }
+    @if (p.featured) {
+      <div class="ucard-bl">
+        <span class="badge-host"><app-icon name="crown" />{{ 'guest.card.featured' | translate }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="ucard-body">
+    <h3 class="ucard-title">{{ name }}</h3>
+    <div class="ucard-loc">
+      <app-icon name="map-pin" size="sm" />{{ p.city | loc }}
+      @if (p.district) {
+        • {{ p.district | loc }}
+      }
+    </div>
+
+    <div class="ucard-tags">
+      @if (p.operatingModel; as model) {
+        <span class="pill" [class]="model === 'SUPERVISED' ? 'pill-navy' : 'pill-gold'">
+          <app-icon [name]="model === 'SUPERVISED' ? 'user-check' : 'key-round'" />{{ 'domain.api.operatingModel.' + model | translate }}
+        </span>
+      }
+      <span class="pill pill-gray">{{ p.type | loc }}</span>
+      <span class="pill pill-gray"><app-icon name="users" />{{ p.unit.maxGuests }}</span>
+    </div>
+
+    <!-- Optional extra line above the footer (e.g. the stay total on search results). -->
+    <ng-content />
+
+    <div class="ucard-foot">
+      <div>
+        <div class="price">{{ p.price.nightly | sar }} <small>{{ 'guest.card.perNight' | translate }}</small></div>
+        @if (p.price.discountPercent) {
+          <div class="old-price">{{ p.price.originalNightly | sar }}</div>
+        }
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-ghost btn-sm" [attr.aria-pressed]="inCompare()" (click)="toggleCompare()">
+          @if (inCompare()) {
+            <app-icon name="check" size="sm" />
+          }
+          {{ 'guest.card.compare' | translate }}
+        </button>
+        <a class="btn btn-primary btn-sm" [routerLink]="['/property', p.id]" [queryParams]="queryParams()">{{ 'guest.card.view' | translate }}</a>
+      </div>
+    </div>
+  </div>
+</article>

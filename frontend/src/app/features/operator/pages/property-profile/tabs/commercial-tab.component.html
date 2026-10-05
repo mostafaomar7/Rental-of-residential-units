@@ -1,0 +1,115 @@
+@let f = form();
+
+<div class="row between wrap mb-16">
+  <h3 class="h3">{{ 'operator.profile.commercial.units' | translate: { count: property().commercial.units.length } }}</h3>
+  <button type="button" class="btn btn-primary btn-sm" (click)="editor.set(null)">
+    <app-icon name="plus" size="sm" />{{ 'operator.unit.add' | translate }}
+  </button>
+</div>
+
+@if (property().commercial.units.length) {
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>{{ 'operator.unit.name' | translate }}</th>
+          <th>{{ 'operator.unit.capacity' | translate }}</th>
+          <th>{{ 'operator.unit.basePrice' | translate }}</th>
+          <th>{{ 'operator.unit.cleaningFee' | translate }}</th>
+          <th>{{ 'operator.unit.wifi' | translate }}</th>
+          <th>{{ 'operator.unit.status' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of property().commercial.units; track u.id) {
+          <tr>
+            <td class="b">{{ u.name }}</td>
+            <td class="small">
+              {{ 'operator.unit.capacityValue' | translate: { guests: u.maxGuests, bedrooms: u.bedrooms, bathrooms: u.bathrooms } }}
+            </td>
+            <td class="nowrap">
+              <b>{{ u.basePrice | sar }}</b>
+              @if (u.weekendPrice) {
+                <div class="xs muted">{{ 'operator.unit.weekendValue' | translate: { price: (u.weekendPrice | sar) } }}</div>
+              }
+            </td>
+            <td class="nowrap">{{ u.cleaningFee | sar }}</td>
+            <td class="small ltr">{{ u.wifiSsid ?? '—' }}</td>
+            <td>
+              <span class="pill" [class]="u.isActive ? 'pill-green' : 'pill-gray'">
+                {{ (u.isActive ? 'operator.unit.activeOn' : 'operator.unit.activeOff') | translate }}
+              </span>
+            </td>
+            <td class="nowrap">
+              <div class="row gap-4">
+                <a class="btn btn-ghost btn-xs" routerLink="/operator/calendar" [queryParams]="{ unit: u.id }" [attr.aria-label]="'operator.unit.calendar' | translate">
+                  <app-icon name="calendar-days" size="sm" />
+                </a>
+                <button type="button" class="btn btn-ghost btn-xs" [disabled]="unitAction.busy()" (click)="editor.set(u)">
+                  <app-icon name="pencil" size="sm" />{{ 'operator.unit.edit' | translate }}
+                </button>
+                <button type="button" class="btn btn-danger btn-xs" [disabled]="unitAction.busy()" [attr.aria-label]="'operator.unit.delete' | translate" (click)="removeUnit(u)">
+                  <app-icon name="trash-2" size="sm" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <div class="notice amber small">
+    <app-icon name="alert-triangle" />
+    <div>{{ 'operator.profile.commercial.noUnits' | translate }}</div>
+  </div>
+}
+
+<div class="notice gold mt-16">
+  <app-icon name="sparkles" />
+  <div class="grow">
+    {{ 'operator.profile.commercial.smartNotice' | translate }}
+    <a class="link" routerLink="/operator/pricing" [queryParams]="{ property: property().id }">{{ 'operator.profile.commercial.openPricing' | translate }}</a>
+  </div>
+</div>
+
+<h3 class="h3 mt-24 mb-16">{{ 'operator.profile.commercial.policies' | translate }}</h3>
+<div class="grid g3">
+  <app-field [label]="'operator.profile.commercial.cancellation' | translate" for="pm-cancel">
+    <select id="pm-cancel" class="select" #cancel (change)="set('cancellationPolicyId', cancel.value)">
+      <option value="" [selected]="!f.cancellationPolicyId">—</option>
+      @for (c of catalog.cancellationPolicies(); track c.id) {
+        <option [value]="c.id" [selected]="c.id === f.cancellationPolicyId">{{ c | loc }}</option>
+      }
+    </select>
+  </app-field>
+  <app-field [label]="'operator.profile.commercial.checkIn' | translate" for="pm-in">
+    <input id="pm-in" class="input" type="time" #checkIn [value]="f.checkInTime" (change)="set('checkInTime', checkIn.value)" />
+  </app-field>
+  <app-field [label]="'operator.profile.commercial.checkOut' | translate" for="pm-out">
+    <input id="pm-out" class="input" type="time" #checkOut [value]="f.checkOutTime" (change)="set('checkOutTime', checkOut.value)" />
+  </app-field>
+</div>
+@if (policy(); as c) {
+  <p class="xs muted">{{ c | loc: 'description' }}</p>
+}
+<div class="grid g2 mt-16">
+  <app-field [label]="'operator.profile.commercial.houseRules' | translate" for="pm-rules">
+    <textarea id="pm-rules" class="textarea" dir="rtl" #rules [value]="f.houseRulesAr" (input)="set('houseRulesAr', rules.value)"></textarea>
+  </app-field>
+  <app-field [label]="'operator.profile.commercial.damagePolicy' | translate" for="pm-damage">
+    <textarea id="pm-damage" class="textarea" dir="rtl" #damage [value]="f.damagePolicyAr" (input)="set('damagePolicyAr', damage.value)"></textarea>
+  </app-field>
+</div>
+
+<app-save-bar [busy]="saving.busy()" (save)="save()" (revert)="revert()" />
+
+@if (editor() !== false) {
+  <app-unit-editor-dialog
+    [propertyId]="property().id"
+    [unit]="editor() || undefined"
+    (closed)="editor.set(false)"
+    (saved)="onUnitSaved()"
+  />
+}

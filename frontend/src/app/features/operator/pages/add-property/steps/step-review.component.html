@@ -1,0 +1,106 @@
+@let p = wizard.property();
+@let unit = wizard.unit();
+@let lock = wizard.lock();
+
+<h3 class="h3 mb-16">{{ 'operator.add.review.title' | translate }}</h3>
+@if (p) {
+  <div class="grid g2">
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.type' | translate }}</div>
+      <div class="b small mt-4">{{ p.identity.type | loc }}</div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.name' | translate }}</div>
+      <div class="b small mt-4">{{ p.identity | loc }}</div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.location' | translate }}</div>
+      <div class="b small mt-4">
+        {{ p.identity.city ? (p.identity.city | loc) : '—' }}
+        @if (p.identity.district; as district) {
+          • {{ district | loc }}
+        }
+      </div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.unit' | translate }}</div>
+      <div class="b small mt-4">
+        @if (unit) {
+          {{ unit.name }} • {{ 'operator.unit.capacityValue' | translate: { guests: unit.maxGuests, bedrooms: unit.bedrooms, bathrooms: unit.bathrooms } }} •
+          {{ unit.basePrice | sar }}
+        } @else {
+          —
+        }
+      </div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.amenities' | translate }}</div>
+      <div class="b small mt-4">
+        @for (a of p.content.amenities; track a.id; let last = $last) {
+          {{ a | loc }}{{ last ? '' : '، ' }}
+        } @empty {
+          —
+        }
+      </div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.photos' | translate }}</div>
+      <div class="b small mt-4">{{ 'operator.add.review.photosUploaded' | translate: { count: wizard.photos().length } }}</div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.policies' | translate }}</div>
+      <div class="b small mt-4">
+        {{ p.commercial.cancellationPolicy ? (p.commercial.cancellationPolicy | loc) : ('operator.add.policies.platformDefault' | translate) }} •
+        {{ 'operator.common.range' | translate: { from: (p.commercial.checkInTime | appDate: 'time'), to: (p.commercial.checkOutTime | appDate: 'time') } }}
+      </div>
+    </div>
+    <div class="soft">
+      <div class="xs muted b">{{ 'operator.add.review.operations' | translate }}</div>
+      <div class="b small mt-4">
+        {{ p.operations.operatingModel ? ('domain.api.operatingModel.' + p.operations.operatingModel | translate) : '—' }} •
+        @if (lock) {
+          {{ 'operator.add.review.lockPaired' | translate: { provider: ('domain.api.lockProvider.' + lock.provider | translate) } }}
+        } @else {
+          {{ 'operator.add.review.noLock' | translate }}
+        }
+      </div>
+    </div>
+  </div>
+
+  <h3 class="bb mt-24 mb-8">{{ 'operator.add.review.documents' | translate }}</h3>
+  <div class="grid g3">
+    @for (type of documentTypes; track type) {
+      @let doc = documents()[type];
+      <label class="upload">
+        <input type="file" accept="application/pdf,image/*" [disabled]="uploading.busy()" (change)="onDocument(type, $event)" />
+        <app-icon [name]="doc ? 'file-check-2' : 'file-up'" size="lg" [class.green]="!!doc" />
+        <div class="b small mt-4">{{ 'domain.api.documentType.' + type | translate }}</div>
+        @if (doc) {
+          <div class="xs green">{{ 'operator.add.review.uploadedFile' | translate: { name: doc.originalName } }}</div>
+        } @else {
+          <div class="xs muted">{{ 'operator.add.review.clickToUpload' | translate }}</div>
+        }
+      </label>
+    }
+  </div>
+
+  <h3 class="bb mt-24 mb-8">{{ 'operator.profile.gov.checklist' | translate }}</h3>
+  @if (checklist.isLoading()) {
+    <app-loading />
+  } @else if (checklist.error()) {
+    <app-load-error [error]="checklist.error()" (retry)="checklist.reload()" />
+  } @else if (checklist.hasValue()) {
+    <app-listing-checklist [items]="checklist.value().items" />
+  }
+  @if (wizard.shootRequested()) {
+    <div class="notice blue mt-12 small">
+      <app-icon name="camera" />
+      <div class="grow">{{ 'operator.add.review.shootPending' | translate }}</div>
+    </div>
+  }
+
+  <label class="check mt-16">
+    <input type="checkbox" [checked]="wizard.acknowledged()" (change)="wizard.acknowledged.set(ack.checked)" #ack />
+    <span class="small">{{ 'operator.add.review.ack' | translate }}</span>
+  </label>
+}

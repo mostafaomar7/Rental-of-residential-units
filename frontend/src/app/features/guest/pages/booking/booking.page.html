@@ -1,0 +1,87 @@
+@if (!auth.isLoggedIn()) {
+  <div class="container">
+    <div class="card mt-24">
+      <app-empty-state icon="lock" [title]="'account.loginWall.booking' | translate" [subtitle]="'account.loginWall.sub' | translate">
+        <button type="button" class="btn btn-primary mt-16" (click)="requestLogin()">{{ 'account.loginWall.button' | translate }}</button>
+      </app-empty-state>
+    </div>
+  </div>
+} @else if (property.hasValue() && unit()) {
+  @let p = property.value();
+  @let u = unit()!;
+  <div class="container wizard">
+    <div class="row between wrap mb-16">
+      <div>
+        <a class="link small row gap-4" [routerLink]="['/property', p.id]">
+          <app-icon name="arrow-right" size="sm" [mirror]="true" />{{ 'account.booking.backToUnit' | translate }}
+        </a>
+        <h1 class="h2 mt-4">{{ 'account.booking.title' | translate: { title: (p | loc) } }}</h1>
+        <div class="small muted">{{ 'account.booking.stepOf' | translate: { step: step(), total: totalSteps } }}</div>
+      </div>
+    </div>
+
+    <app-booking-steps [step]="step()" />
+
+    <div class="grid g-2-1 mt-24 layout">
+      <div class="card card-p">
+        @switch (step()) {
+          @case (1) {
+            <app-dates-step
+              [property]="p"
+              [unit]="u"
+              [draft]="draft()"
+              [quote]="quote.hasValue() ? quote.value() : null"
+              [quoteError]="quote.error()"
+              [pricing]="pricing()"
+              [promo]="promo()"
+              [promoBusy]="promoBusy()"
+              [freeCleanings]="freeCleanings()"
+              (patch)="patch($event)"
+              (applyPromo)="applyPromo($event)"
+              (removePromo)="promo.set(null)"
+              (retry)="quote.reload()"
+              (next)="goTo(2)"
+            />
+          }
+          @case (2) {
+            <app-guest-step [draft]="draft()" [nafathRequired]="nafathRequired()" (patch)="patch($event)" (back)="goTo(1)" (next)="goTo(3)" />
+          }
+          @case (3) {
+            <app-policy-step [policies]="p.policies" [draft]="draft()" [busy]="busy()" (patch)="patch($event)" (back)="goTo(2)" (next)="createBooking()" />
+          }
+          @case (4) {
+            @if (booking(); as b) {
+              <app-payment-step [booking]="b" [busy]="busy()" (pay)="pay($event)" (restart)="restart()" />
+            }
+          }
+          @case (5) {
+            @if (booking(); as b) {
+              <app-confirmation-step [booking]="b" />
+            }
+          }
+        }
+      </div>
+      <app-booking-summary
+        [property]="p"
+        [unit]="u"
+        [draft]="draft()"
+        [pricing]="pricing()"
+        [nights]="quote.hasValue() ? quote.value().nightsCount : null"
+        [rewards]="quote.hasValue() ? (quote.value().rewards ?? null) : null"
+        [booking]="booking()"
+      />
+    </div>
+  </div>
+} @else {
+  <div class="container">
+    <div class="card mt-24">
+      @if (property.hasValue()) {
+        <app-empty-state icon="map-pin-off" [title]="'account.booking.noUnits' | translate">
+          <a class="btn btn-primary mt-16" routerLink="/">{{ 'common.notFound.home' | translate }}</a>
+        </app-empty-state>
+      } @else {
+        <app-load-state [error]="property.error()" (retry)="property.reload()" />
+      }
+    </div>
+  </div>
+}

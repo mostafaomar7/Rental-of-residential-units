@@ -1,0 +1,129 @@
+<div class="container hero-top">
+  <section class="hero">
+    <div class="hero-bg" [style.background-image]="heroImage()"></div>
+    <div class="hero-shade"></div>
+    <div class="hero-in">
+      <div class="hero-badge">
+        <span class="dot dot-green pulse"></span>{{ 'guest.home.badge' | translate: { cashback: cashback() } }}
+      </div>
+      <h1>
+        {{ 'guest.home.title' | translate }}<br />
+        <span class="gold">{{ 'guest.home.titleAccent' | translate }}</span>
+      </h1>
+      <p>{{ 'guest.home.intro' | translate }}</p>
+      <div class="row wrap mt-24">
+        <button type="button" class="btn btn-gold" (click)="openDashboard()">
+          {{ 'guest.home.dashboard' | translate }} <app-icon name="arrow-left" size="sm" [mirror]="true" />
+        </button>
+        <button type="button" class="btn btn-glass" (click)="scrollToGrid()">{{ 'guest.home.explore' | translate }}</button>
+      </div>
+    </div>
+
+    <form class="quick-search" novalidate [attr.aria-label]="'guest.home.quickSearch.label' | translate" (submit)="$event.preventDefault(); quickSearch()">
+      <div class="field">
+        <label for="qs-city">{{ 'guest.home.quickSearch.city' | translate }}</label>
+        <select id="qs-city" class="select" (change)="qsCity.set($any($event.target).value)">
+          <option value="" [selected]="!qsCity()">{{ 'guest.home.quickSearch.allCities' | translate }}</option>
+          @for (city of catalog.cities(); track city.id) {
+            <option [value]="city.slug" [selected]="city.slug === qsCity()">{{ city | loc }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="qs-in">{{ 'guest.dates.checkIn' | translate }}</label>
+        <input id="qs-in" type="date" class="input" [min]="minDate" [value]="qsIn()" (change)="qsIn.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="qs-out">{{ 'guest.dates.checkOut' | translate }}</label>
+        <input id="qs-out" type="date" class="input" [min]="minDate" [value]="qsOut()" (change)="qsOut.set($any($event.target).value)" />
+      </div>
+      <div class="field">
+        <label for="qs-g">{{ 'guest.home.quickSearch.guests' | translate }}</label>
+        <select id="qs-g" class="select" (change)="qsGuests.set(+$any($event.target).value)">
+          @for (g of guestOptions; track g) {
+            <option [value]="g" [selected]="g === qsGuests()">{{ g | plural: 'common.guests' }}</option>
+          }
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary qs-btn">
+        <app-icon name="search" size="sm" />{{ 'guest.home.quickSearch.submit' | translate }}
+      </button>
+    </form>
+  </section>
+</div>
+
+@if (featured.hasValue() && featured.value().length) {
+  <div class="container featured">
+    <h2 class="h2 mb-16">{{ 'guest.home.featured' | translate }}</h2>
+    <div class="units">
+      @for (p of featured.value(); track p.id) {
+        <app-property-card [property]="p" />
+      }
+    </div>
+  </div>
+}
+
+<div class="container filters">
+  <h2 class="h2 mb-16">{{ 'guest.home.recommended' | translate }}</h2>
+  <div class="chips">
+    <span class="row b small"><app-icon name="filter" size="sm" />{{ 'guest.home.filter' | translate }}</span>
+    <button type="button" class="chip" [class.on]="!cityFilter()" [attr.aria-pressed]="!cityFilter()" (click)="cityFilter.set('')">
+      {{ 'guest.home.allCities' | translate }}
+    </button>
+    @for (city of catalog.cities(); track city.id) {
+      <button type="button" class="chip" [class.on]="cityFilter() === city.slug" [attr.aria-pressed]="cityFilter() === city.slug" (click)="cityFilter.set(city.slug)">
+        {{ city | loc }}
+      </button>
+    }
+    <div class="ms-auto row">
+      <span class="xs muted b">{{ 'guest.home.compareCount' | translate: { count: compare.items().length, max: compare.max() } }}</span>
+      @if (compare.items().length) {
+        <button type="button" class="xs b red" (click)="compare.clear()">{{ 'guest.home.clearCompare' | translate }}</button>
+      }
+    </div>
+  </div>
+  <div class="scroll-x mt-12">
+    <div class="chips">
+      <button type="button" class="chip chip-sm" [class.on]="!typeFilter()" [attr.aria-pressed]="!typeFilter()" (click)="typeFilter.set('')">
+        <app-icon name="layout-grid" size="sm" />{{ 'guest.home.allTypes' | translate }}
+      </button>
+      @for (t of catalog.propertyTypes(); track t.id) {
+        <button type="button" class="chip chip-sm" [class.on]="typeFilter() === t.code" [attr.aria-pressed]="typeFilter() === t.code" (click)="typeFilter.set(t.code)">
+          <app-icon [name]="typeIcon(t.code)" size="sm" />{{ t | loc }}
+        </button>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="container grid-wrap" #grid>
+  @if (recommended.hasValue()) {
+    <div class="units">
+      @for (p of recommended.value().items; track p.id) {
+        <app-property-card [property]="p" />
+      } @empty {
+        <div class="card full-row">
+          <app-empty-state icon="search-x" [title]="'guest.home.empty.title' | translate" [subtitle]="'guest.home.empty.body' | translate">
+            <button type="button" class="btn btn-primary mt-16" (click)="clearFilters()">{{ 'guest.home.empty.clear' | translate }}</button>
+          </app-empty-state>
+        </div>
+      }
+    </div>
+  } @else {
+    <app-load-state [error]="recommended.error()" (retry)="recommended.reload()" />
+  }
+</div>
+
+<div class="container features">
+  <div class="grid g3">
+    @for (f of features; track f.key) {
+      <div class="tile row-top">
+        <span class="li-ic navy"><app-icon [name]="f.icon" /></span>
+        <div>
+          <div class="bb">{{ 'guest.home.features.' + f.key + '.title' | translate: { cashback: cashback() } }}</div>
+          <p class="small muted mt-4 lh">{{ 'guest.home.features.' + f.key + '.body' | translate: { cashback: cashback() } }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</div>

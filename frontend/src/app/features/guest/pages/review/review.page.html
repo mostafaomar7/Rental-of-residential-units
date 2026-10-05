@@ -1,0 +1,71 @@
+@if (booking.hasValue()) {
+  @let b = booking.value();
+  <div class="container review-wrap">
+    <div class="card card-p">
+      <div class="row gap-12">
+        @if (cover(); as url) {
+          <img class="unit-thumb" [src]="url" alt="" />
+        }
+        <div>
+          <div class="xs muted b">{{ 'account.review.rateYourStay' | translate }} • <span class="ltr">{{ b.number }}</span></div>
+          <h1 class="h2">{{ b.property | loc }}</h1>
+          <div class="small muted">{{ 'account.stay.dateRange' | translate: { from: (b.checkIn | appDate: 'medium'), to: (b.checkOut | appDate: 'medium') } }}</div>
+        </div>
+      </div>
+
+      @if (pendingReview(); as slot) {
+        <div class="notice gold mt-16">
+          <app-icon name="gift" />
+          <div [innerHTML]="'account.review.pointsNotice' | translate: { points: slot.rewardPoints }"></div>
+        </div>
+
+        <div class="field mt-24">
+          <span class="lbl">{{ 'account.review.overall' | translate }}</span>
+          <app-star-input [(value)]="rating" [label]="'account.review.overall' | translate" />
+        </div>
+
+        <div class="mt-16">
+          <app-field [label]="'account.review.commentLabel' | translate" for="rv-c">
+            <textarea
+              id="rv-c"
+              class="textarea"
+              [placeholder]="'account.review.commentPlaceholder' | translate"
+              [value]="comment()"
+              (input)="comment.set($any($event.target).value)"
+            ></textarea>
+          </app-field>
+        </div>
+
+        <div class="field mt-16">
+          <span class="lbl">{{ 'account.review.addPhotos' | translate }}</span>
+          <app-photo-picker icon="image-plus" [disabled]="busy()" [(files)]="photos" />
+        </div>
+
+        <div class="row mt-24 wrap">
+          <button type="button" class="btn btn-primary btn-lg" [disabled]="busy()" (click)="submit(slot)">
+            {{ 'account.review.publish' | translate: { points: slot.rewardPoints } }}
+          </button>
+          <a class="btn btn-ghost" routerLink="/account">{{ 'account.review.later' | translate }}</a>
+        </div>
+      } @else if (pending.hasValue()) {
+        <div class="notice green mt-16">
+          <app-icon name="check-circle-2" />
+          <div>
+            {{ (b.status === 'COMPLETED' ? 'account.review.alreadyReviewed' : 'account.review.notYet') | translate }}
+            <a class="link" routerLink="/account/reviews">{{ 'account.nav.reviews' | translate }}</a>
+          </div>
+        </div>
+      } @else {
+        <app-load-state [error]="pending.error()" (retry)="pending.reload()" />
+      }
+    </div>
+  </div>
+} @else {
+  <div class="container">
+    <div class="card mt-24">
+      <app-load-state [error]="booking.error()" (retry)="booking.reload()">
+        <a class="btn btn-ghost mt-16" routerLink="/account/bookings">{{ 'account.nav.bookings' | translate }}</a>
+      </app-load-state>
+    </div>
+  </div>
+}

@@ -1,0 +1,90 @@
+<div class="grid g-2-1 layout">
+  <div class="card card-p">
+    <div class="card-h">
+      <h3>{{ 'admin.catalog.lists.cities' | translate }}</h3>
+      <button type="button" class="btn btn-primary btn-sm" (click)="editing.set(null)"><app-icon name="plus" size="sm" />{{ 'admin.catalog.add' | translate }}</button>
+    </div>
+    <app-resource-state [resource]="cities" />
+    @if (cities.hasValue()) {
+      @if (cities.value().length) {
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>{{ 'admin.catalog.cols.name' | translate }}</th>
+                <th>{{ 'admin.catalog.cols.slug' | translate }}</th>
+                <th>{{ 'admin.catalog.cols.order' | translate }}</th>
+                <th>{{ 'admin.catalog.cols.active' | translate }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of cities.value(); track c.id) {
+                <tr class="click" [class.on]="c.id === selectedId()" (click)="selectedId.set(c.id)">
+                  <td>
+                    <div class="b">{{ c.nameAr }}</div>
+                    <div class="xs muted" dir="ltr">{{ c.nameEn }}</div>
+                  </td>
+                  <td><span class="kbd">{{ c.slug }}</span></td>
+                  <td>{{ c.sortOrder }}</td>
+                  <td (click)="$event.stopPropagation()">
+                    <app-toggle [checked]="toggles.value(c.id, c.isActive)" [disabled]="toggles.isPending(c.id)" [label]="'admin.catalog.cols.active' | translate" (checkedChange)="setCityActive(c, $event)" />
+                  </td>
+                  <td class="nowrap" (click)="$event.stopPropagation()">
+                    <button type="button" class="btn btn-ghost btn-icon btn-xs" [attr.aria-label]="'admin.catalog.edit' | translate" (click)="editing.set(c)"><app-icon name="pencil" size="sm" /></button>
+                    <button type="button" class="btn btn-danger btn-icon btn-xs" [attr.aria-label]="'admin.catalog.delete' | translate" [disabled]="busy()" (click)="removeCity(c)">
+                      <app-icon name="trash-2" size="sm" />
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <app-empty-state icon="map-pin" [title]="'admin.catalog.empty' | translate" />
+      }
+    }
+  </div>
+
+  <div class="card card-p">
+    @if (selected(); as city) {
+      <div class="card-h">
+        <h3>{{ 'admin.catalog.districtsOf' | translate: { city: city.nameAr } }}</h3>
+      </div>
+      <app-resource-state [resource]="districts" />
+      @if (districts.hasValue()) {
+        <div class="rows">
+          @for (d of districts.value(); track d.id) {
+            <div class="setting-row">
+              <div>
+                <div class="b small">{{ d.nameAr }}</div>
+                <div class="xs muted" dir="ltr">{{ d.nameEn }}</div>
+              </div>
+              <div class="row">
+                <app-toggle [checked]="toggles.value(d.id, d.isActive)" [disabled]="toggles.isPending(d.id)" [label]="'admin.catalog.cols.active' | translate" (checkedChange)="setDistrictActive(d, $event)" />
+                <button type="button" class="btn btn-danger btn-icon btn-xs" [attr.aria-label]="'admin.catalog.delete' | translate" [disabled]="busy()" (click)="removeDistrict(d)">
+                  <app-icon name="trash-2" size="sm" />
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <p class="small muted">{{ 'admin.catalog.noDistricts' | translate }}</p>
+          }
+        </div>
+      }
+      <div class="divider"></div>
+      <div class="stack-sm">
+        <input class="input" dir="rtl" [placeholder]="'admin.catalog.form.nameAr' | translate" [attr.aria-label]="'admin.catalog.form.nameAr' | translate" [(ngModel)]="districtAr" />
+        <input class="input" dir="ltr" [placeholder]="'admin.catalog.form.nameEn' | translate" [attr.aria-label]="'admin.catalog.form.nameEn' | translate" [(ngModel)]="districtEn" />
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="busy()" (click)="addDistrict(city.id)"><app-icon name="plus" size="sm" />{{ 'admin.catalog.addDistrict' | translate }}</button>
+      </div>
+    } @else {
+      <app-empty-state icon="map-pin" [title]="'admin.catalog.pickCity' | translate" />
+    }
+  </div>
+</div>
+
+@if (editing() !== undefined) {
+  <app-catalog-item-form-modal kind="city" [item]="editing() ?? null" [busy]="busy()" (saved)="saveCity($event)" (closed)="editing.set(undefined)" />
+}

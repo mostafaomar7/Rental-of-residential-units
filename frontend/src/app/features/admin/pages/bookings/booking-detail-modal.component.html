@@ -1,0 +1,118 @@
+<app-modal size="lg" [title]="'admin.bookings.detailTitle' | translate" (closed)="closed.emit()">
+  <app-resource-state [resource]="booking" />
+  @if (booking.hasValue()) {
+    @let b = booking.value();
+    <div class="row between wrap mb-16">
+      <div>
+        <h3 class="h3 ltr">{{ b.number }}</h3>
+        <div class="small muted">{{ b.property | loc }} • {{ b.unit.name }}</div>
+      </div>
+      <app-status-pill domain="booking" [code]="b.status" />
+    </div>
+
+    <div class="grid g2">
+      <div>
+        <div class="bb mb-8">{{ 'admin.bookings.stay' | translate }}</div>
+        <app-kv [label]="'admin.bookings.checkIn' | translate">{{ b.checkIn | appDate: 'medium' }} • {{ b.checkInTime | appDate: 'time' }}</app-kv>
+        <app-kv [label]="'admin.bookings.checkOut' | translate">{{ b.checkOut | appDate: 'medium' }} • {{ b.checkOutTime | appDate: 'time' }}</app-kv>
+        <app-kv [label]="'admin.bookings.nightsGuests' | translate">{{ b.nights | plural: 'common.nights' }} • {{ b.guests | plural: 'common.guests' }}</app-kv>
+        <app-kv [label]="'admin.bookings.guest' | translate">
+          {{ b.guestName }} <span class="xs muted ltr">{{ b.guestMobile }}</span>
+        </app-kv>
+        <app-kv [label]="'admin.bookings.account' | translate">
+          {{ b.account.fullName }} <span class="xs muted ltr">{{ b.account.mobile }}</span>
+        </app-kv>
+        <app-kv [label]="'admin.bookings.created' | translate">{{ b.createdAt | appDate: 'dateTime' }}</app-kv>
+        @if (b.specialRequests) {
+          <div class="xs muted b mt-8">{{ 'admin.bookings.requests' | translate }}</div>
+          <p class="small lh" dir="auto">{{ b.specialRequests }}</p>
+        }
+      </div>
+
+      <div>
+        <div class="bb mb-8">{{ 'admin.bookings.price' | translate }}</div>
+        @let pr = b.pricing;
+        <app-kv [label]="'admin.bookings.accommodation' | translate">{{ pr.accommodation | sar }}</app-kv>
+        @if (pr.discount) {
+          <app-kv [label]="'admin.bookings.discount' | translate"><span class="green">-{{ pr.discount | sar }}</span></app-kv>
+        }
+        @if (pr.promo) {
+          <app-kv [label]="'admin.bookings.promo' | translate: { code: pr.promo.code }"><span class="green">-{{ pr.promo.discount | sar }}</span></app-kv>
+        }
+        <app-kv [label]="'admin.bookings.cleaning' | translate">{{ pr.freeCleaningApplied ? ('admin.bookings.free' | translate) : (pr.cleaningFee | sar) }}</app-kv>
+        <app-kv [label]="'admin.bookings.vat' | translate: { pct: pr.vatPercent }">{{ pr.vat | sar }}</app-kv>
+        <div class="kv total">
+          <span>{{ 'admin.bookings.total' | translate }}</span><span>{{ pr.total | sar }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="row between mb-8">
+      <span class="bb">{{ 'admin.bookings.split' | translate }}</span>
+      @if (financials.hasValue() && financials.value().projected) {
+        <span class="pill pill-amber">{{ 'admin.bookings.projected' | translate }}</span>
+      }
+    </div>
+    <app-resource-state [resource]="financials" />
+    @if (financials.hasValue()) {
+      @let f = financials.value();
+      <div class="grid g2">
+        <div>
+          <app-kv [label]="'admin.finance.split.gross' | translate">{{ f.gross | sar }}</app-kv>
+          <app-kv [label]="'admin.finance.split.vat' | translate">{{ f.vat | sar }}</app-kv>
+          <app-kv [label]="'admin.bookings.commissionBase' | translate">{{ f.commissionBase | sar }}</app-kv>
+        </div>
+        <div>
+          <app-kv [label]="'admin.bookings.commission' | translate: { pct: f.commissionPercent }">{{ f.commission | sar }}</app-kv>
+          <app-kv [label]="'admin.bookings.platformFunded' | translate">{{ f.platformFunded | sar }}</app-kv>
+          <app-kv [label]="'admin.finance.split.fees' | translate">{{ f.paymentFees | sar }}</app-kv>
+          <div class="kv total">
+            <span>{{ 'admin.bookings.ownerNet' | translate }}</span><span>{{ f.ownerNet | sar }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (b.cancellation; as c) {
+      <div class="notice red small mt-16">
+        <app-icon name="calendar-x" />
+        <div>
+          <b>{{ 'admin.bookings.cancelledBy' | translate: { by: ('domain.api.cancelledBy.' + c.cancelledBy | translate), time: (c.cancelledAt | appDate: 'dateTime') } }}</b>
+          <div>{{ 'admin.bookings.refundLine' | translate: { pct: c.refundPercent, amount: (c.refundAmount | sar) } }}</div>
+          @if (c.reason) {
+            <div dir="auto">{{ c.reason }}</div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (cancelling()) {
+      <div class="soft-lg mt-16">
+        <div class="bb mb-8">{{ 'admin.bookings.cancelTitle' | translate }}</div>
+        <app-field [label]="'admin.bookings.reason' | translate" for="bk-reason">
+          <textarea id="bk-reason" class="textarea" [(ngModel)]="reason"></textarea>
+        </app-field>
+        <app-field [label]="'admin.bookings.refundPercent' | translate" for="bk-refund" [help]="'admin.bookings.refundHelp' | translate">
+          <input id="bk-refund" class="input" type="number" min="0" max="100" [(ngModel)]="refundPercent" />
+        </app-field>
+        <div class="row">
+          <button type="button" class="btn btn-danger-solid btn-sm" [disabled]="busy()" (click)="cancel(b.number)">{{ 'admin.bookings.cancelOk' | translate }}</button>
+          <button type="button" class="btn btn-ghost btn-sm" (click)="cancelling.set(false)">{{ 'common.cancel' | translate }}</button>
+        </div>
+      </div>
+    }
+  }
+
+  <ng-container modal-footer>
+    @if (booking.hasValue()) {
+      @if (invoiced()) {
+        <button type="button" class="btn btn-ghost" [disabled]="busy()" (click)="downloadInvoice(booking.value().number)"><app-icon name="file-down" size="sm" />{{ 'admin.bookings.invoice' | translate }}</button>
+      }
+      @if (cancellable() && !cancelling()) {
+        <button type="button" class="btn btn-danger" (click)="cancelling.set(true)">{{ 'admin.bookings.cancel' | translate }}</button>
+      }
+    }
+    <button type="button" class="btn btn-ghost" (click)="closed.emit()">{{ 'common.close' | translate }}</button>
+  </ng-container>
+</app-modal>

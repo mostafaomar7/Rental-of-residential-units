@@ -1,0 +1,129 @@
+@let st = stats();
+
+<app-page-header [title]="'operations.locks.title' | translate" [subtitle]="'operations.locks.subtitle' | translate: { count: st.total }">
+  <button type="button" class="btn btn-primary" [disabled]="!unpairedUnits().length" (click)="pairing.set(true)">
+    <app-icon name="plus" size="sm" />{{ 'operations.locks.pair.action' | translate }}
+  </button>
+</app-page-header>
+
+<div class="grid g4">
+  <app-stat-tile
+    icon="wifi"
+    tone="green"
+    [value]="st.online + ' / ' + st.total"
+    [label]="'operations.locks.stats.online' | translate"
+    [sub]="'operations.locks.stats.onlineSub' | translate"
+  />
+  <app-stat-tile icon="wifi-off" tone="red" [value]="st.offline" [label]="'operations.locks.stats.offline' | translate" [sub]="'operations.locks.stats.offlineSub' | translate" />
+  <app-stat-tile
+    icon="battery-low"
+    tone="gold"
+    [value]="st.lowBattery"
+    [label]="'operations.locks.stats.lowBattery' | translate"
+    [sub]="'operations.locks.stats.lowBatterySub' | translate: { percent: lowBattery }"
+  />
+  <app-stat-tile
+    icon="shield-x"
+    tone="black"
+    [value]="failedAttempts.hasValue() ? failedAttempts.value() : '—'"
+    [label]="'operations.locks.stats.failed' | translate"
+    [sub]="'operations.locks.stats.failedSub' | translate"
+  />
+</div>
+
+<div class="card card-p mt-24">
+  <div class="card-h">
+    <h3>{{ 'operations.locks.table' | translate }}</h3>
+  </div>
+  @if (locks.isLoading() && !locks.hasValue()) {
+    <app-loading />
+  } @else if (locks.error()) {
+    <app-load-error [error]="locks.error()" (retry)="locks.reload()" />
+  } @else if (locks.hasValue() && locks.value().length) {
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>{{ 'operations.locks.cols.unit' | translate }}</th>
+            <th>{{ 'operations.locks.cols.provider' | translate }}</th>
+            <th>{{ 'operations.locks.cols.connection' | translate }}</th>
+            <th>{{ 'operations.locks.cols.battery' | translate }}</th>
+            <th>{{ 'operations.locks.cols.lastSync' | translate }}</th>
+            <th><span class="sr-only">{{ 'operations.locks.cols.actions' | translate }}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (lock of locks.value(); track lock.id) {
+            <tr>
+              <td>
+                <div class="b small unit-title">{{ lock.unit.name }}</div>
+                <div class="xs muted">{{ lock.property.nameAr }}</div>
+              </td>
+              <td class="small">
+                {{ 'domain.api.lockProvider.' + lock.provider | translate }}
+                <div class="xs muted ltr">{{ lock.model ?? lock.externalId }}</div>
+              </td>
+              <td>
+                <span class="row gap-4 nowrap">
+                  <span class="dot" [class]="lock.status === 'ONLINE' ? 'dot-green' : 'dot-red pulse'"></span>
+                  <app-status-pill domain="lock" [code]="lock.status" />
+                </span>
+                @if (lock.alerts.length) {
+                  <div class="xs red b" [title]="lock.alerts.join(', ')">{{ 'operations.locks.alerts' | translate: { count: lock.alerts.length } }}</div>
+                }
+              </td>
+              <td>
+                @if (lock.batteryLevel !== null) {
+                  <div class="row">
+                    <div class="bar thin battery-bar">
+                      <div [style.width.%]="lock.batteryLevel" [style.background]="batteryColor(lock.batteryLevel)"></div>
+                    </div>
+                    <span class="xs b" [class.red]="lock.batteryLevel < lowBattery">{{ lock.batteryLevel }}%</span>
+                  </div>
+                } @else {
+                  <span class="xs muted">—</span>
+                }
+              </td>
+              <td class="xs muted nowrap">{{ lock.lastSyncAt | appDate: 'dateTime' }}</td>
+              <td class="nowrap">
+                <div class="row gap-4">
+                  <app-lock-actions size="btn-xs" [unitId]="lock.unitId" [unitName]="lock.unit.name" (changed)="onLockChanged(lock.unitId, $event)" />
+                  @if (needsAttention(lock)) {
+                    <button type="button" class="btn btn-ghost btn-xs" [disabled]="creatingTask.busy()" (click)="createMaintenanceTask(lock)">
+                      <app-icon name="wrench" size="sm" />{{ 'operations.locks.maintenanceTask.action' | translate }}
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <app-empty-state icon="key-round" [title]="'operations.locks.empty' | translate" [subtitle]="'operations.locks.emptyHint' | translate" />
+  }
+</div>
+
+<div class="card card-p mt-24">
+  <div class="card-h">
+    <h3>{{ 'operations.locks.recentEvents' | translate }}</h3>
+  </div>
+  @if (recentEvents.isLoading()) {
+    <app-loading />
+  } @else if (recentEvents.error()) {
+    <app-load-error [error]="recentEvents.error()" (retry)="recentEvents.reload()" />
+  } @else if (recentEvents.hasValue() && recentEvents.value().length) {
+    <div class="rows">
+      @for (e of recentEvents.value(); track e.id) {
+        <app-access-event-row [event]="e" [unitName]="unitName(e.unitId)" />
+      }
+    </div>
+  } @else {
+    <app-empty-state icon="history" [title]="'operations.booking.noEvents' | translate" />
+  }
+</div>
+
+@if (pairing()) {
+  <app-pair-lock-dialog [units]="unpairedUnits()" (closed)="pairing.set(false)" (paired)="onPaired($event)" />
+}

@@ -1,0 +1,75 @@
+<div class="card card-p">
+  <div class="card-h">
+    <h3>{{ 'operations.incidents.title' | translate }}</h3>
+    <app-tabs [items]="filters" [active]="filter()" (activeChange)="setFilter($event)" />
+  </div>
+
+  @if (resource.isLoading()) {
+    <app-loading />
+  } @else if (resource.error()) {
+    <app-load-error [error]="resource.error()" (retry)="resource.reload()" />
+  } @else if (resource.hasValue() && resource.value().items.length) {
+    @let list = resource.value();
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>{{ 'operations.incidents.cols.incident' | translate }}</th>
+            <th>{{ 'operations.common.unit' | translate }}</th>
+            <th>{{ 'operations.incidents.cols.category' | translate }}</th>
+            <th>{{ 'operations.incidents.cols.severity' | translate }}</th>
+            <th>{{ 'operations.incidents.cols.reportedBy' | translate }}</th>
+            <th>{{ 'operations.incidents.cols.status' | translate }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (i of list.items; track i.id) {
+            <tr>
+              <td class="desc">
+                <div class="b small">{{ i.description }}</div>
+                <div class="xs muted">{{ i.createdAt | appDate: 'dateTime' }}</div>
+                @if (i.photos.length) {
+                  <div class="row gap-4 mt-4">
+                    @for (photo of i.photos.slice(0, rowPhotos); track photo.id) {
+                      <img class="evidence" [authSrc]="photo.thumbUrl" [alt]="'operations.incidents.photoAlt' | translate" />
+                    }
+                  </div>
+                }
+                @if (i.resolution) {
+                  <div class="xs green mt-4">{{ i.resolution }}</div>
+                }
+              </td>
+              <td class="small">
+                {{ i.unit.name }}
+                <div class="xs muted">{{ i.property.nameAr }}</div>
+                @if (i.booking; as b) {
+                  <a class="xs ltr" [routerLink]="['/operator/booking', b.id]">{{ b.number }}</a>
+                }
+              </td>
+              <td>{{ 'domain.api.incidentCategory.' + i.category | translate }}</td>
+              <td><app-status-pill domain="severity" [code]="i.severity" /></td>
+              <td class="small">{{ 'operations.incidents.reporter.' + i.reporterType | translate }}</td>
+              <td><app-status-pill domain="incident" [code]="i.status" /></td>
+              <td class="nowrap">
+                @if (i.status === 'OPEN') {
+                  <button type="button" class="btn btn-ghost btn-xs" [disabled]="updating.busy()" (click)="start(i)">{{ 'operations.incidents.start' | translate }}</button>
+                }
+                @if (i.status !== 'RESOLVED') {
+                  <button type="button" class="btn btn-success btn-xs" [disabled]="updating.busy()" (click)="resolving.set(i)">{{ 'operations.incidents.resolve' | translate }}</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pager [meta]="list.meta" (pageChange)="page.set($event)" />
+  } @else {
+    <app-empty-state icon="check-check" [title]="'operations.incidents.empty' | translate" />
+  }
+</div>
+
+@if (resolving(); as incident) {
+  <app-resolve-incident-modal [incident]="incident" (closed)="resolving.set(null)" (resolved)="onResolved()" />
+}

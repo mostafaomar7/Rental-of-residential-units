@@ -1,0 +1,235 @@
+@if (stay.hasValue()) {
+  @let s = stay.value();
+  @let p = s.property;
+  @let active = s.status === 'CHECKED_IN';
+  @let upcoming = s.status === 'CONFIRMED';
+  <div class="container stay">
+    <div class="hero-card stay-hero">
+      <div class="row between wrap">
+        <div>
+          <div class="row xs b gold">
+            <app-icon name="map-pin" size="sm" />{{ p.city }}
+            @if (p.district) {
+              • {{ p.district }}
+            }
+          </div>
+          <h1 class="h2 mt-8">{{ (active ? 'account.stay.currentStay' : 'account.stay.stayDetails') | translate }} — {{ p | loc }}</h1>
+          <div class="small mt-4 soft-white">
+            <span class="ltr">{{ s.bookingNumber }}</span> • {{ s.unit.name }} •
+            {{ 'account.stay.dateRange' | translate: { from: (s.checkIn.date | appDate: 'medium'), to: (s.checkOut.date | appDate: 'medium') } }}
+          </div>
+          @if (p.address) {
+            <div class="small mt-4 soft-white row gap-4">
+              <app-icon name="navigation" size="sm" />{{ p.address }}
+              @if (mapUrl(); as url) {
+                <a class="link xs gold" [href]="url" target="_blank" rel="noopener">{{ 'guest.property.details.openMaps' | translate }}</a>
+              }
+            </div>
+          }
+        </div>
+        <div class="row">
+          <app-status-pill domain="booking" [code]="s.status" />
+          @if (active) {
+            <span class="pill pill-glass">{{ nightsLeft() | plural: 'account.stay.nightsLeft' }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g-2-1 mt-24 layout">
+      <div class="stack-lg">
+        <div class="grid g4">
+          <div class="tile">
+            <div class="row between">
+              <span class="li-ic gold"><app-icon name="wifi" /></span>
+              @if (s.wifi; as wifi) {
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-icon btn-xs"
+                  [attr.aria-label]="'account.stay.copyWifi' | translate"
+                  (click)="clipboard.copy(wifi.password, 'account.stay.wifiCopied')"
+                >
+                  <app-icon name="copy" size="sm" />
+                </button>
+              }
+            </div>
+            <div class="xs muted b mt-12">{{ 'account.stay.wifi' | translate }}</div>
+            <div class="bb mt-4">
+              @if (s.wifi; as wifi) {
+                <span class="ltr">{{ wifi.ssid }}</span>
+                <div class="xs muted">{{ 'account.stay.wifiPassword' | translate }} <span class="ltr b navy">{{ wifi.password }}</span></div>
+              } @else {
+                <div class="xs muted">{{ 'account.stay.wifiLater' | translate }}</div>
+              }
+            </div>
+          </div>
+          <div class="tile">
+            <div class="row between"><span class="li-ic gold"><app-icon name="log-out" [mirror]="true" /></span></div>
+            <div class="xs muted b mt-12">{{ 'account.stay.checkoutTime' | translate }}</div>
+            <div class="bb mt-4">
+              {{ s.checkOut.time | appDate: 'time' }}
+              <div class="xs muted">{{ s.checkOut.date | appDate: 'long' }}</div>
+            </div>
+          </div>
+          <div class="tile">
+            <div class="row between"><span class="li-ic gold"><app-icon name="book-open" /></span></div>
+            <div class="xs muted b mt-12">{{ 'account.stay.guide.title' | translate }}</div>
+            <div class="bb mt-4"><button type="button" class="link" (click)="dialog.set('guide')">{{ 'account.stay.viewGuide' | translate }}</button></div>
+          </div>
+          <div class="tile">
+            <div class="row between"><span class="li-ic gold"><app-icon name="headphones" /></span></div>
+            <div class="xs muted b mt-12">{{ 'account.stay.support' | translate }}</div>
+            <div class="bb mt-4">
+              @if (whatsappUrl(); as url) {
+                <a class="link" [href]="url" target="_blank" rel="noopener">{{ 'account.stay.whatsapp' | translate }}</a>
+              } @else {
+                <span class="muted">—</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        @if (active || upcoming) {
+          <div class="card card-p">
+            <div class="card-h">
+              <h3>{{ 'account.stay.requests' | translate }}</h3>
+            </div>
+            <div class="grid g3">
+              <button type="button" class="soft-lg row gap-12 req" [attr.aria-disabled]="active || null" (click)="openRequest('EARLY_CHECK_IN', active)">
+                <span class="li-ic navy"><app-icon name="sunrise" /></span>
+                <span>
+                  <span class="b small d-block">{{ 'domain.api.stayRequestType.EARLY_CHECK_IN' | translate }}</span>
+                  @if (changeFees(); as fees) {
+                    <span class="xs muted">{{ 'account.stay.earlyHint' | translate: { time: (fees.earliestCheckIn | appDate: 'time'), fee: (fees.earlyCheckInFee | sar) } }}</span>
+                  }
+                </span>
+              </button>
+              <button type="button" class="soft-lg row gap-12 req" (click)="openRequest('LATE_CHECK_OUT', false)">
+                <span class="li-ic navy"><app-icon name="sunset" /></span>
+                <span>
+                  <span class="b small d-block">{{ 'domain.api.stayRequestType.LATE_CHECK_OUT' | translate }}</span>
+                  @if (changeFees(); as fees) {
+                    <span class="xs muted">{{ 'account.stay.lateHint' | translate: { time: (fees.latestCheckOut | appDate: 'time'), fee: (fees.lateCheckOutFee | sar) } }}</span>
+                  }
+                </span>
+              </button>
+              <button type="button" class="soft-lg row gap-12 req" (click)="dialog.set('issue')">
+                <span class="li-ic red"><app-icon name="triangle-alert" /></span>
+                <span>
+                  <span class="b small d-block">{{ 'account.stay.reportIssue' | translate }}</span>
+                  <span class="xs muted">{{ 'account.stay.reportIssueHint' | translate }}</span>
+                </span>
+              </button>
+            </div>
+            @if (requests.hasValue() && requests.value().length) {
+              <div class="rows mt-16">
+                @for (r of requests.value(); track r.id) {
+                  <div class="row between request">
+                    <div class="small">
+                      <b>{{ 'domain.api.stayRequestType.' + r.type | translate }} {{ r.requestedTime | appDate: 'time' }} — {{ r.fee | sar }}</b>
+                      <span class="xs muted"> • {{ r.createdAt | appDate: 'dateTime' }}</span>
+                      @if (r.reason) {
+                        <div class="xs muted">{{ r.reason }}</div>
+                      }
+                    </div>
+                    <div class="row">
+                      <app-status-pill domain="stayRequest" [code]="r.status" />
+                      @if (r.status === 'PENDING') {
+                        <button type="button" class="btn btn-ghost btn-xs" [disabled]="cancellingRequest() === r.id" (click)="cancelRequest(r)">
+                          {{ 'account.stay.request.cancel' | translate }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else if (requests.error()) {
+              <app-load-state [error]="requests.error()" (retry)="requests.reload()" />
+            }
+          </div>
+        }
+
+        <div class="card card-p">
+          <div class="card-h">
+            <h3>{{ 'account.stay.incidents' | translate }}</h3>
+            <span class="xs muted">{{ 'account.stay.incidentsHint' | translate }}</span>
+          </div>
+          @if (incidents.hasValue()) {
+            <app-stay-incidents [incidents]="incidents.value()" />
+          } @else {
+            <app-load-state [error]="incidents.error()" (retry)="incidents.reload()" />
+          }
+        </div>
+      </div>
+
+      <div class="stack">
+        <app-stay-key-card [stay]="s" [reviewPoints]="reviewPoints()" (verifyIdentity)="dialog.set('nafath')" />
+        @if (active) {
+          <div class="card card-p">
+            <h3 class="h3">{{ 'account.stay.selfCheckout' | translate }}</h3>
+            <p class="small muted mt-4 lh">{{ 'account.stay.selfCheckoutHint' | translate }}</p>
+            <button type="button" class="btn btn-primary btn-block mt-16" (click)="dialog.set('checkout')">
+              <app-icon name="door-open" size="sm" />{{ 'account.stay.checkoutButton' | translate }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  @switch (dialog()) {
+    @case ('guide') {
+      <app-house-guide-dialog [propertyName]="p | loc" [guide]="p.guideAr" [houseRules]="p.houseRulesAr" (closed)="dialog.set(null)" />
+    }
+    @case ('issue') {
+      <app-report-issue-dialog [bookingId]="s.bookingId" (reported)="onReported()" (closed)="dialog.set(null)" />
+    }
+    @case ('checkout') {
+      <app-self-checkout-dialog [bookingId]="s.bookingId" (checkedOut)="onCheckedOut()" (closed)="dialog.set(null)" />
+    }
+    @case ('nafath') {
+      <app-nafath-dialog (verified)="onIdentityVerified()" (closed)="dialog.set(null)" />
+    }
+  }
+  @if (requestType(); as type) {
+    <app-stay-request-dialog
+      [bookingId]="s.bookingId"
+      [type]="type"
+      [checkInTime]="s.checkIn.time"
+      [checkOutTime]="s.checkOut.time"
+      (requested)="onRequested($event)"
+      (closed)="requestType.set(null)"
+    />
+  }
+} @else if (notStarted(); as wait) {
+  <div class="container">
+    <div class="card mt-24">
+      <app-empty-state
+        icon="calendar-days"
+        [title]="'account.stay.notStarted.title' | translate: { date: (wait.checkIn | appDate: 'medium') }"
+        [subtitle]="(wait.daysUntil | plural: 'account.stay.notStarted.days') + ' — ' + ('account.stay.notStarted.hint' | translate)"
+      >
+        <a class="btn btn-primary mt-16" routerLink="/account/bookings">{{ 'account.nav.bookings' | translate }}</a>
+      </app-empty-state>
+    </div>
+  </div>
+} @else if (notActive()) {
+  <div class="container">
+    <div class="card mt-24">
+      <app-empty-state icon="calendar-check" [title]="'account.stay.notActive.title' | translate" [subtitle]="'account.stay.notActive.hint' | translate">
+        <div class="row wrap gap-8 mt-16 state-actions">
+          <a class="btn btn-primary" routerLink="/account/bookings">{{ 'account.nav.bookings' | translate }}</a>
+          <a class="btn btn-ghost" [routerLink]="['/invoice', id()]">{{ 'account.titles.invoice' | translate }}</a>
+        </div>
+      </app-empty-state>
+    </div>
+  </div>
+} @else {
+  <div class="container">
+    <div class="card mt-24">
+      <app-load-state [error]="stay.error()" (retry)="stay.reload()">
+        <a class="btn btn-ghost mt-16" routerLink="/account/bookings">{{ 'account.nav.bookings' | translate }}</a>
+      </app-load-state>
+    </div>
+  </div>
+}

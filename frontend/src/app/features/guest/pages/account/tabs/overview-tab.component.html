@@ -1,0 +1,104 @@
+<div class="stack-lg">
+  @if (activeStay(); as stay) {
+    <a class="hero-card row between wrap stay-hero" [routerLink]="['/stay', stay.id]">
+      <div class="row gap-12">
+        <span class="li-ic key-ic"><app-icon name="key-round" /></span>
+        <div>
+          <div class="xs gold b">
+            {{ 'account.overview.currentStayUntil' | translate: { date: (stay.checkOut | appDate: 'medium'), time: (stay.checkOutTime | appDate: 'time') } }}
+          </div>
+          <div class="bb lg">{{ stay.property | loc }}</div>
+        </div>
+      </div>
+      <span class="btn btn-gold btn-sm">{{ 'account.overview.openDoorMore' | translate }} <app-icon name="arrow-left" size="sm" [mirror]="true" /></span>
+    </a>
+  }
+
+  <div class="grid g4">
+    <app-stat-tile icon="calendar" [value]="bookingsTotal()" [label]="'account.nav.bookings' | translate" />
+    <app-stat-tile
+      icon="wallet"
+      tone="gold"
+      [value]="wallet.balance() !== null ? (wallet.balance() | sar) : '—'"
+      [label]="'account.overview.walletBalance' | translate"
+      [sub]="loyalty.hasValue() ? ('account.overview.cashbackSub' | translate: { rate: loyalty.value().tier.cashbackPercent }) : ''"
+    />
+    <app-stat-tile
+      icon="star"
+      [value]="loyalty.hasValue() ? (loyalty.value().points.balance | num) : '—'"
+      [label]="'account.overview.myPoints' | translate"
+      [sub]="loyalty.hasValue() ? '= ' + (loyalty.value().redemption.redeemableValue | sar) : ''"
+    />
+    <app-stat-tile icon="award" tone="black" [value]="reviewsTotal()" [label]="'account.nav.reviews' | translate" [sub]="'account.overview.publishedReviews' | translate" />
+  </div>
+
+  <div class="grid g-2-1 split">
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'account.overview.recentBookings' | translate }}</h3>
+        <a class="link" routerLink="/account/bookings">{{ 'account.overview.viewAll' | translate }}</a>
+      </div>
+      @if (recent.hasValue()) {
+        <div class="stack-sm">
+          @for (b of recent.value().items; track b.id) {
+            <a class="li" routerLink="/account/bookings">
+              @if (cover(b.property); as url) {
+                <img class="li-img" [src]="url" alt="" />
+              }
+              <div class="grow min-0">
+                <div class="b small truncate">{{ b.property | loc }}</div>
+                <div class="xs muted row gap-4"><app-icon name="map-pin" size="sm" />{{ b.property.city | loc }} • {{ b.checkIn | appDate: 'medium' }}</div>
+                <div class="mt-4"><app-status-pill domain="booking" [code]="b.status" /></div>
+              </div>
+              <div class="end-col">
+                <div class="bb small">{{ b.pricing.total | sar }}</div>
+                <div class="xs muted ltr">{{ b.number }}</div>
+              </div>
+            </a>
+          } @empty {
+            <app-empty-state icon="calendar" [title]="'account.bookings.emptyTitle' | translate" />
+          }
+        </div>
+      } @else {
+        <app-load-state [error]="recent.error()" (retry)="recent.reload()" />
+      }
+    </div>
+
+    <div class="hero-card">
+      @if (loyalty.hasValue()) {
+        @let l = loyalty.value();
+        <div class="row gold b small"><app-icon name="crown" />{{ 'account.overview.tierLevel' | translate: { tier: (l.tier | loc) } }}</div>
+        <div class="h1 mt-12">{{ 'account.points.pointsCount' | translate: { count: (l.points.balance | num) } }}</div>
+        <div class="small soft-white">
+          @if (l.nextTier; as next) {
+            {{ 'account.overview.pointsToUpgrade' | translate: { count: (next.pointsNeeded | num), tier: (next | loc) } }}
+          } @else {
+            {{ 'account.overview.topTier' | translate }}
+          }
+        </div>
+        <div class="glass mt-24">
+          <div class="row between xs mb-8">
+            <span>{{ 'account.overview.progress' | translate }}</span><span>{{ l.progressPercent | num: 0 }}%</span>
+          </div>
+          <div class="bar dark"><div [style.width.%]="l.progressPercent"></div></div>
+        </div>
+        <p class="xs mt-16 lh faint">{{ 'account.overview.earnRule' | translate: { points: l.earning.pointsPer100Sar, rate: l.tier.cashbackPercent } }}</p>
+      } @else {
+        <app-load-state [error]="loyalty.error()" (retry)="loyalty.reload()" />
+      }
+    </div>
+  </div>
+
+  @if (pendingReview(); as pending) {
+    <div class="notice amber row between wrap review-notice">
+      <div class="row gap-12">
+        <span class="li-ic star-ic"><app-icon name="star" /></span>
+        <div>
+          <div class="b">{{ 'account.overview.rateLastStay' | translate }}</div>
+          <div class="xs">{{ 'account.overview.rateLastStaySub' | translate: { title: (pending.property | loc), points: pending.rewardPoints } }}</div>
+        </div>
+      </div>
+      <a class="btn btn-primary btn-sm" [routerLink]="['/review', pending.bookingId]">{{ 'account.overview.rateNow' | translate }}</a>
+    </div>
+  }
+</div>

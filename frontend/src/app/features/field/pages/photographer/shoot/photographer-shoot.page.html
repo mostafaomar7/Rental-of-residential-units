@@ -1,0 +1,134 @@
+@if (shoot(); as s) {
+  <app-photographer-shell [title]="s.property.nameAr" [subtitle]="s.title" back="/photographer">
+    <div class="card card-p-sm">
+      <div class="row between">
+        <span class="bb">{{ s.property.nameAr }}@if (s.unit) { • {{ s.unit.name }}}</span>
+        <app-status-pill domain="task" [code]="s.status" />
+      </div>
+      @if (s.property.address) {
+        <div class="xs muted mt-8 row-top info"><app-icon name="map-pin" size="sm" />{{ s.property.address }}</div>
+      }
+      <div class="xs muted mt-4 row gap-4">
+        <app-icon name="calendar" size="sm" />{{ s.dueAt | appDate: 'dateTime' }}
+        @if (s.overdue) {
+          • <span class="red b">{{ 'field.common.overdue' | translate }}</span>
+        }
+      </div>
+      @if (s.property.navigationUrl) {
+        <a class="btn btn-primary btn-sm btn-block mt-12" target="_blank" rel="noopener" [href]="s.property.navigationUrl">
+          <app-icon name="navigation" size="sm" />{{ 'field.common.navigate' | translate }}
+        </a>
+      }
+    </div>
+
+    @if (s.notes) {
+      <div class="notice gold mt-12 small">
+        <app-icon name="message-square" />
+        <div>{{ s.notes }}</div>
+      </div>
+    }
+
+    @if (s.reviewNote) {
+      <div class="notice mt-12 small" [class.red]="retake()" [class.green]="!retake()">
+        <app-icon [name]="retake() ? 'rotate-ccw' : 'badge-check'" />
+        <div>
+          <b>{{ 'field.photographer.shoot.qaFeedback' | translate }}</b> {{ s.reviewNote }}
+        </div>
+      </div>
+    }
+
+    @switch (s.status) {
+      @case ('BLOCKED') {
+        <div class="notice red mt-12 small">
+          <app-icon name="ban" />
+          <div><b>{{ 'field.task.blockedNotice' | translate }}</b> {{ s.blockedReason }}</div>
+        </div>
+      }
+      @case ('CANCELLED') {
+        <div class="notice red mt-12 small">
+          <app-icon name="x-circle" />
+          <div>{{ 'field.task.cancelledNotice' | translate }}</div>
+        </div>
+      }
+    }
+
+    @if (startable()) {
+      <button type="button" class="btn btn-gold btn-lg btn-block mt-16" [disabled]="!!work.busy()" (click)="work.start()">
+        <app-icon name="timer" size="sm" />{{ (work.busy() === 'start' ? 'field.common.sending' : s.status === 'BLOCKED' ? 'field.task.resume' : 'field.task.start') | translate }}
+      </button>
+    }
+
+    @if (s.checklist.length) {
+      <div class="row between mt-16">
+        <h3 class="bb">{{ 'field.photographer.shoot.shotList' | translate }}</h3>
+        <span class="xs b">{{ shotsDone() }}/{{ s.checklist.length }}</span>
+      </div>
+      <app-checklist class="mt-8" [items]="s.checklist" [disabled]="!workable()" [saving]="work.savingKeys()" (toggled)="work.toggle($event)" />
+    }
+
+    <div class="row between mt-16">
+      <h3 class="bb">{{ 'field.task.photos' | translate: { count: s.photos.length } }}</h3>
+      @if (rejected().length) {
+        <span class="pill pill-red">{{ 'field.photographer.shoot.rejectedCount' | translate: { count: rejected().length } }}</span>
+      }
+    </div>
+    @for (shot of shots(); track shot.item?.key ?? '') {
+      @if (shot.photos.length || workable()) {
+        <div class="small b mt-12">{{ shot.item ? (shot.item | loc: 'label') : ('field.photographer.shoot.otherPhotos' | translate) }}</div>
+        <div class="photo-grid mt-8">
+          @for (p of shot.photos; track p.id) {
+            <div class="ph">
+              <img [authSrc]="p.thumbUrl" alt="" />
+              @switch (p.review) {
+                @case ('APPROVED') {
+                  <span class="pill pill-green-solid">{{ 'field.photographer.shoot.badge.APPROVED' | translate }}</span>
+                }
+                @case ('REJECTED') {
+                  <span class="pill pill-red-solid">{{ (closed() ? 'field.photographer.shoot.badge.REJECTED_CLOSED' : 'field.photographer.shoot.badge.REJECTED') | translate }}</span>
+                }
+                @case ('PENDING') {
+                  <span class="pill pill-amber">{{ 'field.photographer.shoot.badge.PENDING' | translate }}</span>
+                }
+              }
+            </div>
+          }
+          @if (workable()) {
+            <label class="photo-add" [class.disabled]="!!work.busy()">
+              <app-icon name="upload" size="lg" />{{ (work.busy() === 'upload' ? 'field.task.uploading' : 'field.task.upload') | translate }}
+              <input type="file" accept="image/*" multiple [disabled]="!!work.busy()" (change)="upload($event, shot.item)" />
+            </label>
+          }
+        </div>
+      }
+    }
+    @for (p of rejected(); track p.id) {
+      @if (p.reviewReason) {
+        <div class="xs red b mt-8">• {{ p.reviewReason }}</div>
+      }
+    }
+
+    @switch (s.status) {
+      @case ('DONE') {
+        <div class="notice green mt-16 small">
+          <app-icon name="badge-check" />
+          <div>{{ 'field.photographer.shoot.published' | translate }}</div>
+        </div>
+      }
+      @case ('SUBMITTED') {
+        <div class="notice gold mt-16 small">
+          <app-icon name="hourglass" />
+          <div>{{ 'field.photographer.shoot.inQa' | translate }}</div>
+        </div>
+      }
+      @case ('IN_PROGRESS') {
+        <button type="button" class="btn btn-gold btn-lg btn-block mt-16" [disabled]="!!work.busy() || work.savingKeys().size > 0" (click)="submit()">
+          <app-icon name="send" size="sm" />{{ (work.busy() === 'finish' ? 'field.common.sending' : 'field.photographer.shoot.submit') | translate }}
+        </button>
+      }
+    }
+  </app-photographer-shell>
+} @else {
+  <app-photographer-shell [title]="'field.photographer.shoot.fallbackTitle' | translate" back="/photographer">
+    <app-load-state [error]="resource.error()" (retry)="resource.reload()" />
+  </app-photographer-shell>
+}

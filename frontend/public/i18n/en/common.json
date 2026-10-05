@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "Rawaaf",
+    "mark": "R",
+    "homeLabel": "Rawaaf — Home"
+  },
+  "common": {
+    "sar": "SAR {{amount}}",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "back": "Back",
+    "search": "Search",
+    "alerts": "Alerts",
+    "sidebar": "Sidebar",
+    "copied": "Copied",
+    "all": "All",
+    "none": "—",
+    "today": "Today",
+    "exitToGuestSite": "Exit to guest website",
+    "mobileFirstNotice": "A mobile-first field app. On desktop it is shown inside a phone frame; try viewing the page at 390px wide.",
+    "prototypeTag": "Prototype — sample data",
+    "switchLanguage": "Switch language to Arabic",
+    "otherLanguage": "عربي",
+    "ratingOutOf5": "{{value}} out of 5",
+    "nights": {
+      "one": "1 night",
+      "other": "{{count}} nights"
+    },
+    "guests": {
+      "one": "1 guest",
+      "other": "{{count}} guests"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "body": "The link is wrong or the page has moved.",
+      "home": "Back to home"
+    }
+  },
+  "footer": {
+    "tagline": "© {{year}} Rawaaf — short stays & smart operations • Digital wallet • Smart access • Verified reviews",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "privacyNotIncluded": "Privacy policy page (not included in the prototype)",
+    "termsNotIncluded": "Terms & conditions page (not included in the prototype)",
+    "whatsappSupport": "WhatsApp support"
+  },
+  "demo": {
+    "toggleLabel": "Switch demo portal",
+    "switchPortal": "Switch portal",
+    "title": "Prototype portals",
+    "subtitle": "Sign in with the backend demo accounts",
+    "switched": "You are now in: {{role}}",
+    "roles": {
+      "guest-visitor": {
+        "label": "Guest — visitor",
+        "sub": "Browse without signing in"
+      },
+      "guest": {
+        "label": "Guest — signed in",
+        "sub": "0500000006 • current stay, bookings, wallet"
+      },
+      "owner": {
+        "label": "Owner",
+        "sub": "0500000002 • properties, revenue, statements"
+      },
+      "operator": {
+        "label": "Operator",
+        "sub": "0500000003 • operations, pricing, locks"
+      },
+      "supervisor": {
+        "label": "Field supervisor",
+        "sub": "0500000004 • readiness & inspection tasks"
+      },
+      "photographer": {
+        "label": "Photographer",
+        "sub": "0500000005 • photo shoots"
+      },
+      "admin": {
+        "label": "Platform admin",
+        "sub": "0500000001 • approvals, settings, integrations"
+      }
+    }
+  }
+}

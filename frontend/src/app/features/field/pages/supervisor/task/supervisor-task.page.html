@@ -1,0 +1,171 @@
+@if (task(); as t) {
+  <app-supervisor-shell [title]="t.title" [subtitle]="t.property.nameAr" back="/supervisor">
+    <div class="card card-p-sm">
+      <div class="row between">
+        <app-task-type-pill [type]="t.type" [compact]="true" />
+        <span class="row gap-4">
+          @if (t.overdue) {
+            <span class="pill pill-red">{{ 'field.common.overdue' | translate }}</span>
+          }
+          <app-status-pill domain="task" [code]="t.status" />
+        </span>
+      </div>
+      <div class="bb mt-8">{{ t.property.nameAr }}@if (t.unit) { • {{ t.unit.name }}}</div>
+      @if (t.property.address) {
+        <div class="xs muted row gap-4 mt-4"><app-icon name="map-pin" size="sm" />{{ t.property.address }}</div>
+      }
+      <div class="xs muted row gap-4 mt-4">
+        <app-icon name="clock" size="sm" />{{ t.dueAt | appDate: 'dateTime' }}
+        @if (t.assignee) {
+          • <app-icon name="user" size="sm" />{{ t.assignee.fullName }}
+        } @else {
+          • {{ 'field.common.unassigned' | translate }}
+        }
+      </div>
+      @if (t.property.navigationUrl) {
+        <a class="btn btn-primary btn-sm btn-block mt-12" [href]="t.property.navigationUrl" target="_blank" rel="noopener">
+          <app-icon name="navigation" size="sm" />{{ 'field.common.navigate' | translate }}
+        </a>
+      }
+    </div>
+
+    @if (t.booking; as b) {
+      <div class="notice blue mt-12 small">
+        <app-icon [name]="t.type === 'INSPECTION' ? 'log-out' : 'log-in'" />
+        <div>
+          {{ 'field.supervisor.task.booking' | translate: { number: b.number } }} <b>{{ b.guestName }}</b><br />
+          {{ 'field.supervisor.task.checkIn' | translate }} {{ b.checkIn | appDate: 'short' }} • {{ b.checkInTime | appDate: 'time' }}
+        </div>
+      </div>
+    }
+
+    @if (t.notes) {
+      <div class="notice gold mt-12 small">
+        <app-icon name="message-square" />
+        <div>{{ t.notes }}</div>
+      </div>
+    }
+
+    @switch (t.status) {
+      @case ('BLOCKED') {
+        <div class="notice red mt-12 small">
+          <app-icon name="ban" />
+          <div><b>{{ 'field.task.blockedNotice' | translate }}</b> {{ t.blockedReason }}</div>
+        </div>
+      }
+      @case ('CANCELLED') {
+        <div class="notice red mt-12 small">
+          <app-icon name="x-circle" />
+          <div>{{ 'field.task.cancelledNotice' | translate }}</div>
+        </div>
+      }
+    }
+
+    @if (startable()) {
+      <button type="button" class="btn btn-gold btn-lg btn-block mt-16" [disabled]="!!work.busy()" (click)="work.start()">
+        <app-icon name="timer" size="sm" />{{ (work.busy() === 'start' ? 'field.common.sending' : t.status === 'BLOCKED' ? 'field.task.resume' : 'field.task.start') | translate }}
+      </button>
+    }
+
+    @if (t.checklist.length) {
+      <div class="row between mt-16">
+        <h3 class="bb">{{ 'field.task.checklist' | translate }}</h3>
+        <span class="xs b">{{ progress().done }}/{{ progress().total }}</span>
+      </div>
+      <div class="bar thin mt-8"><div class="fill" [style.width.%]="progress().percent"></div></div>
+      <app-checklist class="mt-12" [items]="t.checklist" [disabled]="!workable()" [saving]="work.savingKeys()" (toggled)="work.toggle($event)" />
+    }
+
+    <h3 class="bb mt-16">{{ 'field.task.photos' | translate: { count: t.photos.length } }}</h3>
+    <div class="photo-grid mt-8">
+      @for (p of t.photos; track p.id) {
+        <div class="ph"><img [authSrc]="p.thumbUrl" alt="" /></div>
+      }
+      @if (workable()) {
+        <label class="photo-add" [class.disabled]="!!work.busy()">
+          <app-icon name="camera" size="lg" />{{ (work.busy() === 'upload' ? 'field.task.uploading' : 'field.task.capture') | translate }}
+          <input type="file" accept="image/*" capture="environment" multiple [disabled]="!!work.busy()" (change)="capture($event)" />
+        </label>
+      }
+    </div>
+
+    @if (workable()) {
+      <div class="mt-16">
+        <app-field [label]="'field.supervisor.task.notes' | translate" for="sp-n">
+          <textarea
+            id="sp-n"
+            class="textarea notes"
+            [value]="notes()"
+            [placeholder]="'field.supervisor.task.notesPlaceholder' | translate"
+            (input)="notes.set(value($event))"
+          ></textarea>
+        </app-field>
+      </div>
+    }
+
+    <div class="stack-sm mt-16">
+      @switch (t.status) {
+        @case ('DONE') {
+          <div class="notice green small">
+            <app-icon name="check-circle-2" />
+            <div>{{ 'field.supervisor.task.approved' | translate }}</div>
+          </div>
+        }
+        @case ('SUBMITTED') {
+          <div class="notice gold small">
+            <app-icon name="hourglass" />
+            <div>{{ 'field.supervisor.task.awaitingApproval' | translate }}</div>
+          </div>
+        }
+        @case ('IN_PROGRESS') {
+          <button
+            type="button"
+            class="btn btn-lg btn-block"
+            [class.btn-success]="progress().done === progress().total"
+            [class.btn-primary]="progress().done !== progress().total"
+            [disabled]="!!work.busy() || work.savingKeys().size > 0"
+            (click)="complete()"
+          >
+            <app-icon name="badge-check" size="sm" />{{ (work.busy() === 'finish' ? 'field.common.sending' : completeLabel()) | translate }}
+          </button>
+          <button type="button" class="btn btn-ghost btn-block" [disabled]="!!work.busy()" (click)="blocking.set(true)">
+            <app-icon name="ban" size="sm" />{{ 'field.task.block' | translate }}
+          </button>
+        }
+      }
+      @if (t.unit || t.booking) {
+        <button type="button" class="btn btn-danger btn-block" (click)="reporting.set(true)">
+          <app-icon name="triangle-alert" size="sm" />{{ 'field.supervisor.task.report' | translate }}
+        </button>
+      }
+    </div>
+
+    @if (reporting()) {
+      <app-report-issue-modal [task]="t" (closed)="reporting.set(false)" />
+    }
+
+    @if (blocking()) {
+      <app-modal size="sm" [title]="'field.task.blockTitle' | translate" (closed)="blocking.set(false)">
+        <app-field [label]="'field.task.blockReason' | translate" for="sp-b">
+          <textarea
+            id="sp-b"
+            class="textarea notes"
+            [value]="blockReason()"
+            [placeholder]="'field.task.blockPlaceholder' | translate"
+            (input)="blockReason.set(value($event))"
+          ></textarea>
+        </app-field>
+        <ng-container modal-footer>
+          <button type="button" class="btn btn-danger" [disabled]="!!work.busy() || !blockReason().trim()" (click)="block()">
+            {{ (work.busy() === 'block' ? 'field.common.sending' : 'field.task.blockSend') | translate }}
+          </button>
+          <button type="button" class="btn btn-ghost" (click)="blocking.set(false)">{{ 'common.cancel' | translate }}</button>
+        </ng-container>
+      </app-modal>
+    }
+  </app-supervisor-shell>
+} @else {
+  <app-supervisor-shell [title]="'field.task.fallbackTitle' | translate" back="/supervisor">
+    <app-load-state [error]="resource.error()" (retry)="resource.reload()" />
+  </app-supervisor-shell>
+}

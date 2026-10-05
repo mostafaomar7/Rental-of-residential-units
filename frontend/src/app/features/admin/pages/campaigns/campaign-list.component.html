@@ -1,0 +1,84 @@
+<div class="row between wrap mb-16">
+  <app-tabs [items]="filters" [(active)]="status" />
+  <button type="button" class="btn btn-primary" (click)="editing.set(null)"><app-icon name="plus" size="sm" />{{ 'admin.campaigns.new' | translate }}</button>
+</div>
+
+<div class="card card-p">
+  <app-resource-state [resource]="campaigns" />
+  @if (campaigns.hasValue()) {
+    @let page = campaigns.value();
+    @if (page.items.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'admin.campaigns.cols.campaign' | translate }}</th>
+              <th>{{ 'admin.campaigns.cols.channel' | translate }}</th>
+              <th>{{ 'admin.campaigns.cols.budget' | translate }}</th>
+              <th>{{ 'admin.campaigns.cols.status' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of page.items; track c.id) {
+              <tr>
+                <td>
+                  <div class="b">{{ c.name }}</div>
+                  <div class="xs muted">
+                    {{ 'admin.common.range' | translate: { from: (c.startsOn | appDate), to: (c.endsOn | appDate) } }} • <span class="ltr">{{ 'admin.campaigns.utmValue' | translate: { value: c.utmCampaign } }}</span>
+                  </div>
+                  @if (c.goal) {
+                    <div class="xs muted" dir="auto">{{ c.goal }}</div>
+                  }
+                </td>
+                <td><span class="pill pill-gray">{{ channelKey(c.channel) | translate }}</span></td>
+                <td class="nowrap">
+                  <div class="small b">{{ c.spend | sar }}</div>
+                  <div class="bar thin budget-bar"><div [style.width.%]="spentPct(c)"></div></div>
+                  <div class="xs muted">{{ 'admin.campaigns.ofBudget' | translate: { amount: (c.budget | sar) } }}</div>
+                </td>
+                <td>
+                  <app-status-pill domain="campaign" [code]="c.status" />
+                  @if (c.status === 'ACTIVE' && !c.isRunning) {
+                    <div class="xs muted mt-4">{{ 'admin.campaigns.outsideDates' | translate }}</div>
+                  }
+                </td>
+                <td class="nowrap">
+                  <button type="button" class="btn btn-ghost btn-icon btn-xs" [attr.aria-label]="'admin.campaigns.performance.open' | translate" (click)="viewing.set(c)">
+                    <app-icon name="trending-up" size="sm" />
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-icon btn-xs" [attr.aria-label]="'admin.campaigns.edit' | translate" (click)="editing.set(c)">
+                    <app-icon name="pencil" size="sm" />
+                  </button>
+                  @switch (c.status) {
+                    @case ('ACTIVE') {
+                      <button type="button" class="btn btn-ghost btn-xs" [disabled]="busy()" (click)="setStatus(c, 'PAUSED')">{{ 'admin.campaigns.pause' | translate }}</button>
+                    }
+                    @case ('ARCHIVED') {}
+                    @default {
+                      <button type="button" class="btn btn-success btn-xs" [disabled]="busy()" (click)="setStatus(c, 'ACTIVE')">{{ 'admin.campaigns.activate' | translate }}</button>
+                    }
+                  }
+                  @if (c.status !== 'ARCHIVED') {
+                    <button type="button" class="btn btn-ghost btn-xs" [disabled]="busy()" (click)="setStatus(c, 'ARCHIVED')">{{ 'admin.campaigns.archive' | translate }}</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="megaphone" [title]="'admin.campaigns.empty' | translate" />
+    }
+    <app-pager [meta]="page.meta" (pageChange)="currentPage.set($event)" />
+  }
+</div>
+
+@if (editing() !== undefined) {
+  <app-campaign-form-modal [campaign]="editing() ?? null" [busy]="busy()" (saved)="save($event)" (closed)="editing.set(undefined)" />
+}
+
+@if (viewing(); as c) {
+  <app-campaign-performance-modal [campaign]="c" (closed)="viewing.set(null)" />
+}

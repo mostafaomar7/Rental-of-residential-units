@@ -1,0 +1,187 @@
+{
+  "field": {
+    "titles": {
+      "supervisorTasks": "مهام المشرف",
+      "supervisorTask": "تفاصيل المهمة",
+      "supervisorLocations": "مواقع المهام",
+      "supervisorReports": "البلاغات",
+      "supervisorMe": "حسابي",
+      "photographerShoots": "جلسات التصوير",
+      "photographerShoot": "جلسة التصوير",
+      "photographerMe": "حسابي"
+    },
+    "common": {
+      "loading": "جارٍ التحميل…",
+      "retry": "إعادة المحاولة",
+      "refresh": "تحديث",
+      "sending": "جارٍ الإرسال…",
+      "overdue": "متأخرة",
+      "unassigned": "غير مسندة",
+      "navigate": "التوجه",
+      "me": "حسابي",
+      "mobile": "الجوال",
+      "email": "البريد الإلكتروني",
+      "signOut": "خروج",
+      "day": {
+        "previous": "اليوم السابق",
+        "next": "اليوم التالي",
+        "backToToday": "العودة لليوم"
+      }
+    },
+    "task": {
+      "fallbackTitle": "مهمة",
+      "start": "بدء المهمة",
+      "resume": "استئناف المهمة",
+      "checklist": "قائمة التحقق",
+      "required": "إلزامي",
+      "photos": "الصور ({{count}})",
+      "capture": "التقاط",
+      "upload": "رفع",
+      "uploading": "جارٍ الرفع…",
+      "block": "تعذّر الإنجاز — الإبلاغ عن عائق",
+      "blockTitle": "الإبلاغ عن عائق",
+      "blockReason": "السبب",
+      "blockPlaceholder": "مثال: تعذّر الدخول للوحدة، المفتاح غير موجود",
+      "blockSend": "تعليق المهمة",
+      "blockedNotice": "معلّقة:",
+      "cancelledNotice": "تم إلغاء هذه المهمة",
+      "toast": {
+        "started": "بدأت المهمة",
+        "uploaded": "تم رفع {{count}} صورة",
+        "blocked": "تم إبلاغ المشغّل بالعائق"
+      },
+      "errors": {
+        "checklistMissing": "أكمل هذه البنود أولاً: {{items}}",
+        "photosRequired": "الصور غير كافية — التقط الصور المطلوبة قبل الإنهاء"
+      }
+    },
+    "supervisor": {
+      "appName": "تطبيق المشرف الميداني",
+      "appDescription": "مهام التجهيز قبل الوصول، الفحص بعد المغادرة، قوائم التحقق بالصور، والإبلاغ عن الأضرار والبلاغات — مرتبط مباشرة بلوحة المشغّل.",
+      "tabs": {
+        "tasks": "المهام",
+        "locations": "المواقع",
+        "reports": "البلاغات",
+        "me": "حسابي"
+      },
+      "tasks": {
+        "title": "مهامي",
+        "statOpen": "مفتوحة",
+        "statClosed": "مُسلّمة",
+        "filter": {
+          "open": "للإنجاز",
+          "closed": "المُسلّمة"
+        },
+        "emptyTitle": "لا توجد مهام هنا",
+        "emptyBody": "أحسنت! كل شيء تحت السيطرة"
+      },
+      "task": {
+        "booking": "الحجز {{number}}:",
+        "checkIn": "الوصول",
+        "notes": "ملاحظات التسليم",
+        "notesPlaceholder": "أي ملاحظات للمشغّل...",
+        "approved": "تم اعتماد هذه المهمة",
+        "awaitingApproval": "أُرسلت للاعتماد — بانتظار المشغّل",
+        "declareReady": "إعلان جاهزية الوحدة",
+        "finishInspection": "إنهاء الفحص",
+        "finishTask": "إنهاء المهمة",
+        "report": "الإبلاغ عن ضرر أو مشكلة"
+      },
+      "toast": {
+        "inspectionSent": "تم إنهاء الفحص وإرساله للمشغّل",
+        "taskSent": "تم تسليم المهمة — أُبلغ المشغّل"
+      },
+      "report": {
+        "title": "بلاغ جديد",
+        "task": "المهمة",
+        "pickTask": "اختر المهمة (الوحدة) المراد الإبلاغ عنها",
+        "noTasks": "لا توجد مهام بوحدات في هذا اليوم — اختر يوماً آخر من تبويب المهام",
+        "kind": {
+          "damage": "ضرر (تحميل على الضيف)",
+          "incident": "مشكلة تشغيلية"
+        },
+        "againstBooking": "على الحجز {{number}} • {{guest}}",
+        "category": "التصنيف",
+        "severity": "الخطورة",
+        "description": "الوصف",
+        "descriptionPlaceholder": "ماذا حدث، وأين في الوحدة…",
+        "descriptionRequired": "الوصف مطلوب",
+        "amount": "المبلغ المطالب به (ر.س)",
+        "amountRequired": "أدخل المبلغ المطالب به",
+        "evidence": "صور الإثبات",
+        "addPhoto": "إضافة صورة",
+        "removePhoto": "حذف الصورة",
+        "send": "إرسال",
+        "damageSent": "تم رفع قضية الضرر للمشغّل للمراجعة",
+        "incidentSent": "تم إرسال البلاغ",
+        "photosFailed": "تم رفع البلاغ لكن تعذّر رفع الصور"
+      },
+      "locations": {
+        "title": "مواقع المهام",
+        "subtitle": "المهام المفتوحة حسب العقار",
+        "empty": "لا توجد مهام مفتوحة في هذا اليوم"
+      },
+      "reports": {
+        "title": "بلاغاتي",
+        "subtitle": "قضايا الأضرار والمشاكل",
+        "newReport": "بلاغ جديد",
+        "damages": "قضايا الأضرار",
+        "booking": "الحجز {{number}} • {{guest}}",
+        "noDamages": "لا توجد قضايا"
+      }
+    },
+    "photographer": {
+      "appName": "تطبيق المصوّر",
+      "appDescription": "جلسات التصوير المسندة، قائمة اللقطات المطلوبة، رفع الصور وإرسالها لفحص الجودة (QA) لدى إدارة المنصة، ومتابعة الملاحظات.",
+      "tabs": {
+        "shoots": "الجلسات",
+        "me": "حسابي"
+      },
+      "shoots": {
+        "title": "جلسات التصوير",
+        "hello": "مرحباً {{name}}",
+        "group": {
+          "retake": "تحتاج إعادة",
+          "todo": "للتصوير",
+          "awaitingQa": "بانتظار QA",
+          "done": "مكتملة"
+        },
+        "empty": "لا توجد جلسات في هذا اليوم"
+      },
+      "shoot": {
+        "fallbackTitle": "جلسة",
+        "qaFeedback": "ملاحظات QA:",
+        "shotList": "قائمة اللقطات",
+        "otherPhotos": "صور أخرى",
+        "rejectedCount": "{{count}} مرفوضة",
+        "badge": {
+          "APPROVED": "مقبولة",
+          "REJECTED": "تحتاج إعادة",
+          "PENDING": "QA",
+          "REJECTED_CLOSED": "مرفوضة"
+        },
+        "published": "تم قبول الصور ونشرها على صفحة الوحدة. الجلسة مكتملة، فلا يمكن إضافة صور لها — لصور إضافية تُطلب جلسة جديدة.",
+        "inQa": "أُرسلت الصور لفحص الجودة — عادةً خلال 4 ساعات",
+        "submit": "إرسال للفحص (QA)"
+      },
+      "toast": {
+        "submitted": "تم إرسال الجلسة لفحص الجودة"
+      },
+      "me": {
+        "guideLabel": "دليل معايير التصوير",
+        "view": "عرض",
+        "guide": {
+          "title": "معايير تصوير رواف",
+          "rules": {
+            "resolution": "دقة 1920px كحد أدنى، أفقي 3:2",
+            "lighting": "إضاءة نهارية طبيعية + كل الأنوار مضاءة",
+            "verticals": "خطوط رأسية مستقيمة (بدون ميلان)",
+            "declutter": "إخفاء الأغراض الشخصية والأسلاك",
+            "lock": "لقطة واضحة للقفل الذكي ولوحة الدخول",
+            "noFilters": "لا فلاتر مبالغ فيها — الصور يجب أن تطابق الواقع"
+          }
+        }
+      }
+    }
+  }
+}

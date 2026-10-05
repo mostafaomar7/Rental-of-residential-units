@@ -1,0 +1,37 @@
+@if (enabled) {
+  <button
+    type="button"
+    class="fab-demo no-print"
+    [attr.aria-expanded]="open()"
+    [attr.aria-label]="'demo.toggleLabel' | translate"
+    [disabled]="busy()"
+    (click)="toggle()"
+  >
+    <app-icon name="layers" size="sm" />
+    <span>Demo</span>
+    <span class="hide-sm">• {{ 'demo.switchPortal' | translate }}</span>
+  </button>
+
+  @if (open()) {
+    <div class="demo-menu no-print" role="menu">
+      <div class="row between demo-head">
+        <div>
+          <div class="bb">{{ 'demo.title' | translate }}</div>
+          <div class="xs muted">{{ 'demo.subtitle' | translate }}</div>
+        </div>
+        <span class="proto-tag">DEMO</span>
+      </div>
+
+      @for (role of roles; track role.id) {
+        @let active = role.id === currentRole();
+        <button type="button" class="demo-item" [class.on]="active" role="menuitem" (click)="switchTo(role)">
+          <span class="li-ic" [class.gold]="active"><app-icon [name]="role.icon" /></span>
+          <span class="grow">
+            <span class="b small d-block">{{ 'demo.roles.' + role.id + '.label' | translate }}</span>
+            <span class="xs muted">{{ 'demo.roles.' + role.id + '.sub' | translate }}</span>
+          </span>
+        </button>
+      }
+    </div>
+  }
+}

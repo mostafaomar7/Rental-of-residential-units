@@ -1,0 +1,98 @@
+<app-modal [title]="'field.supervisor.report.title' | translate" [subtitle]="task()?.property?.nameAr ?? ''" (closed)="closed.emit()">
+  @if (!task()) {
+    @if (candidates.error() || !candidates.hasValue()) {
+      <app-load-state [error]="candidates.error()" (retry)="candidates.reload()" />
+    } @else if (!candidates.value().length) {
+      <div class="notice gold small">
+        <app-icon name="info" />
+        <div>{{ 'field.supervisor.report.noTasks' | translate }}</div>
+      </div>
+    } @else {
+      <app-field [label]="'field.supervisor.report.task' | translate" for="sr-task">
+        <select id="sr-task" class="select" [value]="pickedId() ?? ''" (change)="pickedId.set(value($event) || null)">
+          <option value="">{{ 'field.supervisor.report.pickTask' | translate }}</option>
+          @for (t of candidates.value(); track t.id) {
+            <option [value]="t.id">{{ t.unit?.name }} — {{ t.property.nameAr }} • {{ t.title }}</option>
+          }
+        </select>
+      </app-field>
+    }
+  }
+
+  @if (context(); as ctx) {
+    <div class="tabs full mt-16" role="tablist">
+      @for (k of kinds(); track k) {
+        <button type="button" role="tab" class="tab grow" [class.on]="kind() === k" [attr.aria-selected]="kind() === k" (click)="kind.set(k)">
+          {{ 'field.supervisor.report.kind.' + k | translate }}
+        </button>
+      }
+    </div>
+    @if (kind() === 'damage' && ctx.booking; as b) {
+      <div class="xs muted mt-8">{{ 'field.supervisor.report.againstBooking' | translate: { number: b.number, guest: b.guestName } }}</div>
+    }
+
+    @if (kind() === 'incident') {
+      <div class="field mt-16">
+        <span class="lbl">{{ 'field.supervisor.report.category' | translate }}</span>
+        <div class="chips">
+          @for (c of categories; track c) {
+            <button type="button" class="chip chip-sm" [class.on]="category() === c" [attr.aria-pressed]="category() === c" (click)="category.set(c)">
+              {{ 'domain.api.incidentCategory.' + c | translate }}
+            </button>
+          }
+        </div>
+      </div>
+      <div class="field mt-16">
+        <span class="lbl">{{ 'field.supervisor.report.severity' | translate }}</span>
+        <div class="chips">
+          @for (s of severities; track s) {
+            <button type="button" class="chip chip-sm" [class.on]="severity() === s" [attr.aria-pressed]="severity() === s" (click)="severity.set(s)">
+              {{ 'status.severity.' + s | translate }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="stack mt-16">
+      <app-field [label]="'field.supervisor.report.description' | translate" for="sr-d">
+        <textarea
+          id="sr-d"
+          class="textarea"
+          [value]="description()"
+          [placeholder]="'field.supervisor.report.descriptionPlaceholder' | translate"
+          (input)="description.set(value($event))"
+        ></textarea>
+      </app-field>
+      @if (kind() === 'damage') {
+        <app-field [label]="'field.supervisor.report.amount' | translate" for="sr-a">
+          <input id="sr-a" class="input" type="number" min="0" inputmode="decimal" [value]="amount()" (input)="amount.set(value($event))" />
+        </app-field>
+      }
+    </div>
+
+    <div class="field mt-16">
+      <span class="lbl">{{ 'field.supervisor.report.evidence' | translate }}</span>
+      <div class="thumbs-row">
+        @for (e of evidence(); track e.preview) {
+          <button type="button" class="thumb" [attr.aria-label]="'field.supervisor.report.removePhoto' | translate" (click)="removePhoto(e)">
+            <img [src]="e.preview" alt="" />
+          </button>
+        }
+        @if (evidence().length < maxPhotos) {
+          <label class="thumb-ph" [attr.aria-label]="'field.supervisor.report.addPhoto' | translate">
+            <app-icon name="camera" />
+            <input type="file" accept="image/*" capture="environment" multiple (change)="addPhotos($event)" />
+          </label>
+        }
+      </div>
+    </div>
+  }
+
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-primary" [disabled]="busy() || !context()" (click)="submit()">
+      {{ (busy() ? 'field.common.sending' : 'field.supervisor.report.send') | translate }}
+    </button>
+    <button type="button" class="btn btn-ghost" (click)="closed.emit()">{{ 'common.cancel' | translate }}</button>
+  </ng-container>
+</app-modal>

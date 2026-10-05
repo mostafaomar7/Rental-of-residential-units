@@ -1,0 +1,330 @@
+{
+  "guest": {
+    "titles": {
+      "home": "Stays",
+      "search": "Search",
+      "property": "Unit details",
+      "payment": "Payment",
+      "testGateway": "Test gateway"
+    },
+    "nav": {
+      "main": "Main navigation",
+      "units": "Stays",
+      "account": "My account",
+      "currentStay": "Current stay",
+      "favorites": "Favourites",
+      "login": "Sign in",
+      "advancedSearch": "Advanced search"
+    },
+    "search": {},
+    "card": {
+      "discount": "{{percent}}% off",
+      "perNight": "/ night",
+      "compare": "Compare",
+      "view": "View",
+      "featured": "Featured"
+    },
+    "favorites": {
+      "toggle": "Add to favourites",
+      "added": "Added to favourites",
+      "removed": "Removed from favourites"
+    },
+    "compare": {
+      "limit": "You can compare up to {{max}} units",
+      "region": "Comparison",
+      "count": "Comparing {{count}} units",
+      "hint": "Pick up to {{max}} units to compare",
+      "now": "Compare now",
+      "clear": "Clear comparison",
+      "needTwo": "Pick at least two units to compare",
+      "title": "Compare units",
+      "subtitle": "The best value in each row is highlighted in green",
+      "rows": {
+        "price": "Price / night",
+        "rating": "Rating",
+        "city": "City",
+        "type": "Type",
+        "capacity": "Guests / rooms",
+        "amenities": "Amenities",
+        "operatingModel": "Operating model",
+        "cancellation": "Cancellation policy",
+        "times": "Check-in / check-out"
+      },
+      "capacityValue": "{{guests}} guests • {{rooms}} rooms • {{baths}} baths",
+      "viewAndBook": "View & book",
+      "timesValue": "{{checkIn}} / {{checkOut}}"
+    },
+    "dates": {
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "invalidRange": "Check-out must be after check-in",
+      "autoAdjusted": "Check-out date adjusted automatically"
+    },
+    "home": {
+      "badge": "Available now • Smart access • {{cashback}}% cashback",
+      "title": "Rawaaf stays",
+      "titleAccent": "Smart access, wallet, points",
+      "intro": "Book your apartment or villa in minutes, verify your identity with Nafath and get your digital key instantly. Pay from your wallet and collect points that take you from Bronze to Gold.",
+      "dashboard": "My dashboard",
+      "explore": "Explore stays",
+      "quickSearch": {
+        "label": "Quick search",
+        "city": "City",
+        "allCities": "All cities",
+        "guests": "Guests",
+        "submit": "Check availability"
+      },
+      "filter": "Filter:",
+      "allTypes": "All types",
+      "compareCount": "Compare ({{count}}/{{max}})",
+      "clearCompare": "Clear",
+      "empty": {
+        "title": "No matching stays",
+        "body": "Try a different city or unit type",
+        "clear": "Clear filters"
+      },
+      "features": {
+        "smartAccess": {
+          "title": "Keyless smart access",
+          "body": "Your digital key is ready on your stay page, valid from check-in time on arrival day until check-out time on departure day."
+        },
+        "nafath": {
+          "title": "Identity verified with Nafath",
+          "body": "Secure identity verification protects guests and owners and speeds up regulatory reporting."
+        },
+        "wallet": {
+          "title": "Wallet + {{cashback}}% cashback",
+          "body": "Pay from your wallet, get {{cashback}}% back on every booking and redeem your points for credit."
+        }
+      },
+      "featured": "Featured stays",
+      "recommended": "Recommended for you",
+      "allCities": "All cities"
+    },
+    "searchPage": {
+      "heading": "{{city}} • {{from}} → {{to}}",
+      "allCities": "All cities",
+      "sort": "Sort:",
+      "sorts": {
+        "rating": "Top rated",
+        "recommended": "Recommended",
+        "price_asc": "Lowest price",
+        "price_desc": "Highest price",
+        "newest": "Newest"
+      },
+      "filtersTitle": "Search & availability",
+      "clear": "Clear",
+      "keyword": "Keyword",
+      "keywordPlaceholder": "District, unit name...",
+      "city": "City",
+      "guestsCount": "Guests",
+      "decrease": "Decrease",
+      "increase": "Increase",
+      "type": "Unit type",
+      "maxPrice": "Max price per night:",
+      "empty": {
+        "title": "No results",
+        "body": "Try other dates, fewer guests or fewer filters",
+        "clear": "Clear filters"
+      },
+      "resultsCount": "{{count}} results",
+      "noLimit": "No limit",
+      "operatingModel": "Operating model",
+      "amenities": "Amenities",
+      "stayTotal": "Total {{total}}"
+    },
+    "property": {
+      "back": "Go back",
+      "breadcrumb": "Breadcrumb",
+      "reviewsCount": "({{count}} reviews)",
+      "share": "Share",
+      "linkCopied": "Unit link copied",
+      "gallery": {
+        "open": "View photos",
+        "photo": "Photo {{n}}",
+        "all": "All photos ({{count}})",
+        "subtitle": "Photos true to reality • Quality checked"
+      },
+      "tabs": {
+        "details": "Details",
+        "amenities": "Amenities",
+        "policies": "Policies",
+        "reviews": "Reviews ({{count}})",
+        "availability": "Availability"
+      },
+      "details": {
+        "bedrooms": "{{count}} bedrooms",
+        "baths": "{{count}} bathrooms",
+        "rating": "{{rating}} ({{count}} reviews)",
+        "location": "Location",
+        "mapLabel": "Illustrative map",
+        "openMaps": "Open in Maps",
+        "locationHint": "The exact address is shown after your booking is paid.",
+        "models": {
+          "SUPERVISED": "A field supervisor checks the unit is ready before you arrive and is available when needed.",
+          "SELF_SERVICE": "A fully self-service stay: contactless check-in and check-out with a digital key."
+        },
+        "times": "Check-in & check-out",
+        "timesBody": "Check-in from {{checkIn}} • check-out until {{checkOut}}",
+        "units": "Units",
+        "fromPrice": "from {{price}} / night"
+      },
+      "policies": {
+        "checkTimes": {
+          "title": "Check-in & check-out times",
+          "checkIn": "Check-in from {{time}}",
+          "checkOut": "Check-out until {{time}}",
+          "changes": "Early check-in and late check-out on request, subject to availability and a fee"
+        },
+        "rules": {
+          "title": "House rules"
+        },
+        "damage": {
+          "title": "Damage policy"
+        },
+        "cancellation": {
+          "title": "Cancellation policy",
+          "rule": "{{percent}}% refund when cancelled at least {{hours}} hours before check-in",
+          "ruleAnyTime": "{{percent}}% refund when cancelled later"
+        },
+        "identity": {
+          "title": "Identity & data",
+          "items": {
+            "1": "Identity verification via Nafath is required before the digital key is issued",
+            "2": "Guest details are reported to the SHOMOOS platform as required by law",
+            "3": "Your data is protected and only shared with the owner as far as the stay requires"
+          }
+        },
+        "none": "No specific rules from the host.",
+        "version": "Policy version {{version}}"
+      },
+      "reviews": {
+        "summary": "{{count}} reviews",
+        "prompt": "You stayed here — share your review and earn {{points}} points",
+        "rateNow": "Review now",
+        "sorts": {
+          "highest": "Highest rated",
+          "photos": "With photos",
+          "newest": "Latest",
+          "lowest": "Lowest rated"
+        },
+        "empty": "No reviews match this filter",
+        "guestPhoto": "Guest photo",
+        "ownerReply": "Owner's reply:",
+        "stayedIn": "Stayed {{month}} • {{unit}}",
+        "more": "Show more reviews"
+      },
+      "book": {
+        "guests": "Guests",
+        "available": "Available for the selected dates",
+        "rewards": "+ {{cashback}} cashback to your wallet • {{points}} points",
+        "bookNow": "Book now",
+        "perksTitle": "Why book with Rawaaf",
+        "perks": {
+          "1": "Secure payment by wallet or card",
+          "2": "Instant digital key after Nafath verification",
+          "3": "Cashback to your wallet + loyalty points",
+          "4": "E-invoice with VAT"
+        },
+        "unit": "Unit"
+      },
+      "host": {
+        "label": "Host",
+        "whatsapp": "Chat on WhatsApp",
+        "whatsappText": "Enquiry about {{title}}",
+        "memberSince": "Host since {{year}}",
+        "license": "Licence {{license}}"
+      },
+      "noAmenities": "No amenities listed"
+    },
+    "login": {
+      "title": "Welcome to Rawaaf",
+      "subtitle": "One guest account • Wallet + points + digital key",
+      "fullName": "Full name",
+      "namePlaceholder": "e.g. Saud Alotaibi",
+      "mobile": "Mobile number",
+      "mobileHelp": "We'll text you a 4-digit verification code",
+      "sendOtp": "Send verification code",
+      "register": "Create account + {{points}} welcome points",
+      "terms": "By continuing you agree to Rawaaf's terms and privacy policy.",
+      "errors": {
+        "phone": "The mobile number must start with 05 and have 10 digits",
+        "name": "Name is required",
+        "incomplete": "Enter the full code"
+      },
+      "otpTitle": "Enter the verification code",
+      "otpSent": "We sent a code to",
+      "edit": "Edit",
+      "digit": "Digit {{n}}",
+      "demoCode": "Development code:",
+      "verify": "Verify & sign in",
+      "resendIn": "Resend in {{seconds}} seconds",
+      "resend": "Resend code",
+      "resent": "A new code has been sent",
+      "welcomeNew": "Welcome {{name}}! We've added {{points}} welcome points to your account",
+      "welcomeBack": "Welcome back, {{name}}",
+      "registerTitle": "Finish creating your account",
+      "registerHint": "Your number is new to Rawaaf — add your name and get {{points}} welcome points",
+      "email": "Email (optional)",
+      "referral": "Referral code (optional)",
+      "staffPrompt": "Owner or staff?",
+      "staffLink": "Sign in with a password"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "readAll": "Mark all as read",
+      "allRead": "All notifications marked as read",
+      "empty": "No notifications"
+    },
+    "quote": {
+      "accommodation": "Accommodation ({{nights}})",
+      "discount": "Discount",
+      "promo": "Promo code {{code}}",
+      "cleaning": "Cleaning fee",
+      "free": "Free",
+      "vat": "VAT {{rate}}%",
+      "total": "Total incl. VAT",
+      "unavailable": "Not available for these dates — try other dates"
+    },
+    "availability": {
+      "previous": "Previous month",
+      "next": "Next month",
+      "pickCheckIn": "Tap a night to choose your check-in date",
+      "pickCheckOut": "Now tap your check-out date"
+    },
+    "load": {
+      "loading": "Loading",
+      "errorTitle": "Couldn't load this",
+      "retry": "Try again"
+    },
+    "pager": {
+      "label": "Pages",
+      "previous": "Previous page",
+      "next": "Next page",
+      "position": "Page {{page}} of {{total}}"
+    },
+    "payment": {
+      "paidTitle": {
+        "BOOKING": "Payment received — your booking is confirmed!",
+        "WALLET_TOPUP": "Your wallet has been topped up"
+      },
+      "failedTitle": "Payment failed",
+      "failedBody": "No amount was charged. You can try again.",
+      "pendingTitle": "Confirming your payment…",
+      "pendingBody": "This usually takes a few seconds.",
+      "stillPending": "The payment hasn't been confirmed yet. Check again in a moment.",
+      "checkAgain": "Check again",
+      "stayPage": "Go to the stay page",
+      "toWallet": "Go to my wallet",
+      "notFoundTitle": "Payment not found",
+      "notFoundBody": "We couldn't match this payment. Check your bookings or wallet before paying again."
+    },
+    "testGateway": {
+      "badge": "Development only",
+      "title": "Test payment gateway",
+      "pay": "Pay",
+      "fail": "Fail payment",
+      "noPayment": "No payment is waiting in this tab"
+    }
+  }
+}

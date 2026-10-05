@@ -1,0 +1,72 @@
+@let user = auth.user();
+@let favCount = favorites.count();
+
+<header class="hdr">
+  <div class="container hdr-in">
+    <div class="row gap-20">
+      <app-logo badge="CLIENT PREMIUM" />
+      <nav class="nav hide-md" [attr.aria-label]="'guest.nav.main' | translate">
+        <a routerLink="/" [class.on]="unitsActive()">{{ 'guest.nav.units' | translate }}</a>
+        @if (user) {
+          <a routerLink="/account" routerLinkActive="on">{{ 'guest.nav.account' | translate }}</a>
+          @if (activeStay(); as stay) {
+            <a [routerLink]="['/stay', stay.id]" routerLinkActive="on">{{ 'guest.nav.currentStay' | translate }}</a>
+          }
+        } @else {
+          <button type="button" (click)="openMemberPage('/account')">{{ 'guest.nav.account' | translate }}</button>
+        }
+      </nav>
+    </div>
+
+    <div class="hdr-left">
+      <app-lang-switch />
+      <app-notifications-popover />
+      <button type="button" class="hbtn" [attr.aria-label]="'guest.nav.favorites' | translate" (click)="openMemberPage('/account/favorites')">
+        <app-icon name="heart" [class.red]="favCount > 0" />
+        @if (favCount) {
+          <span class="count">{{ favCount }}</span>
+        }
+      </button>
+      @if (user) {
+        <button type="button" class="chip-wallet hide-sm" (click)="openMemberPage('/account/wallet')">
+          <app-icon name="wallet" size="sm" />
+          <span>{{ wallet.balance() !== null ? (wallet.balance() | sar) : '—' }}</span>
+        </button>
+        <a class="user-chip" routerLink="/account">
+          <span class="hide-sm">{{ firstName() }}</span>
+          <span class="avatar-xs">{{ user.fullName.charAt(0) }}</span>
+        </a>
+      } @else {
+        <button type="button" class="btn btn-primary btn-sm login-btn" (click)="auth.requestLogin()">{{ 'guest.nav.login' | translate }}</button>
+      }
+    </div>
+  </div>
+
+  <div class="container hide-lg-up mobile-nav">
+    <div class="scroll-x">
+      <div class="chips">
+        <a class="chip chip-sm" routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }">{{ 'guest.nav.units' | translate }}</a>
+        <a class="chip chip-sm" routerLink="/search" routerLinkActive="on">{{ 'guest.nav.advancedSearch' | translate }}</a>
+        @if (user) {
+          <a class="chip chip-sm" routerLink="/account" routerLinkActive="on">{{ 'guest.nav.account' | translate }}</a>
+          @if (activeStay(); as stay) {
+            <a class="chip chip-sm" [routerLink]="['/stay', stay.id]" routerLinkActive="on">{{ 'guest.nav.currentStay' | translate }}</a>
+          }
+        } @else {
+          <button type="button" class="chip chip-sm" (click)="auth.requestLogin()">{{ 'guest.nav.account' | translate }}</button>
+        }
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<app-footer />
+
+<app-compare-tray />
+@if (auth.loginRequest() !== null) {
+  <app-login-dialog />
+}

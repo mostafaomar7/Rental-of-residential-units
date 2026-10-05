@@ -1,0 +1,108 @@
+@let p = property();
+@let u = unit();
+@let s = stay();
+
+<div class="card card-p">
+  <div class="row between">
+    <div class="price price-lg">{{ u.basePrice | sar }} <small>{{ 'guest.card.perNight' | translate }}</small></div>
+    @if (discountPercent()) {
+      <span class="badge-disc">{{ 'guest.card.discount' | translate: { percent: discountPercent() } }}</span>
+    }
+  </div>
+
+  @if (p.units.length > 1) {
+    <div class="mt-16">
+      <app-field [label]="'guest.property.book.unit' | translate" for="pd-unit">
+        <select id="pd-unit" class="select" (change)="unitChange.emit($any($event.target).value)">
+          @for (option of p.units; track option.id) {
+            <option [value]="option.id" [selected]="option.id === u.id">{{ option.name }}</option>
+          }
+        </select>
+      </app-field>
+    </div>
+  }
+
+  <div class="grid g2 mt-16 dates">
+    <app-field [label]="'guest.dates.checkIn' | translate" for="pd-in">
+      <input id="pd-in" type="date" class="input" [min]="minDate" [value]="s.checkIn" (change)="change({ checkIn: $any($event.target).value || s.checkIn })" />
+    </app-field>
+    <app-field [label]="'guest.dates.checkOut' | translate" for="pd-out">
+      <input id="pd-out" type="date" class="input" [min]="minDate" [value]="s.checkOut" (change)="change({ checkOut: $any($event.target).value || s.checkOut })" />
+    </app-field>
+  </div>
+  <div class="mt-8">
+    <app-field [label]="'guest.property.book.guests' | translate" for="pd-g">
+      <select id="pd-g" class="select" (change)="change({ guests: +$any($event.target).value })">
+        @for (n of guestOptions(); track n) {
+          <option [value]="n" [selected]="n === s.guests">{{ n | plural: 'common.guests' }}</option>
+        }
+      </select>
+    </app-field>
+  </div>
+
+  @if (quote.hasValue()) {
+    @let q = quote.value();
+    @if (q.available) {
+      <div class="notice green mt-12 small">
+        <app-icon name="calendar-check" />
+        <div>{{ 'guest.property.book.available' | translate }}</div>
+      </div>
+    } @else {
+      <div class="notice red mt-12 small">
+        <app-icon name="calendar-x" />
+        <div>
+          @for (key of issues(); track key) {
+            <div>{{ key | translate: { min: q.minNights } }}</div>
+          } @empty {
+            {{ 'guest.quote.unavailable' | translate }}
+          }
+        </div>
+      </div>
+    }
+
+    <div class="mt-12">
+      <app-quote-breakdown [pricing]="q.pricing" [nights]="q.nightsCount" />
+    </div>
+    @if (q.rewards; as rewards) {
+      <div class="xs gold-dark b mt-4">{{ 'guest.property.book.rewards' | translate: { cashback: (rewards.cashback | sar), points: rewards.points } }}</div>
+    }
+
+    <button type="button" class="btn btn-primary btn-lg btn-block mt-16" [disabled]="!q.available || quote.isLoading()" (click)="book()">
+      {{ 'guest.property.book.bookNow' | translate }}
+    </button>
+  } @else {
+    <app-load-state [error]="quote.error()" (retry)="quote.reload()" />
+  }
+
+  <div class="soft-lg mt-16">
+    <div class="b small mb-8">{{ 'guest.property.book.perksTitle' | translate }}</div>
+    @for (n of perks; track n) {
+      <div class="row small mt-4">
+        <span class="green"><app-icon name="check-circle-2" size="sm" /></span>{{ 'guest.property.book.perks.' + n | translate }}
+      </div>
+    }
+  </div>
+</div>
+
+<div class="card card-p mt-16">
+  <div class="row gap-12">
+    <div class="avatar">{{ p.host.firstName.charAt(0) }}</div>
+    <div class="grow">
+      <div class="xs muted b">{{ 'guest.property.host.label' | translate }}</div>
+      <div class="bb">{{ p.host.firstName }}</div>
+      <div class="xs muted">
+        {{ 'guest.property.host.memberSince' | translate: { year: p.host.memberSince } }}
+        @if (p.tourismLicenseNo) {
+          • {{ 'guest.property.host.license' | translate: { license: p.tourismLicenseNo } }}
+        }
+      </div>
+    </div>
+  </div>
+  @if (whatsappUrl(); as url) {
+    <div class="row mt-16">
+      <a class="btn btn-wa btn-sm grow" [href]="url" target="_blank" rel="noopener">
+        <app-icon name="message-circle" size="sm" />{{ 'guest.property.host.whatsapp' | translate }}
+      </a>
+    </div>
+  }
+</div>

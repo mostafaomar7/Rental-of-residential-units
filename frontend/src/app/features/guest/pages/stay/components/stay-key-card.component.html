@@ -1,0 +1,100 @@
+@let s = stay();
+@let a = access();
+<div class="key-card">
+  <div class="row between">
+    <span class="row b small gold"><app-icon name="key-round" size="sm" />{{ 'account.stay.yourKey' | translate }}</span>
+    <app-status-pill domain="key" [code]="a.status" />
+  </div>
+
+  @switch (a.status) {
+    @case ('ACTIVE') {
+      @if (a.canUnlock) {
+        <button
+          type="button"
+          class="unlock-btn"
+          [class.busy]="unlock() === 'busy'"
+          [class.open]="unlock() === 'open'"
+          [attr.aria-busy]="unlock() === 'busy'"
+          (click)="open()"
+        >
+          <app-icon [name]="unlock() === 'open' ? 'lock-open' : 'lock'" />
+          <span>{{ 'account.stay.unlock.label.' + unlockLabel() | translate }}</span>
+        </button>
+        <div class="small soft-white" aria-live="polite">{{ 'account.stay.unlock.status.' + unlock() | translate }}</div>
+      }
+      @if (a.canReveal) {
+        <div class="glass mt-16 row between wrap">
+          <div class="small">{{ 'account.stay.orEnterPin' | translate }}</div>
+          <div class="row">
+            <span class="code-box pin ltr">{{ code()?.code ?? a.codeMasked }}</span>
+            <button
+              type="button"
+              class="btn btn-glass btn-icon btn-xs"
+              [disabled]="revealing()"
+              [attr.aria-pressed]="!!code()"
+              [attr.aria-label]="(code() ? 'account.key.hide' : 'account.key.reveal') | translate"
+              (click)="toggleCode()"
+            >
+              <app-icon [name]="code() ? 'eye-off' : 'eye'" size="sm" />
+            </button>
+          </div>
+        </div>
+      }
+      @if (a.validTo) {
+        <div class="xs mt-12 faint">{{ 'account.stay.validUntil' | translate: { date: (a.validTo | appDate: 'dateTime') } }}</div>
+      }
+      @if (a.mode === 'OFFLINE') {
+        <div class="xs mt-4 faint">{{ 'account.stay.offlineKey' | translate }}</div>
+      }
+    }
+    @case ('IDENTITY_REQUIRED') {
+      <div class="unlock-btn idle">
+        <app-icon name="id-card" />
+        <span class="small">{{ 'account.stay.keyStatus.identity' | translate }}</span>
+      </div>
+      <button type="button" class="btn btn-gold btn-sm mt-12" (click)="verifyIdentity.emit()">
+        <app-icon name="fingerprint-pattern" size="sm" />{{ 'account.booking.guest.verifyButton' | translate }}
+      </button>
+      <a class="link xs d-block mt-8 gold" routerLink="/account/identity">{{ 'account.stay.keyStatus.visitorIdentity' | translate }}</a>
+    }
+    @case ('COMPLIANCE_PENDING') {
+      <div class="unlock-btn idle">
+        <app-icon name="hourglass" />
+        <span class="small">{{ 'account.stay.keyStatus.compliancePending' | translate }}</span>
+      </div>
+    }
+    @case ('COMPLIANCE_FAILED') {
+      <div class="unlock-btn idle">
+        <app-icon name="shield-alert" />
+        <span class="small">{{ 'account.stay.keyStatus.complianceFailed' | translate }}</span>
+      </div>
+    }
+    @case ('PENDING') {
+      <div class="unlock-btn idle">
+        <app-icon name="clock" />
+        <span class="small">{{ daysToArrival() | plural: 'account.stay.activatesInDays' }}</span>
+      </div>
+      <div class="small soft-white">
+        {{ 'account.stay.activatesAutomatically' | translate: { date: (s.checkIn.date | appDate: 'medium'), time: (s.checkIn.time | appDate: 'time') } }}
+      </div>
+    }
+    @case ('PREPARING') {
+      <div class="unlock-btn idle">
+        <app-icon name="settings" />
+        <span class="small">{{ 'account.stay.keyStatus.preparing' | translate }}</span>
+      </div>
+    }
+    @default {
+      <div class="unlock-btn idle">
+        <app-icon name="lock" />
+        <span class="small">{{ 'account.stay.keyStatus.unavailable' | translate }}</span>
+      </div>
+      @if (s.status === 'COMPLETED' || s.status === 'CANCELLED' || s.status === 'NO_SHOW' || s.status === 'EXPIRED') {
+        <div class="small soft-white">{{ 'account.stay.stayEnded' | translate: { status: ('status.booking.' + s.status | translate) } }}</div>
+      }
+      @if (reviewPoints(); as points) {
+        <a class="btn btn-gold btn-sm mt-16" [routerLink]="['/review', s.bookingId]">{{ 'account.stay.reviewStay' | translate: { points } }}</a>
+      }
+    }
+  }
+</div>

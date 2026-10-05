@@ -1,0 +1,46 @@
+<app-page-header [title]="'admin.photos.title' | translate" [subtitle]="'admin.photos.subtitle' | translate: { count: shoots.hasValue() ? shoots.value().meta.total : 0 }">
+  <button type="button" class="btn btn-ghost" [disabled]="shoots.isLoading()" (click)="shoots.reload()"><app-icon name="refresh-cw" size="sm" />{{ 'admin.common.refresh' | translate }}</button>
+</app-page-header>
+
+<app-shoot-requests (assigned)="queues.refresh()" />
+
+<app-resource-state [resource]="shoots" />
+@if (shoots.hasValue()) {
+  @let page = shoots.value();
+  <div class="stack">
+    @for (t of page.items; track t.id) {
+      <app-shoot-review-card [shoot]="t" (zoom)="zoomed.set($event)" (reviewed)="onReviewed()" />
+    } @empty {
+      <div class="card"><app-empty-state icon="images" [title]="'admin.photos.empty' | translate" [subtitle]="'admin.photos.emptySub' | translate" /></div>
+    }
+  </div>
+  <app-pager [meta]="page.meta" (pageChange)="currentPage.set($event)" />
+}
+
+@if (recent().length) {
+  <div class="card card-p mt-16">
+    <div class="card-h">
+      <h3>{{ 'admin.photos.recent' | translate }}</h3>
+    </div>
+    <div class="qa-grid recent">
+      @for (p of recent(); track p.id) {
+        <div class="qa-card" [class]="p.review === 'APPROVED' ? 'approved' : 'rejected'">
+          <img [authSrc]="p.thumbUrl" alt="" />
+          <div class="xs b center recent-label">
+            @if (p.review === 'APPROVED') {
+              <span class="green">{{ 'admin.photos.accepted' | translate }}</span>
+            } @else {
+              <span class="red">{{ p.reviewReason || ('admin.photos.rejected' | translate) }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+@if (zoomed(); as url) {
+  <app-modal size="xl" [title]="'admin.photos.preview' | translate" (closed)="zoomed.set(null)">
+    <img class="zoomed" [authSrc]="url" alt="" />
+  </app-modal>
+}

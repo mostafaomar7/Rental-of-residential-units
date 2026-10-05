@@ -1,0 +1,195 @@
+@let pend = pending();
+@let s = summary();
+
+<app-page-header [title]="'operator.pricing.title' | translate" [subtitle]="'operator.pricing.subtitle' | translate">
+  <select class="select property-select" #propertySelect [attr.aria-label]="'operator.pricing.property' | translate" (change)="selectProperty(propertySelect.value)">
+    @if (!propertyId()) {
+      <option value="" selected disabled>{{ 'operator.pricing.pickProperty' | translate }}</option>
+    }
+    @for (p of portfolio.properties(); track p.id) {
+      <option [value]="p.id" [selected]="p.id === propertyId()">{{ p | loc }}</option>
+    }
+  </select>
+  <button type="button" class="btn btn-ghost" [disabled]="!propertyId() || regenerating.busy()" (click)="regenerate()">
+    <app-icon name="refresh-cw" size="sm" />{{ 'operator.pricing.regenerate' | translate }}
+  </button>
+</app-page-header>
+
+@if (propertyId(); as pid) {
+  @if (units().length > 1) {
+    <div class="chips mb-16">
+      @for (u of units(); track u.id) {
+        <button type="button" class="chip chip-sm" [class.on]="u.id === unitId()" [attr.aria-pressed]="u.id === unitId()" (click)="selectUnit(u.id)">{{ u.name }}</button>
+      }
+    </div>
+  }
+
+  <div class="grid g4">
+    <app-stat-tile icon="sparkles" tone="gold" [value]="pend.length" [label]="'operator.pricing.stats.pending' | translate" [sub]="'operator.pricing.stats.pendingSub' | translate: { up: s.up, down: s.down }" />
+    <app-stat-tile
+      icon="trending-up"
+      [value]="(s.impact >= 0 ? '+' : '') + formatSar(s.impact)"
+      [label]="'operator.pricing.stats.impact' | translate"
+      [sub]="'operator.pricing.stats.impactSub' | translate"
+    />
+    @if (unit(); as u) {
+      <app-stat-tile
+        icon="tag"
+        [value]="formatSar(u.basePrice)"
+        [label]="'operator.pricing.stats.base' | translate"
+        [sub]="u.weekendPrice ? ('operator.pricing.stats.weekend' | translate: { price: formatSar(u.weekendPrice) }) : ''"
+      />
+    }
+    @if (settings.hasValue()) {
+      @let auto = settings.value().autoApply;
+      <app-stat-tile
+        icon="zap"
+        [tone]="auto ? 'green' : ''"
+        [value]="(auto ? 'operator.pricing.stats.autoOn' : 'operator.pricing.stats.autoOff') | translate"
+        [label]="'operator.pricing.stats.auto' | translate"
+        [sub]="(auto ? 'operator.pricing.stats.withinBounds' : 'operator.pricing.stats.needsApproval') | translate"
+      />
+    }
+  </div>
+
+  <div class="grid g-2-1 mt-24 layout">
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'operator.pricing.heatTitle' | translate: { days: cells().length } }}</h3>
+      </div>
+      <div class="legend mb-12">
+        <span><i class="lg-down"></i>{{ 'operator.pricing.legend.down' | translate }}</span>
+        <span><i class="lg-2"></i>{{ 'operator.pricing.legend.low' | translate }}</span>
+        <span><i class="lg-3"></i>{{ 'operator.pricing.legend.mid' | translate }}</span>
+        <span><i class="lg-4"></i>{{ 'operator.pricing.legend.high' | translate }}</span>
+        <span><i class="lg-approved"></i>{{ 'operator.pricing.legend.approved' | translate }}</span>
+      </div>
+      @if (recommendations.error()) {
+        <app-load-error [error]="recommendations.error()" (retry)="recommendations.reload()" />
+      } @else if (recommendations.isLoading() && !recommendations.hasValue()) {
+        <app-loading />
+      } @else {
+        <div class="cal">
+          @for (d of weekdays; track d) {
+            <div class="cal-h">{{ d | appDate: 'weekday' }}</div>
+          }
+          @for (b of blanks; track $index) {
+            <div class="cal-d empty-d" aria-hidden="true"></div>
+          }
+          @for (c of cells(); track c.date) {
+            @let rec = c.rec;
+            <button
+              type="button"
+              class="cal-d"
+              [class]="'heat-' + c.heat + (rec?.status === 'APPLIED' ? ' approved' : rec?.status === 'REJECTED' ? ' rejected' : '')"
+              [attr.aria-label]="c.date | appDate: 'long'"
+              [disabled]="!rec"
+              (click)="openRec.set(rec ?? null)"
+            >
+              <span class="row between">
+                <span class="dn">{{ c.day }}</span>
+                @if (c.showMonth) {
+                  <span class="xs muted">{{ c.date | appDate: 'monthShort' }}</span>
+                }
+              </span>
+              @if (rec) {
+                <span class="sug" [class]="rec.direction === 'DOWN' ? 'down' : 'up'">{{ rec.direction === 'DOWN' ? '↓' : '↑' }} {{ rec.recommendedPrice | num }}</span>
+                <span class="xs muted hide-sm">
+                  {{ rec.changePercent > 0 ? '+' : '' }}{{ rec.changePercent | num: 0 }}%{{ rec.status === 'APPLIED' ? ' ✓' : rec.status === 'REJECTED' ? ' ✕' : '' }}
+                </span>
+              } @else if (unit(); as u) {
+                <span class="xs muted">{{ u.basePrice | num }}</span>
+              }
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="card card-p">
+      @if (settings.error()) {
+        <app-load-error [error]="settings.error()" (retry)="settings.reload()" />
+      } @else if (settings.hasValue()) {
+        <app-pricing-settings-card [propertyId]="pid" [settings]="settings.value()" (saved)="settings.set($event)" />
+      } @else {
+        <app-loading />
+      }
+    </div>
+  </div>
+
+  <div class="card card-p mt-24">
+    <div class="card-h">
+      <h3>{{ 'operator.pricing.pendingTitle' | translate }}</h3>
+      <div class="row">
+        <button type="button" class="btn btn-success btn-sm" [disabled]="deciding.busy() || !pend.length" (click)="decideBulk('APPROVE')">
+          <app-icon name="check-check" size="sm" />{{ (picked().size ? 'operator.pricing.approvePicked' : 'operator.pricing.approveAll') | translate: { count: picked().size || pend.length } }}
+        </button>
+        <button type="button" class="btn btn-danger btn-sm" [disabled]="deciding.busy() || !pend.length" (click)="decideBulk('REJECT')">
+          {{ (picked().size ? 'operator.pricing.rejectPicked' : 'operator.pricing.rejectAll') | translate: { count: picked().size || pend.length } }}
+        </button>
+      </div>
+    </div>
+    @if (pend.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" [checked]="allPicked()" [attr.aria-label]="'operator.pricing.pickAll' | translate" (change)="toggleAll()" />
+              </th>
+              <th>{{ 'operator.pricing.cols.date' | translate }}</th>
+              <th>{{ 'operator.pricing.cols.current' | translate }}</th>
+              <th>{{ 'operator.pricing.cols.suggested' | translate }}</th>
+              <th>{{ 'operator.pricing.cols.change' | translate }}</th>
+              <th>{{ 'operator.pricing.cols.reasons' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of pend; track r.id) {
+              <tr>
+                <td><input type="checkbox" [checked]="picked().has(r.id)" [attr.aria-label]="r.date | appDate: 'long'" (change)="togglePick(r.id)" /></td>
+                <td class="nowrap">
+                  <b>{{ r.date | appDate: 'weekday' }}</b>&nbsp;<span class="muted small">{{ r.date | appDate: 'medium' }}</span>
+                </td>
+                <td>{{ r.currentPrice | sar }}</td>
+                <td class="bb">{{ r.recommendedPrice | sar }}</td>
+                <td [class]="r.direction === 'DOWN' ? 'down b' : 'trend-up'">{{ r.direction === 'DOWN' ? '↓ ' : '↑ +' }}{{ r.changePercent | num: 0 }}%</td>
+                <td>
+                  <div class="row wrap reasons">
+                    @for (reason of r.reasons; track reason.code) {
+                      <app-reason-pill [reason]="reason" />
+                    }
+                  </div>
+                </td>
+                <td class="nowrap">
+                  <button type="button" class="btn btn-success btn-xs" [disabled]="deciding.busy()" (click)="decideOne({ id: r.id, action: 'APPROVE' })">
+                    {{ 'operator.pricing.approve' | translate }}
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-xs" [disabled]="deciding.busy()" (click)="openRec.set(r)">{{ 'operator.pricing.edit' | translate }}</button>
+                  <button type="button" class="btn btn-danger btn-xs" [disabled]="deciding.busy()" (click)="decideOne({ id: r.id, action: 'REJECT' })">
+                    {{ 'operator.pricing.reject' | translate }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else if (!recommendations.isLoading()) {
+      <app-empty-state icon="check-check" [title]="'operator.pricing.noPending' | translate" [subtitle]="'operator.pricing.noPendingSub' | translate" />
+    }
+  </div>
+
+  @if (openRec(); as rec) {
+    <app-price-day-dialog [rec]="rec" [busy]="deciding.busy()" (closed)="openRec.set(null)" (decided)="decideOne($event)" />
+  }
+} @else if (portfolio.isLoading()) {
+  <app-loading />
+} @else if (portfolio.error()) {
+  <app-load-error [error]="portfolio.error()" (retry)="portfolio.reload()" />
+} @else {
+  <div class="card card-p">
+    <app-empty-state icon="sparkles" [title]="'operator.pricing.noProperties' | translate" />
+  </div>
+}

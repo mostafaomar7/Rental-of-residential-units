@@ -1,0 +1,92 @@
+<app-page-header
+  [title]="'operations.bookings.title' | translate"
+  [subtitle]="resource.hasValue() ? (resource.value().meta.total | plural: 'operations.bookings.count') : ''"
+/>
+
+<div class="card card-p">
+  <div class="row between wrap mb-12">
+    <div class="search bookings-search">
+      <app-icon name="search" />
+      <input
+        #searchBox
+        type="search"
+        [value]="q() ?? ''"
+        [placeholder]="'operations.bookings.searchPlaceholder' | translate"
+        [attr.aria-label]="'operations.bookings.searchLabel' | translate"
+        (keydown.enter)="search(searchBox.value)"
+      />
+    </div>
+    <div class="row wrap">
+      <select class="select filter" #propertyFilter [attr.aria-label]="'operations.bookings.property' | translate" (change)="setFilter('property', propertyFilter.value)">
+        <option value="" [selected]="!property()">{{ 'operations.bookings.allProperties' | translate }}</option>
+        @for (p of portfolio.properties(); track p.id) {
+          <option [value]="p.id" [selected]="p.id === property()">{{ p | loc }}</option>
+        }
+      </select>
+      <input class="input filter" type="date" #fromFilter [value]="from() ?? ''" [attr.aria-label]="'operations.bookings.from' | translate" (change)="setFilter('from', fromFilter.value)" />
+      <input class="input filter" type="date" #toFilter [value]="to() ?? ''" [attr.aria-label]="'operations.bookings.to' | translate" (change)="setFilter('to', toFilter.value)" />
+    </div>
+  </div>
+  <div class="scroll-x mb-16">
+    <div class="chips">
+      <button type="button" class="chip chip-sm" [class.on]="!activeStatus()" [attr.aria-pressed]="!activeStatus()" (click)="setStatus(null)">
+        {{ 'common.all' | translate }}
+      </button>
+      @for (s of statuses; track s) {
+        <button type="button" class="chip chip-sm" [class.on]="s === activeStatus()" [attr.aria-pressed]="s === activeStatus()" (click)="setStatus(s)">
+          {{ 'status.booking.' + s | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (resource.isLoading()) {
+    <app-loading />
+  } @else if (resource.error()) {
+    <app-load-error [error]="resource.error()" (retry)="resource.reload()" />
+  } @else if (resource.hasValue() && resource.value().items.length) {
+    @let page = resource.value();
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>{{ 'operations.bookings.cols.id' | translate }}</th>
+            <th>{{ 'operations.bookings.cols.guest' | translate }}</th>
+            <th>{{ 'operations.bookings.cols.unit' | translate }}</th>
+            <th>{{ 'operations.bookings.cols.dates' | translate }}</th>
+            <th>{{ 'operations.bookings.cols.amount' | translate }}</th>
+            <th>{{ 'operations.bookings.cols.status' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of page.items; track b.id) {
+            <tr class="click" (click)="open(b.id)">
+              <td class="b nowrap"><a class="ltr" [routerLink]="['/operator/booking', b.id]" (click)="$event.stopPropagation()">{{ b.number }}</a></td>
+              <td>
+                <div class="b nowrap">{{ b.guestName }}</div>
+                <div class="xs muted ltr">{{ b.guestMobile }}</div>
+              </td>
+              <td class="small unit-cell">
+                <div class="truncate">{{ b.property | loc }}</div>
+                <div class="xs muted truncate">{{ b.unit.name }}</div>
+              </td>
+              <td class="small nowrap">
+                {{ b.checkIn | appDate }}<br />
+                <span class="muted">{{ b.checkOut | appDate }} • {{ b.nights | plural: 'common.nights' }}</span>
+              </td>
+              <td class="b nowrap">{{ b.pricing.total | sar }}</td>
+              <td><app-status-pill domain="booking" [code]="b.status" /></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <app-pager [meta]="page.meta" (pageChange)="goToPage($event)" />
+  } @else {
+    <app-empty-state icon="search-x" [title]="'operations.bookings.empty' | translate">
+      @if (hasFilters()) {
+        <button type="button" class="btn btn-ghost mt-16" (click)="reset()">{{ 'operations.bookings.clearSearch' | translate }}</button>
+      }
+    </app-empty-state>
+  }
+</div>

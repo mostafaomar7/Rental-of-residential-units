@@ -1,0 +1,66 @@
+@let cfg = config();
+
+<header class="hdr">
+  <div class="container hdr-in">
+    <div class="row gap-20">
+      <app-logo [badge]="cfg.badge" />
+      <span class="pill pill-gray hide-sm">{{ cfg.portalName | translate }}</span>
+    </div>
+
+    <div class="hdr-left">
+      <ng-content select="[header-extra]" />
+      <app-lang-switch />
+      <a class="hbtn" [routerLink]="cfg.alertsLink" [attr.aria-label]="'common.alerts' | translate">
+        <app-icon name="bell" />
+        @if (cfg.alertCount) {
+          <span class="count">{{ cfg.alertCount }}</span>
+        }
+      </a>
+      <div class="user-chip">
+        <span class="hide-sm">{{ cfg.userName }}</span>
+        <span class="avatar-xs">{{ cfg.userName[0] }}</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container dash">
+  <aside class="side" [attr.aria-label]="'common.sidebar' | translate">
+    <div class="side-card">
+      <div class="side-user">
+        <div class="avatar">{{ cfg.userName[0] }}</div>
+        <div class="grow">
+          <div class="b truncate">{{ cfg.userName }}</div>
+          <div class="xs muted row gap-4"><span class="dot dot-green"></span>{{ cfg.userRole | translate }}</div>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        @for (entry of cfg.nav; track $index) {
+          @if (isSection(entry)) {
+            <div class="side-sec">{{ entry.section | translate }}</div>
+          } @else {
+            @let active = isActive(entry);
+            <a [routerLink]="entry.link" [class.on]="active" [attr.aria-current]="active ? 'page' : null">
+              <span class="lbl"><app-icon [name]="entry.icon" size="sm" />{{ entry.label | translate }}</span>
+              @if (entry.count != null) {
+                <span class="cnt" [class.alert]="entry.alert">{{ entry.count }}</span>
+              }
+            </a>
+          }
+        }
+        <a class="logout" routerLink="/">
+          <app-icon name="log-out" size="sm" [mirror]="true" />{{ 'common.exitToGuestSite' | translate }}
+        </a>
+      </nav>
+
+      <div class="side-extra"><ng-content select="[side-extra]" /></div>
+    </div>
+  </aside>
+
+  <main class="grow" style="min-width: 0">
+    <ng-content />
+  </main>
+</div>
+
+<app-footer [portalName]="cfg.portalName | translate" />

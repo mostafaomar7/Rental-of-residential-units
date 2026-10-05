@@ -1,0 +1,102 @@
+@let step = wizard.step();
+@let finished = wizard.finished();
+@let busy = wizard.saving.busy();
+
+<app-page-header
+  [title]="'operator.add.title' | translate"
+  [subtitle]="
+    finished
+      ? ((wizard.awaitingShoot() ? 'operator.add.savedDraft' : 'operator.add.sent') | translate)
+      : ('operator.add.stepOf' | translate: { step: step, total: total, name: ('operator.add.steps.' + wizard.current() | translate) })
+  "
+/>
+
+@if (!finished) {
+  <div class="steps">
+    @for (s of steps; track s; let i = $index) {
+      <div class="step" [class.done]="i + 1 < step" [class.on]="i + 1 === step">
+        <div class="sb"></div>
+        <div class="sl hide-sm">{{ 'operator.add.steps.' + s | translate }}</div>
+      </div>
+    }
+  </div>
+}
+
+<div class="card card-p mt-16 wizard">
+  @if (finished) {
+    @if (wizard.property(); as p) {
+      @let awaitingShoot = wizard.awaitingShoot();
+      <div class="center done">
+        <div class="li-ic done-ic" [class.green]="!awaitingShoot" [class.blue]="awaitingShoot">
+          <app-icon [name]="awaitingShoot ? 'camera' : 'check-circle-2'" size="xl" />
+        </div>
+        <h2 class="h2 mt-12">{{ (awaitingShoot ? 'operator.add.done.shootTitle' : 'operator.add.done.title') | translate }}</h2>
+        <p class="muted mt-8 lh">
+          <b class="navy">{{ p.identity | loc }}</b> • {{ (awaitingShoot ? 'operator.add.done.shootNext' : 'operator.add.done.review') | translate }}<br />
+          {{ 'operator.add.done.status' | translate }} <app-status-pill domain="property" [code]="p.status" />
+        </p>
+        <div class="row mt-24 center-row">
+          <a class="btn btn-primary" [routerLink]="['/operator/property', p.id]">{{ 'operator.add.done.open' | translate }}</a>
+          <a class="btn btn-ghost" routerLink="/operator/properties">{{ 'operator.add.done.viewUnits' | translate }}</a>
+        </div>
+      </div>
+    }
+  } @else {
+    @switch (wizard.current()) {
+      @case ('type') {
+        <app-step-type />
+      }
+      @case ('location') {
+        <app-step-location />
+      }
+      @case ('units') {
+        <app-step-units />
+      }
+      @case ('amenities') {
+        <app-step-amenities />
+      }
+      @case ('photos') {
+        <app-step-photos />
+      }
+      @case ('policies') {
+        <app-step-policies />
+      }
+      @case ('supervision') {
+        <app-step-supervision />
+      }
+      @case ('lock') {
+        <app-step-lock />
+      }
+      @case ('review') {
+        <app-step-review />
+      }
+    }
+
+    <div class="row between mt-24">
+      @if (step > 1) {
+        <button type="button" class="btn btn-ghost" [disabled]="busy" (click)="wizard.back()">
+          <app-icon name="arrow-right" size="sm" [mirror]="true" />{{ 'common.back' | translate }}
+        </button>
+      } @else {
+        <a class="btn btn-ghost" routerLink="/operator/properties">{{ 'common.cancel' | translate }}</a>
+      }
+      @if (step < total) {
+        <button type="button" class="btn btn-primary" [disabled]="busy" (click)="wizard.next()">
+          @if (busy) {
+            <span class="spin"></span>
+          }
+          {{ 'operator.add.continue' | translate }} <app-icon name="arrow-left" size="sm" [mirror]="true" />
+        </button>
+      } @else {
+        <button type="button" class="btn btn-gold btn-lg" [disabled]="busy" (click)="wizard.next()">
+          @if (busy) {
+            <span class="spin"></span>
+          } @else {
+            <app-icon name="send" size="sm" />
+          }
+          {{ 'operator.add.submit' | translate }}
+        </button>
+      }
+    </div>
+  }
+</div>

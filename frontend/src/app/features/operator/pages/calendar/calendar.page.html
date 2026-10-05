@@ -1,0 +1,113 @@
+@let g = grid();
+@let selected = selection().length;
+
+<app-page-header [title]="'operator.calendar.title' | translate" [subtitle]="'operator.calendar.subtitle' | translate">
+  <app-unit-select [value]="unitId()" (valueChange)="selectUnit($event)" />
+</app-page-header>
+
+@if (unitId(); as currentUnit) {
+  <div class="grid g-2-1 layout">
+    <div class="card card-p">
+      <div class="row between wrap mb-16">
+        <div class="row">
+          <button type="button" class="btn btn-ghost btn-icon btn-sm" [attr.aria-label]="'operator.calendar.prevMonth' | translate" (click)="changeMonth(-1)">
+            <app-icon name="chevron-right" size="sm" [mirror]="true" />
+          </button>
+          <h3 class="h3 month-title">{{ g.month | appDate: 'month' }}</h3>
+          <button type="button" class="btn btn-ghost btn-icon btn-sm" [attr.aria-label]="'operator.calendar.nextMonth' | translate" (click)="changeMonth(1)">
+            <app-icon name="chevron-left" size="sm" [mirror]="true" />
+          </button>
+        </div>
+        <div class="legend">
+          <span><i class="lg-booked"></i>{{ 'operator.availability.booked' | translate }}</span>
+          <span><i class="lg-blocked"></i>{{ 'operator.availability.blocked' | translate }}</span>
+          <span><i class="lg-open"></i>{{ 'operator.availability.available' | translate }}</span>
+          <span><i class="lg-selected"></i>{{ 'operator.calendar.selected' | translate }}</span>
+        </div>
+      </div>
+
+      @if (calendar.error()) {
+        <app-load-error [error]="calendar.error()" (retry)="calendar.reload()" />
+      } @else if (calendar.isLoading() && !calendar.hasValue()) {
+        <app-loading />
+      } @else {
+        <div class="cal">
+          @for (d of weekdays; track d) {
+            <div class="cal-h">{{ d | appDate: 'weekday' }}</div>
+          }
+          @for (b of blanks(); track $index) {
+            <div class="cal-d empty-d" aria-hidden="true"></div>
+          }
+          @for (c of cells(); track c.date) {
+            @let status = c.info?.status;
+            <button
+              type="button"
+              class="cal-d"
+              [class.booked]="status === 'booked' || status === 'held'"
+              [class.blocked]="status === 'blocked'"
+              [class.today]="c.today"
+              [class.sel]="c.selected"
+              [class.past]="c.past"
+              [attr.aria-label]="c.date | appDate: 'long'"
+              [attr.aria-pressed]="c.selected"
+              (click)="onDay(c)"
+            >
+              <span class="dn">{{ c.day }}</span>
+              @if (c.info; as info) {
+                @if (status === 'booked' || status === 'held') {
+                  <span class="xs">{{ 'operator.availability.' + status | translate }}</span>
+                } @else if (status === 'blocked') {
+                  <span class="xs truncate">{{ info.blockReason ? ('domain.api.blockReason.' + info.blockReason | translate) : ('operator.availability.blocked' | translate) }}</span>
+                } @else {
+                  <span class="xs" [class.override]="info.isOverride" [class.muted]="!info.isOverride">{{ info.price | sar }}</span>
+                  @if (info.discountPercent) {
+                    <span class="xs green hide-sm">-{{ info.discountPercent }}%</span>
+                  }
+                }
+              }
+            </button>
+          }
+        </div>
+      }
+
+      <div class="row wrap mt-16">
+        <span class="small muted">
+          {{ selected ? ('operator.calendar.selectedCount' | translate: { count: selected }) : ('operator.calendar.hint' | translate) }}
+        </span>
+        <button type="button" class="btn btn-primary btn-sm" [attr.aria-disabled]="!selected" (click)="openDialog('rates')">
+          <app-icon name="tag" size="sm" />{{ 'operator.calendar.setRates' | translate }}
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" [attr.aria-disabled]="!selected" (click)="openDialog('block')">
+          <app-icon name="ban" size="sm" />{{ 'operator.calendar.block' | translate }}
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" [disabled]="unblocking.busy()" [attr.aria-disabled]="!selected" (click)="unblock()">
+          {{ 'operator.calendar.unblock' | translate }}
+        </button>
+        @if (selected) {
+          <button type="button" class="link small" (click)="selection.set([])">{{ 'operator.calendar.clear' | translate }}</button>
+        }
+      </div>
+    </div>
+
+    <div class="card card-p">
+      <app-unit-discounts [unitId]="currentUnit" (changed)="calendar.reload()" />
+    </div>
+  </div>
+
+  @switch (dialog()) {
+    @case ('block') {
+      <app-block-dialog [unitId]="currentUnit" [ranges]="ranges()" [days]="selected" (closed)="dialog.set(null)" (done)="afterChange()" />
+    }
+    @case ('rates') {
+      <app-rates-dialog [unitId]="currentUnit" [ranges]="ranges()" [days]="selected" (closed)="dialog.set(null)" (done)="afterChange()" />
+    }
+  }
+} @else if (portfolio.isLoading()) {
+  <app-loading />
+} @else if (portfolio.error()) {
+  <app-load-error [error]="portfolio.error()" (retry)="portfolio.reload()" />
+} @else {
+  <div class="card card-p">
+    <app-empty-state icon="calendar-days" [title]="'operator.calendar.noUnits' | translate" />
+  </div>
+}

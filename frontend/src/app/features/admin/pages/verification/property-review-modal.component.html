@@ -1,0 +1,195 @@
+<app-modal size="xl" [title]="'admin.verification.reviewTitle' | translate" (closed)="closed.emit()">
+  <app-resource-state [resource]="property" />
+
+  @if (property.hasValue()) {
+    @let p = property.value();
+    @let id = p.identity;
+    @let gov = p.governance;
+
+    <div class="row between wrap mb-16">
+      <div>
+        <h3 class="h3">{{ id | loc }}</h3>
+        <div class="small muted">{{ id.type | loc }} • {{ id.city ? (id.city | loc) : ('common.none' | translate) }}</div>
+      </div>
+      <app-status-pill domain="property" [code]="p.status" />
+    </div>
+
+    @if (gov.rejectionReason) {
+      <div class="notice red mb-16 small">
+        <app-icon name="x-circle" />
+        <div>
+          <b>{{ 'admin.verification.rejectReasonLabel' | translate }}</b> {{ gov.rejectionReason }}
+        </div>
+      </div>
+    }
+
+    @if (p.checklist; as checklist) {
+      <div class="notice mb-16 small" [class]="checklist.complete ? 'green' : 'amber'">
+        <app-icon [name]="checklist.complete ? 'check-check' : 'alert-triangle'" />
+        <div class="grow">
+          <b>{{ (checklist.complete ? 'admin.verification.checklistComplete' : 'admin.verification.checklistIncomplete') | translate }}</b>
+          <ul class="checklist mt-4">
+            @for (item of checklist.items; track item.key) {
+              <li class="row gap-4">
+                <app-icon [name]="item.ok ? 'check' : 'x'" size="sm" [class.green]="item.ok" [class.red]="!item.ok" />
+                <span dir="auto">{{ item.message }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    }
+
+    <div class="grid g2">
+      <div>
+        <div class="bb mb-8">{{ 'admin.verification.sections.owner' | translate }}</div>
+        <app-kv [label]="'admin.verification.fields.ownerName' | translate">{{ p.owner.fullName }}</app-kv>
+        <app-kv [label]="'admin.verification.fields.mobile' | translate"><span class="ltr">{{ p.owner.mobile }}</span></app-kv>
+        <app-kv [label]="'admin.verification.fields.submittedAt' | translate">{{ gov.submittedAt | appDate: 'dateTime' }}</app-kv>
+
+        <div class="bb mb-8 mt-16">{{ 'admin.verification.sections.identity' | translate }}</div>
+        <app-kv [label]="'admin.verification.fields.nameAr' | translate">{{ id.nameAr }}</app-kv>
+        <app-kv [label]="'admin.verification.fields.nameEn' | translate">{{ id.nameEn || ('common.none' | translate) }}</app-kv>
+        <app-kv [label]="'admin.verification.fields.district' | translate">{{ id.district ? (id.district | loc) : ('common.none' | translate) }}</app-kv>
+        <app-kv [label]="'admin.verification.fields.address' | translate">{{ id.addressLine || ('common.none' | translate) }}</app-kv>
+        <app-kv [label]="'admin.verification.fields.license' | translate"><span class="ltr">{{ id.tourismLicenseNo || ('common.none' | translate) }}</span></app-kv>
+        @if (id.latitude != null && id.longitude != null) {
+          <app-kv [label]="'admin.verification.fields.location' | translate">
+            <a class="ltr" target="_blank" rel="noopener" [href]="'https://maps.google.com/?q=' + id.latitude + ',' + id.longitude">{{ id.latitude }}, {{ id.longitude }}</a>
+          </app-kv>
+        }
+        <app-kv [label]="'admin.verification.fields.operatingModel' | translate">
+          {{ p.operations.operatingModel ? ('domain.api.operatingModel.' + p.operations.operatingModel | translate) : ('common.none' | translate) }}
+        </app-kv>
+        <app-kv [label]="'admin.verification.fields.operators' | translate">
+          @for (o of p.operations.operators; track o.id; let last = $last) {
+            {{ o.fullName }}{{ last ? '' : ('admin.listSeparator' | translate) }}
+          } @empty {
+            {{ 'common.none' | translate }}
+          }
+        </app-kv>
+      </div>
+
+      <div>
+        <div class="bb mb-8">{{ 'admin.verification.sections.documents' | translate }}</div>
+        <div class="stack-sm">
+          @for (doc of gov.documents; track doc.id) {
+            <div class="soft row between doc">
+              <div class="row gap-4 small">
+                <app-icon name="file-text" size="sm" />
+                <div>
+                  <div class="b">{{ 'domain.api.documentType.' + doc.type | translate }}</div>
+                  <div class="xs muted" dir="auto">{{ doc.originalName }} • {{ 'admin.verification.sizeKb' | translate: { size: sizeKb(doc) } }}</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-xs" [disabled]="downloading() === doc.id" (click)="download(doc)">
+                <app-icon name="download" size="sm" />{{ 'admin.verification.download' | translate }}
+              </button>
+            </div>
+          } @empty {
+            <div class="notice red small">
+              <app-icon name="file-x-2" />
+              <div>{{ 'admin.verification.noDocuments' | translate }}</div>
+            </div>
+          }
+        </div>
+
+        <div class="bb mb-8 mt-16">{{ 'admin.verification.sections.commercial' | translate }}</div>
+        <app-kv [label]="'admin.verification.fields.cancellation' | translate">
+          {{ p.commercial.cancellationPolicy ? (p.commercial.cancellationPolicy | loc) : ('common.none' | translate) }}
+        </app-kv>
+        <app-kv [label]="'admin.verification.fields.checkIn' | translate">{{ p.commercial.checkInTime ? (p.commercial.checkInTime | appDate: 'time') : ('common.none' | translate) }}</app-kv>
+        <app-kv [label]="'admin.verification.fields.checkOut' | translate">{{ p.commercial.checkOutTime ? (p.commercial.checkOutTime | appDate: 'time') : ('common.none' | translate) }}</app-kv>
+        @if (p.commercial.houseRulesAr) {
+          <div class="xs muted b mt-8">{{ 'admin.verification.fields.houseRules' | translate }}</div>
+          <p class="small lh" dir="auto">{{ p.commercial.houseRulesAr }}</p>
+        }
+        @if (p.commercial.damagePolicyAr) {
+          <div class="xs muted b mt-8">{{ 'admin.verification.fields.damagePolicy' | translate }}</div>
+          <p class="small lh" dir="auto">{{ p.commercial.damagePolicyAr }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="bb mb-8">{{ 'admin.verification.sections.content' | translate }}</div>
+    @if (p.content.descriptionAr) {
+      <p class="small lh" dir="auto">{{ p.content | loc: 'description' }}</p>
+    }
+    @if (p.content.amenities.length) {
+      <div class="chips mt-8">
+        @for (a of p.content.amenities; track a.id) {
+          <span class="chip chip-sm">{{ a | loc }}</span>
+        }
+      </div>
+    }
+    <div class="thumbs-row photos mt-12">
+      @for (photo of p.content.photos; track photo.id) {
+        <a [href]="photo.url" target="_blank" rel="noopener"><img [src]="photo.thumbUrl" [alt]="photo.caption ?? ''" /></a>
+      } @empty {
+        <span class="small muted">{{ 'admin.verification.noPhotos' | translate }}</span>
+      }
+    </div>
+
+    <div class="divider"></div>
+    <div class="bb mb-8">{{ 'admin.verification.sections.units' | translate }}</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>{{ 'admin.verification.unitCols.name' | translate }}</th>
+            <th>{{ 'admin.verification.unitCols.guests' | translate }}</th>
+            <th>{{ 'admin.verification.unitCols.rooms' | translate }}</th>
+            <th>{{ 'admin.verification.unitCols.basePrice' | translate }}</th>
+            <th>{{ 'admin.verification.unitCols.cleaningFee' | translate }}</th>
+            <th>{{ 'admin.verification.unitCols.minNights' | translate }}</th>
+            <th>{{ 'admin.verification.unitCols.active' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of p.commercial.units; track u.id) {
+            <tr>
+              <td class="b">{{ u.name }}</td>
+              <td>{{ u.maxGuests }}</td>
+              <td>{{ 'admin.verification.unitCols.roomsValue' | translate: { bedrooms: u.bedrooms, beds: u.beds, baths: u.bathrooms } }}</td>
+              <td class="nowrap">{{ u.basePrice | sar }}</td>
+              <td class="nowrap">{{ u.cleaningFee | sar }}</td>
+              <td>{{ u.minNights }}</td>
+              <td><app-icon [name]="u.isActive ? 'check' : 'x'" size="sm" [class.green]="u.isActive" [class.red]="!u.isActive" /></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (asking(); as action) {
+      <app-reason-modal
+        [title]="action === 'reject' ? 'admin.verification.rejectTitle' : 'admin.verification.suspendTitle'"
+        [okLabel]="action === 'reject' ? 'admin.verification.rejectSend' : 'admin.verification.suspend'"
+        [reasons]="action === 'reject' ? rejectReasons : []"
+        [busy]="busy()"
+        (confirmed)="submitReason(action, $event)"
+        (closed)="asking.set(null)"
+      />
+    }
+  }
+
+  <ng-container modal-footer>
+    @if (property.hasValue()) {
+      @let p = property.value();
+      @switch (p.status) {
+        @case ('PENDING_REVIEW') {
+          <button type="button" class="btn btn-success" [disabled]="busy()" (click)="approve(p)"><app-icon name="check" size="sm" />{{ 'admin.verification.approve' | translate }}</button>
+          <button type="button" class="btn btn-danger" [disabled]="busy()" (click)="asking.set('reject')">{{ 'admin.verification.reject' | translate }}</button>
+        }
+        @case ('PUBLISHED') {
+          <button type="button" class="btn btn-danger" [disabled]="busy()" (click)="asking.set('suspend')">{{ 'admin.verification.suspend' | translate }}</button>
+        }
+        @case ('SUSPENDED') {
+          <button type="button" class="btn btn-success" [disabled]="busy()" (click)="reactivate(p)">{{ 'admin.verification.reactivate' | translate }}</button>
+        }
+      }
+    }
+    <button type="button" class="btn btn-ghost" (click)="closed.emit()">{{ 'common.close' | translate }}</button>
+  </ng-container>
+</app-modal>

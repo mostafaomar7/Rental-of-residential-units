@@ -1,0 +1,54 @@
+<div class="card card-p login-card">
+  <div class="row between mb-16">
+    <app-logo />
+    <app-lang-switch />
+  </div>
+
+  <h1 class="h3">{{ 'auth.login.title' | translate }}</h1>
+  <p class="small muted mt-4 mb-16">{{ 'auth.login.subtitle' | translate }}</p>
+
+  <form class="stack" novalidate (submit)="$event.preventDefault(); submit()">
+    <app-field [label]="'auth.login.mobile' | translate" for="login-mobile">
+      <input
+        id="login-mobile"
+        class="input ltr"
+        inputmode="numeric"
+        autocomplete="username"
+        placeholder="05xxxxxxxx"
+        [value]="mobile()"
+        (input)="mobile.set($any($event.target).value)"
+      />
+    </app-field>
+    <app-field [label]="'auth.login.password' | translate" for="login-password">
+      <input
+        id="login-password"
+        class="input ltr"
+        type="password"
+        autocomplete="current-password"
+        [value]="password()"
+        (input)="password.set($any($event.target).value)"
+      />
+    </app-field>
+    <div class="err-msg" role="alert">{{ error() ? (error() | translate) : '' }}</div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="busy()">
+      {{ (busy() ? 'auth.login.signingIn' : 'auth.login.submit') | translate }}
+    </button>
+  </form>
+
+  @if (demoEnabled) {
+    <div class="divider mt-16 mb-16"></div>
+    <div class="b small">{{ 'auth.login.demoTitle' | translate }}</div>
+    <p class="xs muted mt-4 mb-12">{{ 'auth.login.demoHint' | translate }}</p>
+    <div class="demo-grid">
+      @for (s of shortcuts; track s.account) {
+        <button type="button" class="btn btn-ghost btn-sm" [disabled]="busy()" (click)="loginAsDemo(s.account)">
+          <app-icon [name]="s.icon" size="sm" />
+          <span class="demo-label">
+            <span>{{ 'auth.demo.' + s.account | translate }}</span>
+            <span class="xs muted ltr">{{ demoMobiles[s.account] }}</span>
+          </span>
+        </button>
+      }
+    </div>
+  }
+</div>

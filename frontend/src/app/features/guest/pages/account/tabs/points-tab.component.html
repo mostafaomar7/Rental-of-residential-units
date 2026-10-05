@@ -1,0 +1,105 @@
+@if (loyalty.hasValue()) {
+  @let l = loyalty.value();
+  <div class="stack-lg">
+    <div class="grid g2">
+      <div class="card card-p">
+        <div class="row gap-12">
+          <span class="li-ic gold big-ic"><app-icon name="gift" size="lg" /></span>
+          <div>
+            <div class="h2">{{ 'account.points.pointsCount' | translate: { count: (l.points.balance | num) } }}</div>
+            <div class="small muted">{{ 'account.points.worth' | translate: { amount: (l.redemption.redeemableValue | sar) } }}</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block mt-16" [disabled]="busy() || !l.redemption.redeemablePoints" (click)="redeem()">
+          {{ 'account.points.redeem' | translate: { points: (l.redemption.redeemablePoints | num), amount: (l.redemption.redeemableValue | sar) } }}
+        </button>
+        <p class="xs muted mt-12 lh">
+          {{
+            'account.points.rules'
+              | translate: { earn: l.earning.pointsPer100Sar, points: l.redemption.blockPoints, amount: (l.redemption.blockValue | sar), review: l.earning.reviewPoints }
+          }}
+        </p>
+      </div>
+
+      <div class="hero-card">
+        <div class="row small b gold"><app-icon name="users" size="sm" />{{ 'account.points.referralTitle' | translate }}</div>
+        <div class="glass mt-16 row between">
+          <div class="row">
+            <span class="h2 ltr ref-code">{{ l.referral.code }}</span>
+            <span class="pill reward-pill">{{ l.referral.bonus | sar }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn btn-glass btn-icon btn-sm"
+            [attr.aria-label]="'account.points.copyCode' | translate"
+            (click)="clipboard.copy(l.referral.code, 'account.points.codeCopied')"
+          >
+            <app-icon name="copy" size="sm" />
+          </button>
+        </div>
+        <p class="xs mt-12 lh faint">{{ 'account.points.referralHint' | translate: { amount: (l.referral.bonus | sar) } }}</p>
+        <p class="xs lh faint">{{ 'account.points.referralStats' | translate: { invited: l.referral.invited, rewarded: l.referral.rewarded } }}</p>
+        @if (shareUrl(); as url) {
+          <div class="row mt-12">
+            <a class="btn btn-wa btn-sm" target="_blank" rel="noopener" [href]="url">{{ 'account.points.shareWhatsapp' | translate }}</a>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'account.points.tiersTitle' | translate }}</h3>
+        <span class="small muted">
+          {{ 'account.points.currentTier' | translate }} <b class="navy">{{ l.tier | loc }}</b>
+        </span>
+      </div>
+      <div class="bar mb-16"><div [style.width.%]="l.progressPercent"></div></div>
+      <div class="grid g3">
+        @for (t of l.tiers; track t.code) {
+          <div class="soft-lg" [class.current]="t.code === l.tier.code">
+            <div class="row between">
+              <div class="bb">{{ t | loc }}</div>
+              @if (t.code === l.tier.code) {
+                <span class="pill pill-gold">{{ 'account.points.yourTier' | translate }}</span>
+              } @else if (l.points.lifetime >= t.minPoints) {
+                <span class="pill pill-green">{{ 'account.points.reached' | translate }}</span>
+              }
+            </div>
+            <div class="xs muted mt-4">{{ 'account.points.fromPoints' | translate: { points: (t.minPoints | num) } }}</div>
+            <div class="small mt-8 lh">{{ 'account.points.tierCashback' | translate: { rate: t.cashbackPercent } }}</div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="card card-p">
+      <div class="card-h">
+        <h3>{{ 'account.points.history' | translate }}</h3>
+      </div>
+      @if (ledger.hasValue()) {
+        @let page = ledger.value();
+        <div class="rows">
+          @for (t of page.items; track t.id) {
+            <div class="row between tx">
+              <div>
+                <div class="b small">{{ t | loc: 'description' }}</div>
+                <div class="xs muted">{{ t.createdAt | appDate: 'dateTime' }} • {{ 'domain.api.pointsTx.' + t.type | translate }}</div>
+              </div>
+              <div class="bb small ltr" [class.green]="t.points > 0" [class.red]="t.points < 0">{{ t.points > 0 ? '+' : '' }}{{ t.points | num }}</div>
+            </div>
+          } @empty {
+            <app-empty-state icon="gift" [title]="'account.points.emptyHistory' | translate" />
+          }
+        </div>
+        <app-pager [page]="page.meta.page" [totalPages]="page.meta.totalPages" [disabled]="ledger.isLoading()" (pageChange)="pageNo.set($event)" />
+      } @else {
+        <app-load-state [error]="ledger.error()" (retry)="ledger.reload()" />
+      }
+    </div>
+  </div>
+} @else {
+  <div class="card">
+    <app-load-state [error]="loyalty.error()" (retry)="loyalty.reload()" />
+  </div>
+}

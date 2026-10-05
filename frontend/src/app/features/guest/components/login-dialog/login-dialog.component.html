@@ -1,0 +1,100 @@
+<app-modal size="sm" [title]="'guest.login.title' | translate" [subtitle]="'guest.login.subtitle' | translate" (closed)="close()">
+  @switch (step()) {
+    @case ('phone') {
+      <form class="stack" novalidate (submit)="$event.preventDefault(); sendOtp()">
+        <app-field [label]="'guest.login.mobile' | translate" for="lg-phone" [help]="'guest.login.mobileHelp' | translate">
+          <input
+            id="lg-phone"
+            class="input ltr phone-input"
+            [class.err]="phoneInvalid()"
+            inputmode="tel"
+            maxlength="13"
+            autocomplete="tel"
+            placeholder="05xxxxxxxx"
+            [value]="phone()"
+            (input)="phone.set($any($event.target).value); phoneInvalid.set(false)"
+          />
+        </app-field>
+        <div class="err-msg" role="alert">{{ error() ? (error() | translate) : '' }}</div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="busy()">{{ 'guest.login.sendOtp' | translate }}</button>
+        <p class="xs muted center lh">{{ 'guest.login.terms' | translate }}</p>
+        <p class="xs muted center">
+          {{ 'guest.login.staffPrompt' | translate }}
+          <a class="link" routerLink="/login" (click)="close()">{{ 'guest.login.staffLink' | translate }}</a>
+        </p>
+      </form>
+    }
+
+    @case ('otp') {
+      <div class="center">
+        <div class="li-ic gold otp-icon"><app-icon name="message-square-lock" size="lg" /></div>
+        <h3 class="h3 mt-12">{{ 'guest.login.otpTitle' | translate }}</h3>
+        <p class="small muted mt-4">
+          {{ 'guest.login.otpSent' | translate }} <b class="ltr navy">{{ phone() }}</b>&ngsp;
+          <button type="button" class="link xs" (click)="editPhone()">{{ 'guest.login.edit' | translate }}</button>
+        </p>
+
+        <div class="otp mt-16">
+          @for (i of otpSlots; track i) {
+            <input
+              #otpInput
+              inputmode="numeric"
+              maxlength="1"
+              autocomplete="one-time-code"
+              [attr.aria-label]="'guest.login.digit' | translate: { n: i + 1 }"
+              (input)="onOtpInput(i, otpInput)"
+              (keydown.backspace)="onOtpBackspace(i, otpInput)"
+            />
+          }
+        </div>
+
+        <div class="err-msg mt-8" role="alert">{{ error() ? (error() | translate) : '' }}</div>
+        @if (devCode(); as code) {
+          <p class="xs muted mt-8">
+            {{ 'guest.login.demoCode' | translate }}
+            <button type="button" class="link" (click)="fillDevCode()"><b class="kbd">{{ code }}</b></button>
+          </p>
+        }
+        <button type="button" class="btn btn-primary btn-lg btn-block mt-16" [disabled]="busy()" (click)="verifyOtp()">
+          {{ 'guest.login.verify' | translate }}
+        </button>
+        <p class="small muted mt-12">
+          @if (secondsLeft() > 0) {
+            {{ 'guest.login.resendIn' | translate: { seconds: secondsLeft() } }}
+          } @else {
+            <button type="button" class="link" [disabled]="busy()" (click)="resendOtp()">{{ 'guest.login.resend' | translate }}</button>
+          }
+        </p>
+      </div>
+    }
+
+    @case ('register') {
+      <form class="stack" novalidate (submit)="$event.preventDefault(); register()">
+        <div>
+          <h3 class="h3">{{ 'guest.login.registerTitle' | translate }}</h3>
+          <p class="small muted mt-4">{{ 'guest.login.registerHint' | translate: { points: welcomePoints() } }}</p>
+        </div>
+        <app-field [label]="'guest.login.fullName' | translate" for="lg-name">
+          <input
+            id="lg-name"
+            class="input"
+            autocomplete="name"
+            [placeholder]="'guest.login.namePlaceholder' | translate"
+            [value]="name()"
+            (input)="name.set($any($event.target).value)"
+          />
+        </app-field>
+        <app-field [label]="'guest.login.email' | translate" for="lg-email">
+          <input id="lg-email" class="input ltr" type="email" autocomplete="email" [value]="email()" (input)="email.set($any($event.target).value)" />
+        </app-field>
+        <app-field [label]="'guest.login.referral' | translate" for="lg-ref">
+          <input id="lg-ref" class="input ltr" maxlength="12" [value]="referral()" (input)="referral.set($any($event.target).value)" />
+        </app-field>
+        <div class="err-msg" role="alert">{{ error() ? (error() | translate) : '' }}</div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="busy()">
+          {{ 'guest.login.register' | translate: { points: welcomePoints() } }}
+        </button>
+      </form>
+    }
+  }
+</app-modal>

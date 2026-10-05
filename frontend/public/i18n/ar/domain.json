@@ -1,0 +1,133 @@
+{
+  "domain": {
+    "integrations": {
+      "shomoos": {
+        "name": "شموس",
+        "desc": "الإبلاغ الآلي عن بيانات النزلاء للجهات الأمنية"
+      },
+      "nafath": {
+        "name": "نفاذ",
+        "desc": "التحقق من هوية الضيوف والملاك عبر النفاذ الوطني الموحد"
+      },
+      "ewaa": {
+        "name": "إيواء",
+        "desc": "مزامنة تراخيص الوحدات وبيانات الإشغال مع منصة وزارة السياحة"
+      },
+      "locks": {
+        "name": "مزود الأقفال الذكية",
+        "desc": "TTLock / Igloohome / Nuki — إصدار الرموز وسجل الدخول"
+      },
+      "payments": {
+        "name": "بوابة الدفع",
+        "desc": "مدى، Apple Pay، البطاقات الائتمانية، الاسترداد"
+      },
+      "sms": {
+        "name": "الرسائل النصية وواتساب",
+        "desc": "رموز التحقق OTP، إشعارات الحجز، رموز الدخول"
+      }
+    },
+    "api": {
+      "role": {
+        "GUEST": "ضيف",
+        "OWNER": "مالك",
+        "OPERATOR": "مشغّل",
+        "SUPERVISOR": "مشرف ميداني",
+        "PHOTOGRAPHER": "مصوّر",
+        "ADMIN": "مدير المنصة"
+      },
+      "operatingModel": {
+        "SUPERVISED": "بإشراف ميداني",
+        "SELF_SERVICE": "دخول ذاتي"
+      },
+      "taskType": {
+        "READINESS": "تجهيز للوصول",
+        "INSPECTION": "فحص بعد المغادرة",
+        "CLEANING": "تنظيف",
+        "MAINTENANCE": "صيانة",
+        "PHOTO_SHOOT": "جلسة تصوير"
+      },
+      "incidentCategory": {
+        "MAINTENANCE": "صيانة",
+        "CLEANLINESS": "نظافة",
+        "LOCK": "القفل",
+        "INTERNET": "الإنترنت",
+        "NOISE": "إزعاج",
+        "SAFETY": "السلامة",
+        "DAMAGE": "أضرار",
+        "OTHER": "أخرى"
+      },
+      "documentType": {
+        "TITLE_DEED": "صك الملكية",
+        "LEASE": "عقد الإيجار",
+        "TOURISM_LICENSE": "ترخيص السياحة",
+        "OPERATOR_AUTHORIZATION": "تفويض المشغّل",
+        "OTHER": "أخرى"
+      },
+      "blockReason": {
+        "MAINTENANCE": "صيانة",
+        "OWNER_USE": "استخدام المالك",
+        "OTHER": "أخرى"
+      },
+      "stayRequestType": {
+        "EARLY_CHECK_IN": "دخول مبكر",
+        "LATE_CHECK_OUT": "خروج متأخر"
+      },
+      "paymentMethod": {
+        "GATEWAY": "بطاقة / مدى / Apple Pay",
+        "WALLET": "المحفظة"
+      },
+      "walletTx": {
+        "TOPUP": "شحن المحفظة",
+        "BOOKING_PAYMENT": "دفع حجز",
+        "REFUND": "استرداد",
+        "CASHBACK": "كاش باك",
+        "CASHBACK_REVERSAL": "عكس كاش باك",
+        "REWARD_REDEMPTION": "استبدال نقاط",
+        "REFERRAL_BONUS": "مكافأة دعوة",
+        "ADJUSTMENT": "تعديل إداري",
+        "STAY_REQUEST_FEE": "رسوم طلب دخول مبكر / خروج متأخر",
+        "DAMAGE_CHARGE": "خصم تعويض أضرار"
+      },
+      "pointsTx": {
+        "WELCOME": "نقاط الترحيب",
+        "BOOKING": "حجز",
+        "BOOKING_REVERSAL": "إلغاء حجز",
+        "REVIEW": "تقييم",
+        "REDEMPTION": "استبدال",
+        "ADJUSTMENT": "تعديل إداري"
+      },
+      "earningType": {
+        "BOOKING": "حجز",
+        "STAY_REQUEST": "طلب إقامة",
+        "DAMAGE": "تعويض أضرار",
+        "ADJUSTMENT": "تعديل"
+      },
+      "lockProvider": {
+        "TTLOCK": "TTLock",
+        "IGLOOHOME": "igloohome",
+        "NUKI": "Nuki",
+        "MANUAL": "يدوي (رمز ثابت)",
+        "SIMULATOR": "محاكي"
+      },
+      "pricingEventType": {
+        "HOLIDAY": "إجازة رسمية",
+        "EVENT": "فعالية",
+        "SEASON": "موسم",
+        "SCHOOL_HOLIDAY": "إجازة مدارس",
+        "OTHER": "أخرى"
+      },
+      "cancelledBy": {
+        "GUEST": "الضيف",
+        "HOST": "المضيف",
+        "ADMIN": "الإدارة",
+        "SYSTEM": "النظام"
+      },
+      "identityType": {
+        "NATIONAL_ID": "هوية وطنية",
+        "IQAMA": "إقامة",
+        "PASSPORT": "جواز سفر",
+        "GCC_ID": "هوية خليجية"
+      }
+    }
+  }
+}

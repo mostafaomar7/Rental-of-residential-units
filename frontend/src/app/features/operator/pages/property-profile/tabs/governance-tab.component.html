@@ -1,0 +1,109 @@
+@let p = property();
+@let g = p.governance;
+
+@if (g.rejectionReason && p.status === 'REJECTED') {
+  <div class="notice red mb-16">
+    <app-icon name="alert-triangle" />
+    <div>
+      <b>{{ 'operator.profile.gov.rejected' | translate }}</b><br />
+      {{ g.rejectionReason }}
+    </div>
+  </div>
+}
+
+<div class="grid g2 gap-24">
+  <div>
+    <h3 class="h3 mb-8">{{ 'operator.profile.gov.review' | translate }}</h3>
+    <div class="row wrap mb-8">
+      <app-status-pill domain="property" [code]="p.status" />
+    </div>
+    <div class="small lh">
+      <div>{{ 'operator.profile.gov.submittedAt' | translate }}: <b>{{ g.submittedAt | appDate: 'dateTime' }}</b></div>
+      <div>{{ 'operator.profile.gov.reviewedAt' | translate }}: <b>{{ g.reviewedAt | appDate: 'dateTime' }}</b></div>
+      <div>{{ 'operator.profile.gov.publishedAt' | translate }}: <b>{{ g.publishedAt | appDate: 'dateTime' }}</b></div>
+    </div>
+
+    <h4 class="bb mt-16 mb-8">{{ 'operator.profile.gov.checklist' | translate }}</h4>
+    @if (checklist.isLoading()) {
+      <app-loading />
+    } @else if (checklist.error()) {
+      <app-load-error [error]="checklist.error()" (retry)="checklist.reload()" />
+    } @else if (checklist.hasValue()) {
+      @let c = checklist.value();
+      <app-listing-checklist [items]="c.items" />
+      @if (c.complete) {
+        <div class="notice green small mt-8">
+          <app-icon name="badge-check" />
+          <div>{{ 'operator.profile.gov.checklistComplete' | translate }}</div>
+        </div>
+      }
+    }
+
+    <div class="row wrap mt-16">
+      @if (canSubmit()) {
+        <button type="button" class="btn btn-gold" [disabled]="reviewAction.busy()" (click)="submit()">
+          <app-icon name="send" size="sm" />{{ 'operator.profile.gov.submit' | translate }}
+        </button>
+      }
+      @if (canWithdraw()) {
+        <button type="button" class="btn btn-ghost" [disabled]="reviewAction.busy()" (click)="withdraw()">
+          <app-icon name="rotate-ccw" size="sm" />{{ 'operator.profile.gov.withdraw' | translate }}
+        </button>
+      }
+      @if (p.status === 'DRAFT') {
+        <button type="button" class="btn btn-danger" [disabled]="reviewAction.busy()" (click)="deleteDraft()">
+          <app-icon name="trash-2" size="sm" />{{ 'operator.profile.gov.delete' | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div>
+    <h3 class="h3 mb-8">{{ 'operator.profile.gov.documents' | translate }}</h3>
+    <div class="rows">
+      @for (doc of g.documents; track doc.id) {
+        <div class="row between doc">
+          <div class="row gap-12">
+            <span class="li-ic"><app-icon name="file-text" size="sm" /></span>
+            <div>
+              <div class="b small">{{ 'domain.api.documentType.' + doc.type | translate }}</div>
+              <div class="xs muted">
+                <span class="ltr">{{ doc.originalName }}</span> • {{ 'operator.profile.gov.sizeKb' | translate: { size: (sizeKb(doc) | num: 0) } }} •
+                {{ doc.createdAt | appDate: 'medium' }}
+              </div>
+            </div>
+          </div>
+          <div class="row gap-4">
+            <button type="button" class="btn btn-ghost btn-xs" [disabled]="documentAction.busy()" [attr.aria-label]="'operator.profile.gov.docDownload' | translate" (click)="download(doc)">
+              <app-icon name="download" size="sm" />
+            </button>
+            <button type="button" class="btn btn-danger btn-xs" [disabled]="documentAction.busy()" [attr.aria-label]="'operator.profile.gov.docDelete' | translate" (click)="removeDocument(doc)">
+              <app-icon name="trash-2" size="sm" />
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="xs muted">{{ 'operator.profile.gov.noDocuments' | translate }}</div>
+      }
+    </div>
+
+    <div class="row wrap mt-12">
+      <app-field [label]="'operator.profile.gov.docType' | translate" for="pg-doc-type">
+        <select id="pg-doc-type" class="select" #docType (change)="setDocumentType(docType.value)">
+          @for (t of documentTypes; track t) {
+            <option [value]="t" [selected]="t === documentType()">{{ 'domain.api.documentType.' + t | translate }}</option>
+          }
+        </select>
+      </app-field>
+      <label class="btn btn-primary btn-sm upload-btn">
+        @if (documentAction.busy()) {
+          <span class="spin"></span>
+        } @else {
+          <app-icon name="file-up" size="sm" />
+        }
+        {{ 'operator.profile.gov.docUpload' | translate }}
+        <input type="file" accept="application/pdf,image/*" [disabled]="documentAction.busy()" (change)="onDocument($event)" />
+      </label>
+    </div>
+  </div>
+</div>

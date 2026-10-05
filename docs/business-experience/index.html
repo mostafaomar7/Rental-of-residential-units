@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>رؤية منصة الإقامة الذكية</title>
+<meta name="description" content="عرض تفاعلي لرؤية منصة حجز وإقامة ذكية: الحجز، والدخول الذكي، والتشغيل، والتسعير الذكي، والامتثال، وتجربة الضيف — مفهوم أولي للنقاش.">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=Noto+Kufi+Arabic:wght@200;300;400;500;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="no-js">
+
+<a class="skip" href="#s02">تخطَّ إلى المحتوى</a>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar" id="topbar">
+  <a class="brand" href="#s01" aria-label="العودة إلى البداية">
+    <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M13 30.5 32 15l19 15.5V50H13z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle cx="32" cy="33.5" r="4.6" fill="currentColor"/><path d="M30.1 36.4 28.6 44h6.8l-1.5-7.6z" fill="currentColor"/></svg>
+    <span class="brand-text"><strong>منصة الإقامة الذكية</strong><span>وثيقة رؤية المنتج · مسودة أولى</span></span>
+  </a>
+  <div class="topbar-actions">
+    <button class="tb-btn" id="legendBtn" type="button" aria-expanded="false" aria-controls="legend"><i data-lucide="list-checks" aria-hidden="true"></i><span>دليل القراءة</span></button>
+    <button class="tb-btn tb-btn--gold" id="presentBtn" type="button" title="وضع العرض — اختصار: P"><i data-lucide="presentation" aria-hidden="true"></i><span>وضع العرض</span></button>
+  </div>
+  <div class="topbar-progress" aria-hidden="true"><span id="topProgress"></span></div>
+</header>
+
+<!-- ============ LEGEND POPOVER ============ -->
+<div class="legend" id="legend" role="dialog" aria-label="دليل تصنيفات العرض" hidden>
+  <div class="legend-head">
+    <strong>كيف تقرأ هذا العرض</strong>
+    <button class="icon-btn" type="button" id="legendClose" aria-label="إغلاق"><i data-lucide="x" aria-hidden="true"></i></button>
+  </div>
+  <p class="legend-intro">هذا العرض مبني على الرؤية الأولية للعميل. كل عنصر موسوم بحالته حتى لا يُقرأ الافتراض على أنه قرار.</p>
+  <ul class="legend-list">
+    <li><span class="st st--confirmed">مؤكد من العميل</span><span>ورد صراحة في الرؤية الأولية للعميل.</span></li>
+    <li><span class="st st--proposed">قدرة مقترحة</span><span>نقترحها لتحويل الفكرة إلى منتج متكامل.</span></li>
+    <li><span class="st st--recommended">تحسين موصى به</span><span>إضافة ترفع الجودة أو تقلّل المخاطر.</span></li>
+    <li><span class="st st--tbc">بانتظار التأكيد</span><span>يحتاج قراراً أو معلومة من العميل قبل اعتماده.</span></li>
+    <li><span class="st st--future">تطوير مستقبلي</span><span>خارج النطاق الأولي، ضمن تطوّر لاحق.</span></li>
+  </ul>
+</div>
+
+<!-- ============ SECTION RAIL ============ -->
+<nav class="rail" id="rail" aria-label="أقسام العرض"><ol id="railList"></ol></nav>
+
+<!-- ============ PRESENTATION HUD ============ -->
+<div class="hud" id="hud" hidden>
+  <div class="hud-inner">
+    <button class="hud-btn" type="button" id="hudExit" aria-label="الخروج من وضع العرض"><i data-lucide="x" aria-hidden="true"></i><span>خروج</span><kbd>Esc</kbd></button>
+    <div class="hud-title"><span class="hud-num" id="hudNum">01</span><span class="hud-sep">/ 26</span><span class="hud-name" id="hudName"></span></div>
+    <div class="hud-nav">
+      <button class="hud-btn" type="button" id="hudPrev" aria-label="القسم السابق"><kbd>←</kbd><span>السابق</span></button>
+      <button class="hud-btn hud-btn--gold" type="button" id="hudNext" aria-label="القسم التالي"><span>التالي</span><kbd>→</kbd></button>
+    </div>
+  </div>
+  <div class="hud-progress"><span id="hudBar"></span></div>
+</div>
+
+<main id="story">
+
+<!-- ================================================= 01 HERO -->
+<section class="sec hero" id="s01" data-title="البداية" data-en="HERO">
+  <div class="hero-stage stage" id="heroStage" aria-hidden="true"><div class="stage-labels"></div></div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <p class="hero-kicker"><span class="pulse-dot"></span>وثيقة رؤية المنتج · مفهوم أولي للنقاش</p>
+    <h1 class="hero-title"><span class="ln">الطريقة <em>الأذكى</em> لتشغيل</span> <span class="ln">الإقامات القصيرة وتجربتها.</span></h1>
+    <p class="hero-en" dir="ltr">The smarter way to operate and experience short-term stays.</p>
+    <p class="hero-sub">منظومة عقارية مترابطة تجمع الحجز، والدخول الذكي، والتشغيل، والامتثال، وتجارب ضيافة ذكية — في منصة واحدة.</p>
+    <div class="hero-cta">
+      <a class="btn btn--gold" href="#s02">استكشف الرؤية<i data-lucide="arrow-left" aria-hidden="true"></i></a>
+      <a class="btn btn--ghost" href="#s18"><i data-lucide="network" aria-hidden="true"></i>اطّلع على بنية المنتج</a>
+    </div>
+    <dl class="hero-meta">
+      <div><dt>طبيعة الوثيقة</dt><dd>مفهوم أولي — ليست مواصفات نهائية</dd></div>
+      <div><dt>أنواع العقارات</dt><dd>شقق · فنادق · وحدات سكنية</dd></div>
+      <div><dt>نموذجا التشغيل</dt><dd>مُشرَف عليها · ذاتية الخدمة</dd></div>
+      <div><dt>الإصدار</dt><dd>مسودة للنقاش · سبتمبر 2026</dd></div>
+    </dl>
+  </div>
+  <div class="wrap hero-legend">
+    <span class="hero-legend-label">مفتاح القراءة:</span>
+    <span class="st st--confirmed">مؤكد من العميل</span>
+    <span class="st st--proposed">قدرة مقترحة</span>
+    <span class="st st--recommended">تحسين موصى به</span>
+    <span class="st st--tbc">بانتظار التأكيد</span>
+    <span class="st st--future">تطوير مستقبلي</span>
+  </div>
+</section>
+
+<!-- ================================================= 02 OPPORTUNITY -->
+<section class="sec" id="s02" data-title="الفرصة" data-en="THE OPPORTUNITY">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">02</span><span class="eyebrow-en">The Opportunity</span></p>
+      <h2>الإقامات القصيرة تستحق <em>تشغيلاً</em> أذكى.</h2>
+      <p class="lede">تشغيل الإقامة القصيرة اليوم موزّع بين أدوات وقنوات وأشخاص كُثر: مفاتيح تُسلَّم يدوياً، وأسعار تُحدَّد بالتقدير، وتنسيق تشغيلي عبر المحادثات. الفكرة المطروحة تجمع هذه الأجزاء في تجربة واحدة للضيف، ولوحة تحكم واحدة للمشغّل.</p>
+      <p class="note-line"><i data-lucide="info" aria-hidden="true"></i>قراءة تحليلية أولية لتحديات القطاع — تُستكمل ببيانات السوق وخبرة العميل.</p>
+    </header>
+
+    <div class="opp-grid">
+      <article class="opp reveal" style="--d:0">
+        <span class="opp-ico"><i data-lucide="key-round" aria-hidden="true"></i></span>
+        <h3>الاستلام والمفاتيح</h3>
+        <p class="opp-from"><span>الواقع المعتاد</span>تسليم يدوي للمفاتيح وتنسيق مسبق لمواعيد الوصول.</p>
+        <p class="opp-to"><span>ما تقدمه المنصة</span>رمز دخول رقمي مرتبط بالحجز يفتح القفل الذكي.</p>
+      </article>
+      <article class="opp reveal" style="--d:1">
+        <span class="opp-ico"><i data-lucide="trending-up" aria-hidden="true"></i></span>
+        <h3>التسعير</h3>
+        <p class="opp-from"><span>الواقع المعتاد</span>أسعار ثابتة أو تقديرية لا تعكس المواسم والفعاليات.</p>
+        <p class="opp-to"><span>ما تقدمه المنصة</span>مساعد تسعير يقترح السعر وفق سياق الطلب.</p>
+      </article>
+      <article class="opp reveal" style="--d:2">
+        <span class="opp-ico"><i data-lucide="clipboard-check" aria-hidden="true"></i></span>
+        <h3>التشغيل الميداني</h3>
+        <p class="opp-from"><span>الواقع المعتاد</span>جاهزية الوحدات وفحصها يُنسَّقان عبر قنوات متفرقة.</p>
+        <p class="opp-to"><span>ما تقدمه المنصة</span>مسار تشغيلي واضح للمشرفين داخل المنصة.</p>
+      </article>
+      <article class="opp reveal" style="--d:3">
+        <span class="opp-ico"><i data-lucide="camera" aria-hidden="true"></i></span>
+        <h3>جودة العرض</h3>
+        <p class="opp-from"><span>الواقع المعتاد</span>تفاوت كبير في جودة صور العقارات ووصفها.</p>
+        <p class="opp-to"><span>ما تقدمه المنصة</span>مسار محتوى احترافي بإشراف مصوّرين ومراجعة جودة.</p>
+      </article>
+      <article class="opp reveal" style="--d:4">
+        <span class="opp-ico"><i data-lucide="landmark" aria-hidden="true"></i></span>
+        <h3>الامتثال والتحقق</h3>
+        <p class="opp-from"><span>الواقع المعتاد</span>متطلبات تسجيل النزلاء والتحقق تُدار يدوياً.</p>
+        <p class="opp-to"><span>ما تقدمه المنصة</span>تكاملات مع شموس ونفاذ وإيواء — تفاصيلها بانتظار التأكيد.</p>
+      </article>
+      <article class="opp reveal" style="--d:5">
+        <span class="opp-ico"><i data-lucide="gauge" aria-hidden="true"></i></span>
+        <h3>رؤية الأداء</h3>
+        <p class="opp-from"><span>الواقع المعتاد</span>لا توجد صورة موحّدة للإشغال والإيرادات عبر العقارات.</p>
+        <p class="opp-to"><span>ما تقدمه المنصة</span>لوحة مؤشرات أداء مركزية للإدارة والمشغّلين.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 03 VISION -->
+<section class="sec" id="s03" data-title="رؤية المنتج" data-en="THE PRODUCT VISION">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">03</span><span class="eyebrow-en">The Product Vision</span></p>
+      <h2>ثمانية أنظمة، <em>تجربة</em> واحدة.</h2>
+      <p class="lede">الفكرة ليست منصة حجز أخرى، بل منظومة تربط ما قبل الوصول بما بعده: من اكتشاف العقار حتى فتح بابه، ومن تجهيز الوحدة حتى قراءة أدائها.</p>
+      <div class="chips"><span class="st st--confirmed">المكوّنات الثمانية: مؤكدة من العميل</span></div>
+    </header>
+
+    <div class="equation reveal" aria-label="معادلة المنتج">
+      <div class="eq-terms">
+        <div class="eq-term" style="--d:0"><i data-lucide="calendar-check" aria-hidden="true"></i><span>حجز العقارات</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:1"><i data-lucide="key-round" aria-hidden="true"></i><span>الدخول الذكي</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:2"><i data-lucide="building-2" aria-hidden="true"></i><span>تشغيل العقارات</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:3"><i data-lucide="eye" aria-hidden="true"></i><span>الإشراف</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:4"><i data-lucide="trending-up" aria-hidden="true"></i><span>ذكاء التسعير</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:5"><i data-lucide="landmark" aria-hidden="true"></i><span>تكاملات الامتثال</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:6"><i data-lucide="sparkles" aria-hidden="true"></i><span>المساعدة الشخصية</span></div>
+        <span class="eq-op" aria-hidden="true">+</span>
+        <div class="eq-term" style="--d:7"><i data-lucide="chart-line" aria-hidden="true"></i><span>تحليلات الأعمال</span></div>
+      </div>
+      <div class="eq-result">
+        <span class="eq-eq" aria-hidden="true">=</span>
+        <div class="eq-out"><span class="eq-out-k">النتيجة</span><strong>منظومة إقامة ذكية واحدة</strong><span>للضيف · للمالك والمشغّل · لإدارة المنصة</span></div>
+      </div>
+    </div>
+
+    <div class="aud-grid">
+      <article class="aud panel reveal">
+        <header><span class="aud-ico"><i data-lucide="user-round" aria-hidden="true"></i></span><div><p class="k">الجمهور الأول</p><h3>الضيوف والعملاء</h3></div><span class="st st--confirmed">مؤكد</span></header>
+        <ul class="tick-list">
+          <li>اكتشاف العقارات وتصفّح الشقق والفنادق والوحدات السكنية</li>
+          <li>عرض تفاصيل العقار والتحقق من الإتاحة</li>
+          <li>حجز الوحدة وإدارة الحجز</li>
+          <li>استلام بيانات الدخول وفتح الوحدة بالقفل الذكي</li>
+          <li>الحصول على مساعدة شخصية طوال الرحلة</li>
+        </ul>
+      </article>
+      <article class="aud panel reveal">
+        <header><span class="aud-ico"><i data-lucide="building-2" aria-hidden="true"></i></span><div><p class="k">الجمهور الثاني</p><h3>الملاك والمشغّلون وإدارة المنصة</h3></div><span class="st st--confirmed">مؤكد</span></header>
+        <ul class="tick-list">
+          <li>إدارة العقارات وبياناتها وإتاحتها وأسعارها</li>
+          <li>تشغيل العقارات بمستويات إشراف مختلفة</li>
+          <li>الاستفادة من توصيات التسعير الذكي</li>
+          <li>متابعة مؤشرات الأداء والحملات الإعلانية</li>
+          <li>الالتزام بالتكاملات النظامية المطلوبة</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="roles-wrap reveal">
+      <div class="roles-head">
+        <h3 class="h3-lg">منظومة الأدوار</h3>
+        <p>سبعة أدوار تتفاعل مع المنصة. لا نفترض أن كل دور يحتاج حساب دخول مستقلاً — هذا أحد القرارات المطلوبة.</p>
+      </div>
+      <div class="roles" id="roles">
+        <div class="roles-tabs" id="roleTabs" role="tablist" aria-label="الأدوار"></div>
+        <div class="roles-panel panel" id="rolePanel" role="tabpanel"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 04 BUSINESS VALUE -->
+<section class="sec" id="s04" data-title="القيمة للأعمال" data-en="BUSINESS VALUE">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">04</span><span class="eyebrow-en">Why This Platform?</span></p>
+      <h2>لماذا <em>هذه</em> المنصة؟</h2>
+      <p class="lede">ثماني ركائز للقيمة، لكل منها أثر متوقع على التشغيل والإيراد وتجربة الضيف. الأثر هنا متوقع نوعياً — ويُقاس لاحقاً بمؤشرات الأداء المعتمدة.</p>
+    </header>
+    <div class="pillars">
+      <article class="pillar reveal" style="--d:0">
+        <i data-lucide="key-round" aria-hidden="true"></i>
+        <h3>الدخول الذكي</h3>
+        <p>وصول الضيف دون تسليم مفاتيح، عبر رمز مرتبط بحجزه ووحدته.</p>
+        <p class="impact"><span>الأثر المتوقع</span>اعتماد أقل على الحضور الميداني، ووصول مرن في أي وقت.</p>
+      </article>
+      <article class="pillar reveal" style="--d:1">
+        <i data-lucide="building-2" aria-hidden="true"></i>
+        <h3>إدارة العقارات</h3>
+        <p>ملف موحّد لكل وحدة: البيانات والصور والإتاحة والسياسات.</p>
+        <p class="impact"><span>الأثر المتوقع</span>بيانات أدق ونشر أسرع للوحدات الجديدة.</p>
+      </article>
+      <article class="pillar reveal" style="--d:2">
+        <i data-lucide="clipboard-check" aria-hidden="true"></i>
+        <h3>التحكم التشغيلي</h3>
+        <p>مسارات للجاهزية والفحص والإبلاغ عن الحوادث.</p>
+        <p class="impact"><span>الأثر المتوقع</span>جودة إقامة ثابتة عبر المحفظة كلها.</p>
+      </article>
+      <article class="pillar reveal" style="--d:3">
+        <i data-lucide="trending-up" aria-hidden="true"></i>
+        <h3>ذكاء التسعير</h3>
+        <p>توصيات سعرية تراعي العطلات والفعاليات والمناسبات والمواسم.</p>
+        <p class="impact"><span>الأثر المتوقع</span>قرارات تسعير مبنية على سياق الطلب بدل التقدير.</p>
+      </article>
+      <article class="pillar reveal" style="--d:4">
+        <i data-lucide="gauge" aria-hidden="true"></i>
+        <h3>رؤية مركزية</h3>
+        <p>مؤشرات الأداء لكل العقارات في لوحة واحدة.</p>
+        <p class="impact"><span>الأثر المتوقع</span>قرارات أسرع وأوضح للإدارة والمالك.</p>
+      </article>
+      <article class="pillar reveal" style="--d:5">
+        <i data-lucide="landmark" aria-hidden="true"></i>
+        <h3>تكامل الامتثال</h3>
+        <p>ربط مع شموس ونفاذ وإيواء ضمن رحلة الحجز والإقامة.</p>
+        <p class="impact"><span>الأثر المتوقع</span>عمل يدوي أقل في المتطلبات النظامية — التفاصيل بانتظار التأكيد.</p>
+      </article>
+      <article class="pillar reveal" style="--d:6">
+        <i data-lucide="sparkles" aria-hidden="true"></i>
+        <h3>تجربة ضيف شخصية</h3>
+        <p>مساعد شخصي يرافق الضيف من الحجز حتى المغادرة.</p>
+        <p class="impact"><span>الأثر المتوقع</span>تجربة أسلس، وتوجيه فوري دون انتظار الفريق.</p>
+      </article>
+      <article class="pillar reveal" style="--d:7">
+        <i data-lucide="layers" aria-hidden="true"></i>
+        <h3>تشغيل قابل للتوسّع</h3>
+        <p>نموذجان للتشغيل — مُشرَف عليه وذاتي — داخل منصة واحدة.</p>
+        <p class="impact"><span>الأثر المتوقع</span>نمو عدد الوحدات دون نمو مماثل في الفرق الميدانية.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 05 GUEST EXPERIENCE -->
+<section class="sec sec--feature" id="s05" data-title="تجربة الضيف" data-en="GUEST EXPERIENCE">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">05</span><span class="eyebrow-en">Guest Experience</span></p>
+      <h2>من الاكتشاف إلى المغادرة، <em>دون</em> مفتاح واحد.</h2>
+      <p class="lede">رحلة رقمية متصلة: الحجز المؤكد يتحول إلى مفتاح رقمي، والمساعد الشخصي يرافق الضيف في كل مرحلة. اختر مرحلة لتراها من شاشة الضيف.</p>
+    </header>
+
+    <div class="gj" id="guestJourney">
+      <ol class="gj-steps" id="gjSteps" role="tablist" aria-label="مراحل رحلة الضيف">
+        <li><button type="button" role="tab" data-i="0"><span class="gj-dot"><i data-lucide="search" aria-hidden="true"></i></span><span class="gj-name">اكتشاف</span></button></li>
+        <li><button type="button" role="tab" data-i="1"><span class="gj-dot"><i data-lucide="calendar-days" aria-hidden="true"></i></span><span class="gj-name">حجز</span></button></li>
+        <li><button type="button" role="tab" data-i="2"><span class="gj-dot"><i data-lucide="badge-check" aria-hidden="true"></i></span><span class="gj-name">تأكيد</span></button></li>
+        <li><button type="button" role="tab" data-i="3"><span class="gj-dot"><i data-lucide="key-round" aria-hidden="true"></i></span><span class="gj-name">دخول</span></button></li>
+        <li><button type="button" role="tab" data-i="4"><span class="gj-dot"><i data-lucide="bed-double" aria-hidden="true"></i></span><span class="gj-name">إقامة</span></button></li>
+        <li><button type="button" role="tab" data-i="5"><span class="gj-dot"><i data-lucide="sparkles" aria-hidden="true"></i></span><span class="gj-name">مساعدة</span></button></li>
+        <li><button type="button" role="tab" data-i="6"><span class="gj-dot"><i data-lucide="log-out" aria-hidden="true"></i></span><span class="gj-name">مغادرة</span></button></li>
+      </ol>
+      <div class="gj-lanes" aria-label="الأنظمة المرافقة للرحلة">
+        <div class="lane lane--assist"><span class="lane-name"><i data-lucide="sparkles" aria-hidden="true"></i>المساعد الشخصي — متاح طوال الرحلة</span></div>
+        <div class="lane lane--lock"><span class="lane-name"><i data-lucide="lock-keyhole" aria-hidden="true"></i>الدخول الذكي — من التأكيد حتى المغادرة</span></div>
+      </div>
+
+      <div class="gj-body">
+        <div class="phone" aria-label="شاشة الضيف (واجهة توضيحية)">
+          <div class="phone-notch" aria-hidden="true"></div>
+          <div class="phone-screen" id="phoneScreen">
+
+            <!-- screen 0: discover -->
+            <div class="scr is-on" data-screen="0">
+              <p class="scr-k">إلى أين وجهتك؟</p>
+              <div class="scr-search"><i data-lucide="search" aria-hidden="true"></i><span>ابحث عن مدينة أو حي</span><i data-lucide="sliders-horizontal" aria-hidden="true"></i></div>
+              <div class="scr-chips"><span class="on">الكل</span><span>شقق</span><span>فنادق</span><span>وحدات سكنية</span></div>
+              <div class="scr-card">
+                <div class="scr-img scr-img--a"><span class="scr-badge"><i data-lucide="key-round" aria-hidden="true"></i>دخول ذكي</span></div>
+                <div class="scr-card-b"><strong>شقة بغرفتين</strong><span>ذاتية الخدمة · إطلالة على المدينة</span></div>
+              </div>
+              <div class="scr-card">
+                <div class="scr-img scr-img--b"><span class="scr-badge scr-badge--gold"><i data-lucide="eye" aria-hidden="true"></i>مُشرَف عليها</span></div>
+                <div class="scr-card-b"><strong>جناح فندقي</strong><span>مُشرَف عليه · دعم ميداني</span></div>
+              </div>
+            </div>
+
+            <!-- screen 1: book -->
+            <div class="scr" data-screen="1">
+              <p class="scr-k">شقة بغرفتين</p>
+              <p class="scr-h">اختر تواريخ إقامتك</p>
+              <div class="scr-cal" aria-hidden="true">
+                <span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span>
+                <i></i><i></i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i>
+                <i>6</i><i>7</i><i>8</i><i>9</i><i class="r s">10</i><i class="r">11</i><i class="r">12</i>
+                <i class="r e">13</i><i>14</i><i>15</i><i>16</i><i>17</i><i>18</i><i>19</i>
+              </div>
+              <div class="scr-row ok"><i data-lucide="circle-check-big" aria-hidden="true"></i>الوحدة متاحة في التواريخ المختارة</div>
+              <div class="scr-row"><span>سياسة العقار</span><span class="lnk">عرض</span></div>
+              <div class="scr-row"><span>السعر الإجمالي</span><span class="muted">يُعرض قبل التأكيد</span></div>
+              <div class="scr-btn">احجز الآن</div>
+            </div>
+
+            <!-- screen 2: confirm -->
+            <div class="scr" data-screen="2">
+              <div class="scr-hero-ic"><i data-lucide="badge-check" aria-hidden="true"></i></div>
+              <p class="scr-h center">تم تأكيد حجزك</p>
+              <p class="scr-k center">نرسل مفتاحك الرقمي ضمن تفاصيل الحجز</p>
+              <ul class="scr-list">
+                <li class="done"><i data-lucide="check" aria-hidden="true"></i>تأكيد الحجز</li>
+                <li class="done"><i data-lucide="check" aria-hidden="true"></i>الإقرار بسياسة العقار</li>
+                <li class="doing"><i data-lucide="hourglass" aria-hidden="true"></i>إصدار رمز الدخول</li>
+              </ul>
+            </div>
+
+            <!-- screen 3: access -->
+            <div class="scr" data-screen="3">
+              <p class="scr-k">مفتاحك الرقمي</p>
+              <div class="scr-key">
+                <span class="scr-key-k">رمز الدخول</span>
+                <div class="scr-code" dir="ltr"><b>•</b><b>•</b><b>•</b><b>•</b><b>•</b><b>•</b></div>
+                <span class="scr-key-m">مرتبط بحجزك ووحدتك فقط</span>
+              </div>
+              <div class="scr-lock">
+                <div class="scr-pad" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="scr-lock-s"><i data-lucide="lock-open" aria-hidden="true"></i><span>تم فتح القفل<br><small>سُجّلت عملية الدخول</small></span></div>
+              </div>
+            </div>
+
+            <!-- screen 4: stay -->
+            <div class="scr" data-screen="4">
+              <p class="scr-k">إقامتك الحالية</p>
+              <p class="scr-h">أهلاً بك في وحدتك</p>
+              <div class="scr-tiles">
+                <div><i data-lucide="wifi" aria-hidden="true"></i><span>الإنترنت</span></div>
+                <div><i data-lucide="file-text" aria-hidden="true"></i><span>دليل العقار</span></div>
+                <div><i data-lucide="clock" aria-hidden="true"></i><span>موعد المغادرة</span></div>
+                <div><i data-lucide="headset" aria-hidden="true"></i><span>الدعم</span></div>
+              </div>
+              <div class="scr-row"><span>القفل الذكي</span><span class="ok-t">نشط طوال الإقامة</span></div>
+            </div>
+
+            <!-- screen 5: assist -->
+            <div class="scr" data-screen="5">
+              <p class="scr-k">المساعد الشخصي</p>
+              <div class="scr-chat">
+                <p class="me">وصلت، كيف أدخل الشقة؟</p>
+                <p class="ai">أدخل رمز الدخول المرسل في تفاصيل حجزك على لوحة القفل. وإن احتجت مساعدة سأحوّلك للدعم فوراً.</p>
+                <p class="me">شكراً، دخلت.</p>
+                <p class="ai">أهلاً بك! دليل العقار متاح لك في أي وقت.</p>
+              </div>
+            </div>
+
+            <!-- screen 6: checkout -->
+            <div class="scr" data-screen="6">
+              <div class="scr-hero-ic scr-hero-ic--steel"><i data-lucide="log-out" aria-hidden="true"></i></div>
+              <p class="scr-h center">نتمنى أنك استمتعت بإقامتك</p>
+              <ul class="scr-list">
+                <li class="done"><i data-lucide="check" aria-hidden="true"></i>تسجيل المغادرة</li>
+                <li class="done"><i data-lucide="check" aria-hidden="true"></i>انتهاء صلاحية رمز الدخول</li>
+                <li class="doing"><i data-lucide="clipboard-check" aria-hidden="true"></i>فحص ما بعد الإقامة</li>
+              </ul>
+              <div class="scr-btn scr-btn--ghost">شاركنا تقييمك</div>
+            </div>
+          </div>
+          <span class="phone-tag">واجهة توضيحية</span>
+        </div>
+
+        <div class="gj-detail" id="gjDetail" aria-live="polite">
+          <p class="gj-count"><span id="gjNum">01</span> / 07</p>
+          <h3 id="gjTitle">اكتشاف</h3>
+          <p id="gjDesc"></p>
+          <p class="k">الأنظمة المشاركة</p>
+          <div class="gj-sys" id="gjSys"></div>
+          <div class="gj-ctrl">
+            <button class="icon-btn" type="button" id="gjPrev" aria-label="المرحلة السابقة"><i data-lucide="arrow-right" aria-hidden="true"></i></button>
+            <button class="icon-btn" type="button" id="gjPlay" aria-label="إيقاف التشغيل التلقائي"><i data-lucide="pause" aria-hidden="true"></i></button>
+            <button class="icon-btn" type="button" id="gjNext" aria-label="المرحلة التالية"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bj reveal">
+      <div class="bj-head">
+        <h3 class="h3-lg">رحلة الحجز التفصيلية</h3>
+        <p>أربع عشرة خطوة من أول بحث حتى ما بعد الإقامة. الخطوات مفاهيمية وتُفصَّل في مرحلة التصميم.</p>
+      </div>
+      <div class="bj-scroll">
+        <ol class="bj-track">
+          <li><span class="bj-n">01</span><i data-lucide="compass" aria-hidden="true"></i><strong>اكتشاف</strong></li>
+          <li><span class="bj-n">02</span><i data-lucide="search" aria-hidden="true"></i><strong>بحث</strong></li>
+          <li><span class="bj-n">03</span><i data-lucide="sliders-horizontal" aria-hidden="true"></i><strong>تصفية</strong></li>
+          <li><span class="bj-n">04</span><i data-lucide="building-2" aria-hidden="true"></i><strong>عرض العقار</strong></li>
+          <li><span class="bj-n">05</span><i data-lucide="calendar-check" aria-hidden="true"></i><strong>التحقق من الإتاحة</strong></li>
+          <li><span class="bj-n">06</span><i data-lucide="calendar-days" aria-hidden="true"></i><strong>اختيار التواريخ</strong></li>
+          <li><span class="bj-n">07</span><i data-lucide="receipt" aria-hidden="true"></i><strong>عرض السعر</strong></li>
+          <li><span class="bj-n">08</span><i data-lucide="mouse-pointer-click" aria-hidden="true"></i><strong>الحجز</strong></li>
+          <li class="tbc"><span class="bj-n">09</span><i data-lucide="credit-card" aria-hidden="true"></i><strong>الدفع / التأكيد</strong><span class="st st--tbc">مزوّد الدفع — بانتظار التأكيد</span></li>
+          <li class="key"><span class="bj-n">10</span><i data-lucide="key-round" aria-hidden="true"></i><strong>رمز الدخول</strong></li>
+          <li><span class="bj-n">11</span><i data-lucide="log-in" aria-hidden="true"></i><strong>تسجيل الوصول</strong></li>
+          <li><span class="bj-n">12</span><i data-lucide="bed-double" aria-hidden="true"></i><strong>الإقامة</strong></li>
+          <li><span class="bj-n">13</span><i data-lucide="log-out" aria-hidden="true"></i><strong>تسجيل المغادرة</strong></li>
+          <li><span class="bj-n">14</span><i data-lucide="star" aria-hidden="true"></i><strong>ما بعد الإقامة</strong></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 06 OPERATOR EXPERIENCE -->
+<section class="sec" id="s06" data-title="تجربة المالك والمشغّل" data-en="OPERATOR EXPERIENCE">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">06</span><span class="eyebrow-en">Property Owner / Operator Experience</span></p>
+      <h2>كل عقار، في <em>لوحة</em> واحدة.</h2>
+      <p class="lede">من إدراج العقار حتى قراءة الإيرادات، يرى المالك أو المشغّل محفظته كاملة ويتخذ قراراته من مكان واحد.</p>
+      <div class="chips"><span class="st st--confirmed">خدمة الملاك والمشغّلين: مؤكدة</span><span class="st st--proposed">تفاصيل الرحلة: مقترحة</span></div>
+    </header>
+
+    <ol class="oj reveal">
+      <li style="--d:0"><i data-lucide="log-in" aria-hidden="true"></i><strong>تسجيل العقار</strong><span>إضافة العقار إلى المنصة</span></li>
+      <li style="--d:1"><i data-lucide="file-text" aria-hidden="true"></i><strong>تفاصيل العقار</strong><span>النوع والموقع والمرافق والسياسات</span></li>
+      <li style="--d:2"><i data-lucide="image" aria-hidden="true"></i><strong>الوسائط</strong><span>الصور ومعرض العقار</span></li>
+      <li style="--d:3"><i data-lucide="calendar-days" aria-hidden="true"></i><strong>الإتاحة</strong><span>تقويم الوحدات</span></li>
+      <li style="--d:4"><i data-lucide="trending-up" aria-hidden="true"></i><strong>التسعير</strong><span>بدعم مساعد التسعير</span></li>
+      <li style="--d:5"><i data-lucide="calendar-check" aria-hidden="true"></i><strong>الحجوزات</strong><span>متابعة الحجوزات وحالاتها</span></li>
+      <li style="--d:6"><i data-lucide="clipboard-check" aria-hidden="true"></i><strong>التشغيل</strong><span>الجاهزية والفحص والحوادث</span></li>
+      <li style="--d:7"><i data-lucide="gauge" aria-hidden="true"></i><strong>مؤشرات الأداء</strong><span>قراءة الأداء لكل وحدة</span></li>
+      <li style="--d:8"><i data-lucide="coins" aria-hidden="true"></i><strong>الإيرادات</strong><span>الصورة المالية للمحفظة</span></li>
+    </ol>
+
+    <div class="op-grid">
+      <div class="console reveal" aria-label="لوحة المشغّل (واجهة توضيحية)">
+        <aside class="console-side" aria-hidden="true">
+          <span class="on"><i data-lucide="layout-dashboard"></i></span>
+          <span><i data-lucide="building-2"></i></span>
+          <span><i data-lucide="calendar-days"></i></span>
+          <span><i data-lucide="trending-up"></i></span>
+          <span><i data-lucide="clipboard-check"></i></span>
+          <span><i data-lucide="gauge"></i></span>
+          <span><i data-lucide="megaphone"></i></span>
+        </aside>
+        <div class="console-main">
+          <div class="console-top">
+            <div><p class="k">لوحة المشغّل</p><h3>محفظة العقارات</h3></div>
+            <div class="seg" role="group" aria-label="تصفية حسب نموذج التشغيل">
+              <button type="button" class="on" data-filter="all">الكل</button>
+              <button type="button" data-filter="sup">مُشرَف عليها</button>
+              <button type="button" data-filter="self">ذاتية الخدمة</button>
+            </div>
+          </div>
+          <div class="units" id="units">
+            <div class="unit" data-model="self"><div class="unit-top"><strong>وحدة A-101</strong><span class="pill pill--free">متاحة</span></div><span class="unit-m"><i data-lucide="building" aria-hidden="true"></i>شقة · ذاتية الخدمة</span><span class="unit-lock"><i data-lucide="lock-keyhole" aria-hidden="true"></i>القفل متصل</span></div>
+            <div class="unit" data-model="sup"><div class="unit-top"><strong>جناح H-12</strong><span class="pill pill--booked">محجوزة</span></div><span class="unit-m"><i data-lucide="hotel" aria-hidden="true"></i>فندق · مُشرَف عليها</span><span class="unit-lock"><i data-lucide="lock-keyhole" aria-hidden="true"></i>رمز نشط</span></div>
+            <div class="unit" data-model="sup"><div class="unit-top"><strong>وحدة R-07</strong><span class="pill pill--prep">قيد التجهيز</span></div><span class="unit-m"><i data-lucide="house" aria-hidden="true"></i>وحدة سكنية · مُشرَف عليها</span><span class="unit-lock"><i data-lucide="clipboard-check" aria-hidden="true"></i>فحص تشغيلي</span></div>
+            <div class="unit" data-model="self"><div class="unit-top"><strong>وحدة A-204</strong><span class="pill pill--booked">محجوزة</span></div><span class="unit-m"><i data-lucide="building" aria-hidden="true"></i>شقة · ذاتية الخدمة</span><span class="unit-lock"><i data-lucide="lock-keyhole" aria-hidden="true"></i>رمز نشط</span></div>
+            <div class="unit" data-model="sup"><div class="unit-top"><strong>وحدة R-11</strong><span class="pill pill--insp">فحص بعد المغادرة</span></div><span class="unit-m"><i data-lucide="house" aria-hidden="true"></i>وحدة سكنية · مُشرَف عليها</span><span class="unit-lock"><i data-lucide="camera" aria-hidden="true"></i>توثيق بالصور</span></div>
+            <div class="unit" data-model="self"><div class="unit-top"><strong>وحدة A-310</strong><span class="pill pill--draft">قيد النشر</span></div><span class="unit-m"><i data-lucide="building" aria-hidden="true"></i>شقة · ذاتية الخدمة</span><span class="unit-lock"><i data-lucide="image" aria-hidden="true"></i>بانتظار الصور</span></div>
+          </div>
+          <div class="console-note"><i data-lucide="sparkles" aria-hidden="true"></i><span><strong>توصيات تسعير بانتظار مراجعتك</strong> — تواريخ تتزامن مع عطلة وفعالية عامة.</span><span class="lnk">مراجعة</span></div>
+          <p class="console-tag">واجهة توضيحية — الوحدات والحالات أمثلة</p>
+        </div>
+      </div>
+
+      <div class="pfile reveal" id="pfile">
+        <div class="pfile-head">
+          <h3 class="h3-lg">ملف العقار الموحّد</h3>
+          <p>كل عقار في المنصة يحمل خمس طبقات من البيانات. مرّر فوق أي طبقة لرؤية حقولها.</p>
+        </div>
+        <div class="pfile-body">
+          <div class="pfile-scene" aria-hidden="true">
+            <div class="pfile-stack">
+              <div class="pf-layer" data-l="0" style="--i:0"><span>الهوية</span></div>
+              <div class="pf-layer" data-l="1" style="--i:1"><span>المحتوى</span></div>
+              <div class="pf-layer" data-l="2" style="--i:2"><span>التجاري</span></div>
+              <div class="pf-layer" data-l="3" style="--i:3"><span>التشغيل</span></div>
+              <div class="pf-layer" data-l="4" style="--i:4"><span>الحوكمة</span></div>
+            </div>
+          </div>
+          <ul class="pfile-list">
+            <li data-l="0" tabindex="0"><strong>الهوية</strong><span>معلومات العقار · نوع العقار · الموقع</span></li>
+            <li data-l="1" tabindex="0"><strong>المحتوى</strong><span>الصور · المرافق</span></li>
+            <li data-l="2" tabindex="0"><strong>التجاري</strong><span>الإتاحة · التسعير · حالة الحجز</span></li>
+            <li data-l="3" tabindex="0"><strong>التشغيل</strong><span>الحالة التشغيلية · نوع الإشراف · إعدادات الدخول</span></li>
+            <li data-l="4" tabindex="0"><strong>الحوكمة</strong><span>السياسات · بيانات الضيوف</span></li>
+          </ul>
+        </div>
+        <p class="note-line"><i data-lucide="info" aria-hidden="true"></i>الحقول الثلاثة عشر مستمدة من رؤية العميل؛ تجميعها في طبقات اقتراح تنظيمي.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 07 LIFECYCLE -->
+<section class="sec sec--feature" id="s07" data-title="دورة حياة العقار" data-en="PROPERTY LIFECYCLE">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">07</span><span class="eyebrow-en">Property Lifecycle</span></p>
+      <h2>من الإدراج إلى <em>التحسين</em> المستمر.</h2>
+      <p class="lede">القصة المركزية للمنصة: كل عقار يمر بإحدى عشرة مرحلة، وكل إقامة تغذّي الدورة التالية بالبيانات. الدورة لا تنتهي — التحسين يعود إلى التسعير والعرض.</p>
+    </header>
+    <div class="lc">
+      <div class="lc-stage stage" id="lcStage"><div class="stage-labels"></div></div>
+      <aside class="lc-panel panel" aria-live="polite">
+        <p class="lc-count"><span id="lcNum">01</span> / 11</p>
+        <h3 id="lcTitle">الإدراج</h3>
+        <p class="lc-en" id="lcEn" dir="ltr">Onboard</p>
+        <p id="lcDesc"></p>
+        <dl class="lc-meta">
+          <div><dt>من يقوم بها</dt><dd id="lcActor"></dd></div>
+          <div><dt>الوحدة في المنصة</dt><dd id="lcModule"></dd></div>
+          <div><dt>الحالة</dt><dd id="lcStatus"></dd></div>
+        </dl>
+        <div class="lc-ctrl">
+          <button class="icon-btn" type="button" id="lcPrev" aria-label="المرحلة السابقة"><i data-lucide="arrow-right" aria-hidden="true"></i></button>
+          <button class="icon-btn" type="button" id="lcPlay" aria-label="إيقاف التشغيل التلقائي"><i data-lucide="pause" aria-hidden="true"></i></button>
+          <button class="icon-btn" type="button" id="lcNext" aria-label="المرحلة التالية"><i data-lucide="arrow-left" aria-hidden="true"></i></button>
+        </div>
+      </aside>
+    </div>
+    <ol class="lc-strip" id="lcStrip" aria-label="مراحل دورة حياة العقار"></ol>
+  </div>
+</section>
+
+<!-- ================================================= 08 SMART ACCESS -->
+<section class="sec" id="s08" data-title="الدخول الذكي" data-en="SMART ACCESS">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">08</span><span class="eyebrow-en">Smart Access</span></p>
+      <h2>الحجز المؤكد <em>يصبح</em> مفتاحاً.</h2>
+      <p class="lede">بمجرد تأكيد الحجز، تُصدر المنصة بيانات دخول رقمية مرتبطة بالحجز والوحدة، يستخدمها الضيف لفتح القفل الذكي عند وصوله — وتُسجَّل كل عملية دخول.</p>
+      <div class="chips"><span class="st st--confirmed">مفهوم الدخول الذكي: مؤكد</span><span class="st st--tbc">تكامل القفل الذكي — المزوّد والواجهة البرمجية بانتظار التأكيد</span></div>
+    </header>
+
+    <div class="ax">
+      <div class="ax-stage stage" id="axStage"><div class="stage-labels"></div></div>
+      <ol class="ax-steps" id="axSteps">
+        <li data-i="0"><span class="ax-n">1</span><div><strong>تأكيد الحجز</strong><span>الحجز يصبح صالحاً للدخول</span></div></li>
+        <li data-i="1"><span class="ax-n">2</span><div><strong>توليد رمز الدخول</strong><span>آلية التوليد بانتظار التأكيد</span></div></li>
+        <li data-i="2"><span class="ax-n">3</span><div><strong>ربط الرمز بالحجز</strong><span>الرمز يخص هذا الحجز وهذه الوحدة</span></div></li>
+        <li data-i="3"><span class="ax-n">4</span><div><strong>وصول العميل</strong><span>دون انتظار أو تسليم مفاتيح</span></div></li>
+        <li data-i="4"><span class="ax-n">5</span><div><strong>إدخال الرمز</strong><span>على لوحة القفل الذكي</span></div></li>
+        <li data-i="5"><span class="ax-n">6</span><div><strong>فتح القفل</strong><span>عند مطابقة الرمز</span></div></li>
+        <li data-i="6"><span class="ax-n">7</span><div><strong>تسجيل الدخول</strong><span>سجل مرتبط بالحجز والوحدة</span></div></li>
+      </ol>
+    </div>
+
+    <div class="ax-bottom">
+      <article class="cred reveal" aria-label="بيانات دخول رقمية آمنة">
+        <div class="cred-top"><span class="cred-k"><i data-lucide="shield-check" aria-hidden="true"></i>بيانات دخول رقمية آمنة</span><span class="cred-chip" aria-hidden="true"></span></div>
+        <div class="cred-code" dir="ltr" aria-label="رمز مخفي"><span>•</span><span>•</span><span>•</span><span>•</span><span>•</span><span>•</span></div>
+        <dl class="cred-meta">
+          <div><dt>مرتبط بـ</dt><dd>حجز مؤكد واحد</dd></div>
+          <div><dt>يفتح</dt><dd>الوحدة المحجوزة فقط</dd></div>
+          <div><dt>الصلاحية</dt><dd>خلال فترة الإقامة <span class="st st--tbc">بانتظار التأكيد</span></dd></div>
+          <div><dt>السجل</dt><dd>كل عملية دخول موثّقة</dd></div>
+        </dl>
+      </article>
+      <div class="ax-q reveal">
+        <h3 class="h3-lg">ما يجب حسمه قبل التصميم التفصيلي</h3>
+        <ul class="q-mini">
+          <li><i data-lucide="lock" aria-hidden="true"></i><span>أي مزوّدي الأقفال الذكية ستدعمهم المنصة؟</span></li>
+          <li><i data-lucide="key" aria-hidden="true"></i><span>كيف تُولَّد الرموز: من المنصة أم من نظام المزوّد؟</span></li>
+          <li><i data-lucide="timer" aria-hidden="true"></i><span>متى تبدأ صلاحية الرمز ومتى تنتهي؟</span></li>
+          <li><i data-lucide="wifi" aria-hidden="true"></i><span>ما الإجراء البديل إذا كان القفل غير متصل؟</span><span class="st st--recommended">إجراء بديل موصى به</span></li>
+          <li><i data-lucide="ban" aria-hidden="true"></i><span>ماذا يحدث للرمز عند إلغاء الحجز أو تعديله؟</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 09 SUPERVISED VS UNSUPERVISED -->
+<section class="sec" id="s09" data-title="مُشرَف عليها أم ذاتية" data-en="SUPERVISED VS UNSUPERVISED">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">09</span><span class="eyebrow-en">Supervised vs Unsupervised</span></p>
+      <h2>نموذجان للتشغيل، <em>منصة</em> واحدة.</h2>
+      <p class="lede">بعض العقارات يخدمها فريق ميداني من المنصة، وبعضها يعمل رقمياً بالكامل. المنصة تسمح بتحديد مستوى الإشراف لكل عقار على حدة، فتتوسّع دون أن تفقد السيطرة.</p>
+      <div class="chips"><span class="st st--confirmed">وجود النموذجين: مؤكد</span><span class="st st--tbc">تفاصيل المهام في كل نموذج: بانتظار التأكيد</span></div>
+    </header>
+
+    <div class="cmp-toggle seg seg--lg" role="group" aria-label="تمييز نموذج التشغيل" id="cmpToggle">
+      <button type="button" data-mode="both" class="on">المقارنة الكاملة</button>
+      <button type="button" data-mode="sup">التجربة المُشرَف عليها</button>
+      <button type="button" data-mode="self">التجربة ذاتية الخدمة</button>
+    </div>
+
+    <div class="cmp" id="cmp" data-mode="both">
+      <article class="cmp-col cmp-col--sup reveal">
+        <header>
+          <span class="cmp-ico"><i data-lucide="users" aria-hidden="true"></i></span>
+          <div><p class="k">Supervised</p><h3>التجربة المُشرَف عليها</h3><p>حضور ميداني من فريق المنصة: مشرف، ومصوّر، ودعم تشغيلي.</p></div>
+        </header>
+        <ol class="cmp-tl">
+          <li><strong>محتوى العقار</strong><span>المصوّر يوثّق العقار باحترافية</span><em class="st st--proposed">مقترح</em></li>
+          <li><strong>تجهيز الوحدة</strong><span>المشرف يتحقق من الجاهزية قبل كل إقامة</span><em class="st st--tbc">بانتظار التأكيد</em></li>
+          <li><strong>وصول الضيف</strong><span>دخول ذكي مع إمكانية دعم ميداني</span><em class="st st--proposed">مقترح</em></li>
+          <li><strong>أثناء الإقامة</strong><span>دعم ميداني يكمّله المساعد الشخصي</span><em class="st st--proposed">مقترح</em></li>
+          <li><strong>بعد المغادرة</strong><span>المشرف يُجري فحص ما بعد الإقامة</span><em class="st st--proposed">مقترح</em></li>
+        </ol>
+      </article>
+      <div class="cmp-mid" aria-hidden="true"><span>منصة<br>واحدة</span></div>
+      <article class="cmp-col cmp-col--self reveal">
+        <header>
+          <span class="cmp-ico"><i data-lucide="smartphone" aria-hidden="true"></i></span>
+          <div><p class="k">Self-service</p><h3>التجربة ذاتية الخدمة</h3><p>حضور ميداني محدود أو معدوم؛ الضيف يُكمل التجربة رقمياً.</p></div>
+        </header>
+        <ol class="cmp-tl">
+          <li><strong>محتوى العقار</strong><span>يقدّمه المالك أو المشغّل وفق معايير المنصة</span><em class="st st--tbc">بانتظار التأكيد</em></li>
+          <li><strong>تجهيز الوحدة</strong><span>مسؤولية المشغّل مع إثبات الجاهزية في المنصة</span><em class="st st--tbc">بانتظار التأكيد</em></li>
+          <li><strong>وصول الضيف</strong><span>رقمي بالكامل عبر القفل الذكي</span><em class="st st--confirmed">مؤكد</em></li>
+          <li><strong>أثناء الإقامة</strong><span>المساعد الشخصي والدعم عن بُعد</span><em class="st st--proposed">مقترح</em></li>
+          <li><strong>بعد المغادرة</strong><span>آلية الفحص تُحدَّد مع العميل</span><em class="st st--tbc">بانتظار التأكيد</em></li>
+        </ol>
+      </article>
+    </div>
+
+    <div class="table-scroll reveal">
+      <table class="cmp-table">
+        <caption>مقارنة مختصرة بين النموذجين</caption>
+        <thead><tr><th scope="col">البُعد</th><th scope="col">مُشرَف عليها</th><th scope="col">ذاتية الخدمة</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">الحضور الميداني</th><td>مشرف ومصوّر ودعم تشغيلي</td><td>محدود أو معدوم</td></tr>
+          <tr><th scope="row">الوصول إلى الوحدة</th><td>قفل ذكي + دعم ميداني</td><td>قفل ذكي رقمي بالكامل</td></tr>
+          <tr><th scope="row">الدعم أثناء الإقامة</th><td>ميداني + المساعد الشخصي</td><td>المساعد الشخصي + دعم عن بُعد</td></tr>
+          <tr><th scope="row">فحص ما بعد الإقامة</th><td>بواسطة المشرف</td><td>بانتظار التأكيد</td></tr>
+          <tr><th scope="row">قابلية التوسّع</th><td>مرتبطة بحجم الفريق الميداني</td><td>مرتفعة — تعتمد على الأتمتة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 10 AI PRICING -->
+<section class="sec sec--feature" id="s10" data-title="التسعير الذكي" data-en="AI PRICING">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">10</span><span class="eyebrow-en">AI Pricing Assistant</span></p>
+      <h2>السعر المناسب، <em>بسياقه</em>.</h2>
+      <p class="lede">يحلّل المساعد الظروف المؤثرة في الطلب ويقترح سعراً للعقار، ليعرف المشغّل: ما السعر المقترح؟ أين الفرصة؟ ولماذا؟ فعّل الإشارات أدناه لترى كيف تتغير التوصية.</p>
+      <div class="chips"><span class="st st--proposed">مساعد التسعير بالذكاء الاصطناعي — قدرة منتج مقترحة</span><span class="st st--confirmed">أمثلة الإشارات من العميل: عطلات · فعاليات · مناسبات · مواسم</span></div>
+    </header>
+
+    <div class="pr-flow reveal" aria-label="مدخلات مساعد التسعير">
+      <div class="pr-in"><i data-lucide="building-2" aria-hidden="true"></i>العقار</div>
+      <span class="pr-plus" aria-hidden="true">+</span>
+      <div class="pr-in"><i data-lucide="calendar-days" aria-hidden="true"></i>التواريخ</div>
+      <span class="pr-plus" aria-hidden="true">+</span>
+      <div class="pr-in"><i data-lucide="radar" aria-hidden="true"></i>إشارات الطلب</div>
+      <span class="pr-plus" aria-hidden="true">+</span>
+      <div class="pr-in"><i data-lucide="party-popper" aria-hidden="true"></i>العطلات والفعاليات</div>
+      <span class="pr-plus" aria-hidden="true">+</span>
+      <div class="pr-in"><i data-lucide="history" aria-hidden="true"></i>البيانات التاريخية</div>
+      <span class="pr-arrow" aria-hidden="true"><i data-lucide="arrow-left"></i></span>
+      <div class="pr-in pr-in--core"><i data-lucide="brain-circuit" aria-hidden="true"></i>مساعد التسعير</div>
+      <span class="pr-arrow" aria-hidden="true"><i data-lucide="arrow-left"></i></span>
+      <div class="pr-in pr-in--out"><i data-lucide="target" aria-hidden="true"></i>السعر المقترح</div>
+    </div>
+
+    <div class="pr-app panel">
+      <div class="pr-app-top">
+        <div><p class="k">مساعد التسعير</p><h3>وحدة A-204 · شقة ذاتية الخدمة <span class="muted">(مثال)</span></h3></div>
+        <span class="pr-legend"><i class="sw sw--base" aria-hidden="true"></i>طلب اعتيادي <i class="sw sw--hot" aria-hidden="true"></i>تواريخ متأثرة بالإشارات</span>
+      </div>
+      <div class="pr-body">
+        <div class="pr-stage stage" id="prStage" aria-label="خريطة الطلب ثلاثية الأبعاد لخمسة أسابيع (بيانات توضيحية)"><div class="stage-labels"></div></div>
+        <div class="pr-side">
+          <p class="k">إشارات الطلب</p>
+          <div class="sigs" id="sigs">
+            <button type="button" class="sig" aria-pressed="false" data-sig="holiday"><i data-lucide="calendar-heart" aria-hidden="true"></i>عطلة رسمية</button>
+            <button type="button" class="sig" aria-pressed="false" data-sig="event"><i data-lucide="party-popper" aria-hidden="true"></i>فعالية عامة</button>
+            <button type="button" class="sig" aria-pressed="false" data-sig="occasion"><i data-lucide="star" aria-hidden="true"></i>مناسبة خاصة</button>
+          </div>
+          <p class="k">الموسم</p>
+          <div class="seg seg--full" role="radiogroup" aria-label="الموسم" id="season">
+            <button type="button" role="radio" aria-checked="false" data-season="-1">منخفض</button>
+            <button type="button" role="radio" aria-checked="true" data-season="0" class="on">اعتيادي</button>
+            <button type="button" role="radio" aria-checked="false" data-season="1">مرتفع</button>
+          </div>
+
+          <div class="pr-out" aria-live="polite">
+            <svg class="gauge" viewBox="0 0 200 116" aria-hidden="true">
+              <defs><linearGradient id="gGrad" x1="0" x2="1"><stop offset="0" stop-color="#86B4C4"/><stop offset=".5" stop-color="#6d6a63"/><stop offset="1" stop-color="#E3C58E"/></linearGradient></defs>
+              <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="url(#gGrad)" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+              <path d="M20 100 A80 80 0 0 1 180 100" fill="none" stroke="#ECE6DA" stroke-opacity=".08" stroke-width="14"/>
+              <g id="gNeedle" style="transform-origin:100px 100px"><line x1="100" y1="100" x2="100" y2="34" stroke="#ECE6DA" stroke-width="2" stroke-linecap="round"/></g>
+              <circle cx="100" cy="100" r="5" fill="#C8A46B"/>
+              <text x="22" y="114" fill="#8A857B" font-size="10" text-anchor="middle" font-family="IBM Plex Sans Arabic, sans-serif">خفض</text>
+              <text x="100" y="18" fill="#8A857B" font-size="10" text-anchor="middle" font-family="IBM Plex Sans Arabic, sans-serif">ثبات</text>
+              <text x="178" y="114" fill="#8A857B" font-size="10" text-anchor="middle" font-family="IBM Plex Sans Arabic, sans-serif">رفع</text>
+            </svg>
+            <p class="pr-dir" id="prDir">الإبقاء على السعر الحالي</p>
+            <p class="pr-why" id="prWhy">لا توجد إشارات طلب استثنائية في الفترة المعروضة.</p>
+            <div class="pr-act"><span><i data-lucide="user-check" aria-hidden="true"></i>التطبيق بعد اعتماد المشغّل</span><span class="st st--tbc">استشاري أم تلقائي؟ بانتظار التأكيد</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="pr-note"><i data-lucide="info" aria-hidden="true"></i>محاكاة مفاهيمية للتوضيح فقط — لا تمثل نموذج ذكاء اصطناعي أو خوارزمية أو مصدر بيانات محدداً، ولا تتضمن أسعاراً فعلية.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 11 PERSONAL ASSISTANT -->
+<section class="sec" id="s11" data-title="المساعد الشخصي" data-en="PERSONAL ASSISTANT">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">11</span><span class="eyebrow-en">Personal AI Assistant</span></p>
+      <h2>رفيق الضيف <em>طوال</em> الإقامة.</h2>
+      <p class="lede">مساعد شخصي داخل تجربة الضيف، يجيب ويوجّه ويحيل الطلبات إلى الفريق المختص. اختر سؤالاً لتجربة محادثة توضيحية.</p>
+      <div class="chips"><span class="st st--confirmed">المفهوم المؤكد: مساعد شخصي</span><span class="st st--recommended">القدرات التفصيلية: موصى بها</span></div>
+    </header>
+
+    <div class="as">
+      <div class="chat panel reveal">
+        <div class="chat-head">
+          <span class="chat-av"><i data-lucide="sparkles" aria-hidden="true"></i></span>
+          <div><strong>المساعد الشخصي</strong><span class="chat-sub"><span class="pulse-dot pulse-dot--sm"></span>محادثة توضيحية</span></div>
+          <span class="chat-ctx"><i data-lucide="key-round" aria-hidden="true"></i>مرتبط بحجزك</span>
+        </div>
+        <div class="chat-log" id="chatLog" aria-live="polite"></div>
+        <div class="chat-quick" id="chatQuick" aria-label="أسئلة مقترحة"></div>
+        <div class="chat-input" aria-hidden="true"><span>اختر سؤالاً من الأعلى لتجربة المحادثة</span><i data-lucide="send"></i></div>
+      </div>
+
+      <div class="as-side">
+        <div class="reveal">
+          <h3 class="h3-lg">القدرات الموصى بها</h3>
+          <ul class="caps" id="caps"></ul>
+        </div>
+        <div class="guard reveal">
+          <h3><i data-lucide="shield-alert" aria-hidden="true"></i>حدود الصلاحيات</h3>
+          <p>قبل بناء المساعد، نحتاج قراراً واضحاً في ثلاث نقاط:</p>
+          <ul>
+            <li><span>ما البيانات التي يصل إليها المساعد؟</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+            <li><span>هل يستطيع تعديل الحجوزات أو إلغاءها؟</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+            <li><span>هل يتواصل مع أنظمة خارجية؟</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 12 OPERATIONS -->
+<section class="sec" id="s12" data-title="التشغيل" data-en="OPERATIONS">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">12</span><span class="eyebrow-en">Supervisor & Content Operations</span></p>
+      <h2>فريق ميداني، <em>بمسار</em> واضح.</h2>
+      <p class="lede">في العقارات المُشرَف عليها، يعمل المشرف والمصوّر ضمن مسارات محددة تضمن جاهزية الوحدة وجودة عرضها. المسارات أدناه مقترحة، ومهام كل دور تحتاج تأكيداً.</p>
+      <div class="chips"><span class="st st--confirmed">وجود المشرف والمصوّر: مؤكد</span><span class="st st--proposed">مسارات العمل: مقترحة</span></div>
+    </header>
+
+    <div class="track reveal" style="--n:8">
+      <div class="track-head"><span class="track-ico"><i data-lucide="eye" aria-hidden="true"></i></span><div><h3>مسار المشرف</h3><p>من تجهيز الوحدة حتى فحص ما بعد الإقامة</p></div><span class="st st--proposed">مسار مقترح</span></div>
+      <div class="track-scroll">
+        <ol class="track-line">
+          <li><span>العقار</span></li><li><span>المشرف</span></li><li><span>الفحص التشغيلي</span></li><li><span>العقار جاهز</span></li><li><span>وصول الضيف</span></li><li><span>الإقامة</span></li><li><span>المغادرة</span></li><li><span>فحص ما بعد الإقامة</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="track track--steel reveal" style="--n:6">
+      <div class="track-head"><span class="track-ico"><i data-lucide="camera" aria-hidden="true"></i></span><div><h3>مسار محتوى العقار</h3><p>من التصوير حتى اكتشاف العملاء للعقار</p></div><span class="st st--proposed">قدرة تشغيلية مقترحة</span></div>
+      <div class="track-scroll">
+        <ol class="track-line">
+          <li><span>العقار</span></li><li><span>المصوّر</span></li><li><span>صور العقار</span></li><li><span>مراجعة الجودة</span></li><li><span>النشر</span></li><li><span>اكتشاف العملاء</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="ops-grid">
+      <div class="ops-card reveal">
+        <h3 class="h3-lg">مهام المشرف المحتملة</h3>
+        <ul class="resp">
+          <li><i data-lucide="circle-check-big" aria-hidden="true"></i><span>جاهزية العقار قبل كل إقامة</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+          <li><i data-lucide="workflow" aria-hidden="true"></i><span>التنسيق التشغيلي</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+          <li><i data-lucide="headset" aria-hidden="true"></i><span>دعم الضيوف ميدانياً</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+          <li><i data-lucide="clipboard-check" aria-hidden="true"></i><span>الفحص بعد المغادرة</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+          <li><i data-lucide="siren" aria-hidden="true"></i><span>الإبلاغ عن الحوادث</span><span class="st st--tbc">بانتظار التأكيد</span></li>
+        </ul>
+        <h3 class="h3-lg mt">قدرات المحتوى المقترحة</h3>
+        <ul class="resp">
+          <li><i data-lucide="images" aria-hidden="true"></i><span>إدارة صور العقار</span><span class="st st--proposed">مقترح</span></li>
+          <li><i data-lucide="layout-grid" aria-hidden="true"></i><span>معرض العقار</span><span class="st st--proposed">مقترح</span></li>
+          <li><i data-lucide="scan-eye" aria-hidden="true"></i><span>مراجعة جودة المحتوى</span><span class="st st--proposed">مقترح</span></li>
+          <li><i data-lucide="presentation" aria-hidden="true"></i><span>تحسين عرض الإعلان</span><span class="st st--proposed">مقترح</span></li>
+        </ul>
+        <p class="note-line"><i data-lucide="info" aria-hidden="true"></i>لا نفترض وحدة مستقلة لإدارة المصورين؛ قد يكفي إسناد مهام التصوير ضمن التشغيل.</p>
+      </div>
+
+      <div class="board reveal" aria-label="لوحة جاهزية الوحدات (واجهة توضيحية)">
+        <div class="board-head"><h3>لوحة جاهزية الوحدات</h3><span class="muted">واجهة توضيحية</span></div>
+        <div class="board-scroll">
+          <div class="board-cols">
+            <div class="bcol"><p class="bcol-h">بانتظار التجهيز</p><div class="bcard"><strong>R-07</strong><span>مغادرة اليوم</span></div><div class="bcard"><strong>H-03</strong><span>تنظيف مجدول</span></div></div>
+            <div class="bcol"><p class="bcol-h">قيد الفحص</p><div class="bcard bcard--gold"><strong>H-12</strong><span>المشرف في الموقع</span></div></div>
+            <div class="bcol"><p class="bcol-h">جاهزة</p><div class="bcard bcard--ok"><strong>R-02</strong><span>جاهزة للوصول</span></div><div class="bcard bcard--ok"><strong>H-08</strong><span>جاهزة للوصول</span></div></div>
+            <div class="bcol"><p class="bcol-h">مشغولة</p><div class="bcard"><strong>R-04</strong><span>ضيف مقيم</span></div></div>
+            <div class="bcol"><p class="bcol-h">بعد المغادرة</p><div class="bcard bcard--warn"><strong>R-11</strong><span>ملاحظة فحص</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 13 KPI DASHBOARD -->
+<section class="sec" id="s13" data-title="مؤشرات الأداء" data-en="KPI DASHBOARD">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">13</span><span class="eyebrow-en">KPI Dashboard</span></p>
+      <h2>ما لا يُقاس، <em>لا</em> يُدار.</h2>
+      <p class="lede">طلب العميل مؤشرات أداء واضحة. هذه هي المؤشرات المقترحة وطريقة قراءتها — بلا أرقام مختلقة: القيم تُحتسب لاحقاً من بيانات المنصة الفعلية، والخطوط أدناه أشكال توضيحية.</p>
+      <div class="chips"><span class="st st--confirmed">لوحة المؤشرات: مؤكدة</span><span class="st st--proposed">المؤشرات الثمانية وتعريفاتها: مقترحة</span></div>
+    </header>
+
+    <div class="dash panel reveal">
+      <div class="dash-top">
+        <div><p class="k">نظرة عامة على الأداء</p><h3>لوحة الإدارة والمشغّلين</h3></div>
+        <div class="dash-dims"><span class="dash-dims-k">أبعاد التحليل المقترحة:</span><span class="dim">الفترة</span><span class="dim">العقار</span><span class="dim">نوع العقار</span><span class="dim">نموذج التشغيل</span></div>
+      </div>
+      <div class="kpis" id="kpis">
+        <article class="kpi" data-seed="3"><header><i data-lucide="calendar-check" aria-hidden="true"></i><div><h4>الحجوزات</h4><span dir="ltr">Bookings</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> عدد الحجوزات المؤكدة خلال فترة محددة.</p></article>
+        <article class="kpi" data-seed="7"><header><i data-lucide="bed-double" aria-hidden="true"></i><div><h4>نسبة الإشغال</h4><span dir="ltr">Occupancy</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> الليالي المحجوزة ÷ الليالي المتاحة.</p></article>
+        <article class="kpi" data-seed="11"><header><i data-lucide="coins" aria-hidden="true"></i><div><h4>الإيرادات</h4><span dir="ltr">Revenue</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> إجمالي إيرادات الإقامات خلال الفترة.</p></article>
+        <article class="kpi" data-seed="5"><header><i data-lucide="receipt" aria-hidden="true"></i><div><h4>متوسط السعر اليومي</h4><span dir="ltr">ADR</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> إيرادات الإقامة ÷ عدد الليالي المباعة.</p></article>
+        <article class="kpi" data-seed="9"><header><i data-lucide="building-2" aria-hidden="true"></i><div><h4>أداء العقارات</h4><span dir="ltr">Property Performance</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> مقارنة الإشغال والإيراد بين الوحدات والعقارات.</p></article>
+        <article class="kpi" data-seed="2"><header><i data-lucide="ban" aria-hidden="true"></i><div><h4>الإلغاءات</h4><span dir="ltr">Cancellations</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> الحجوزات الملغاة ÷ إجمالي الحجوزات.</p></article>
+        <article class="kpi" data-seed="13"><header><i data-lucide="users" aria-hidden="true"></i><div><h4>نشاط الضيوف</h4><span dir="ltr">Guest Activity</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> الضيوف النشطون، وتكرار الحجز، والتفاعل مع المساعد.</p></article>
+        <article class="kpi" data-seed="17"><header><i data-lucide="clipboard-check" aria-hidden="true"></i><div><h4>الأداء التشغيلي</h4><span dir="ltr">Operational Performance</span></div><span class="kpi-tag">مؤشر مفاهيمي</span></header><svg class="spark" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg><p><b>التعريف:</b> زمن التجهيز بين الإقامات، ونتائج الفحص، والحوادث.</p></article>
+      </div>
+      <p class="dash-foot"><i data-lucide="info" aria-hidden="true"></i>الخطوط أشكال توضيحية وليست بيانات. الصيغ تعريفات قياسية مقترحة تُعتمد مع العميل.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 14 CAMPAIGNS -->
+<section class="sec" id="s14" data-title="الحملات" data-en="CAMPAIGNS">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">14</span><span class="eyebrow-en">Campaign & Advertising Management</span></p>
+      <h2>من الإعلان <em>إلى</em> الإيراد.</h2>
+      <p class="lede">ذكر العميل الحملات الإعلانية ضمن رؤيته. نقترح ربط كل حملة بالعقارات التي تروّج لها، ثم تتبّع أثرها حتى الحجز والإيراد.</p>
+      <div class="chips"><span class="st st--confirmed">الحملات الإعلانية: مؤكدة</span><span class="st st--proposed">قدرات الإدارة والتتبع: مقترحة</span><span class="st st--tbc">القنوات الإعلانية: بانتظار التأكيد</span></div>
+    </header>
+
+    <div class="funnel panel reveal">
+      <canvas class="funnel-canvas" id="funnelCanvas" aria-hidden="true"></canvas>
+      <ol class="funnel-stages">
+        <li><i data-lucide="megaphone" aria-hidden="true"></i><strong>الحملة</strong><span>القناة والفترة والهدف</span></li>
+        <li><i data-lucide="users" aria-hidden="true"></i><strong>الجمهور</strong><span>الشريحة المستهدفة</span></li>
+        <li><i data-lucide="building-2" aria-hidden="true"></i><strong>ترويج العقار</strong><span>العقارات المشمولة</span></li>
+        <li><i data-lucide="mouse-pointer-click" aria-hidden="true"></i><strong>الزيارات</strong><span>زيارات صفحات العقارات</span></li>
+        <li><i data-lucide="calendar-check" aria-hidden="true"></i><strong>الحجوزات</strong><span>الحجوزات المنسوبة للحملة</span></li>
+        <li><i data-lucide="coins" aria-hidden="true"></i><strong>الإيرادات</strong><span>الإيراد المنسوب للحملة</span></li>
+      </ol>
+    </div>
+
+    <div class="cap-row">
+      <div class="cap reveal" style="--d:0"><i data-lucide="megaphone" aria-hidden="true"></i><h3>إدارة الحملات</h3><p>إنشاء الحملة وتحديد هدفها وفترتها.</p><span class="st st--proposed">مقترح</span></div>
+      <div class="cap reveal" style="--d:1"><i data-lucide="building-2" aria-hidden="true"></i><h3>ترويج العقارات</h3><p>إبراز عقارات محددة ضمن الحملة.</p><span class="st st--proposed">مقترح</span></div>
+      <div class="cap reveal" style="--d:2"><i data-lucide="chart-column" aria-hidden="true"></i><h3>أداء الحملات</h3><p>قراءة نتائج كل حملة مقارنة بغيرها.</p><span class="st st--proposed">مقترح</span></div>
+      <div class="cap reveal" style="--d:3"><i data-lucide="route" aria-hidden="true"></i><h3>تتبّع التحويل</h3><p>ربط الزيارة بالحجز ثم بالإيراد.</p><span class="st st--proposed">مقترح</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 15 COMPLIANCE -->
+<section class="sec sec--feature" id="s15" data-title="منظومة الامتثال" data-en="COMPLIANCE ECOSYSTEM">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">15</span><span class="eyebrow-en">Government & Compliance Integrations</span></p>
+      <h2>منظومة <em>التكامل</em> والامتثال.</h2>
+      <p class="lede">حدّد العميل ثلاثة تكاملات خارجية مهمة: شموس، ونفاذ، وإيواء. نعرض الغرض المتوقع لكلٍّ منها — أما الواجهات البرمجية ونطاق البيانات فتُحدَّد لاحقاً مع الجهات المعنية.</p>
+      <div class="chips"><span class="st st--confirmed">التكاملات الثلاثة: مطلوبة من العميل</span><span class="st st--tbc">تفاصيل التكامل — بانتظار التأكيد</span></div>
+    </header>
+
+    <div class="cx">
+      <div class="cx-stage stage" id="cxStage"><div class="stage-labels"></div><p class="cx-hint">الخطوط المتقطعة = تفاصيل لم تُؤكَّد بعد</p></div>
+      <div class="cx-side">
+        <div class="seg seg--full" role="tablist" aria-label="التكاملات" id="cxTabs">
+          <button type="button" role="tab" data-k="shomoos" class="on" aria-selected="true">شموس</button>
+          <button type="button" role="tab" data-k="nafath" aria-selected="false">نفاذ</button>
+          <button type="button" role="tab" data-k="ewaa" aria-selected="false">إيواء</button>
+        </div>
+        <article class="cx-card panel" id="cxCard" aria-live="polite"></article>
+      </div>
+    </div>
+    <div class="cx-others reveal">
+      <span class="k">تكاملات أخرى يتطلبها المفهوم:</span>
+      <span class="cx-o"><i data-lucide="lock-keyhole" aria-hidden="true"></i>مزوّد القفل الذكي<span class="st st--tbc">بانتظار التأكيد</span></span>
+      <span class="cx-o"><i data-lucide="credit-card" aria-hidden="true"></i>مزوّد الدفع<span class="st st--tbc">بانتظار التأكيد</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 16 DAMAGE & PRIVACY -->
+<section class="sec" id="s16" data-title="سياسة الأضرار والخصوصية" data-en="DAMAGE & PRIVACY POLICY">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">16</span><span class="eyebrow-en">Property Damage & Liability Policy</span></p>
+      <h2>سياسة واضحة، <em>وتطبيق</em> موثّق.</h2>
+      <p class="lede">تدعم المنصة تطبيق سياسات العقار بشكل منظّم وقابل للتتبّع — دون أن نفترض مبالغ الغرامات أو الصياغة القانونية أو قرارات المسؤولية؛ فهذه تُعتمد تجارياً وقانونياً.</p>
+      <div class="chips"><span class="st st--confirmed">مفهوم سياسة الأضرار والغرامات: مؤكد</span><span class="st st--tbc">سياسة تجارية وقانونية — بانتظار التأكيد</span></div>
+    </header>
+
+    <div class="pol reveal">
+      <ol class="pol-flow">
+        <li><span class="pol-n">1</span><strong>الحجز</strong></li>
+        <li><span class="pol-n">2</span><strong>سياسة العقار</strong><span>تُعرض قبل التأكيد</span></li>
+        <li><span class="pol-n">3</span><strong>إقرار الضيف</strong><span>موثّق بالتاريخ والوقت</span></li>
+        <li><span class="pol-n">4</span><strong>الإقامة</strong></li>
+        <li><span class="pol-n">5</span><strong>فحص ما بعد الإقامة</strong><span>مع توثيق بالصور</span></li>
+        <li class="pol-fork">
+          <div class="pol-branch pol-branch--ok"><i data-lucide="circle-check-big" aria-hidden="true"></i><strong>لا يوجد ضرر</strong><span>إغلاق الإقامة</span></div>
+          <div class="pol-branch pol-branch--warn"><i data-lucide="triangle-alert" aria-hidden="true"></i><strong>رصد ضرر</strong><span>فتح حالة حادثة</span></div>
+        </li>
+        <li class="pol-warn"><span class="pol-n">7</span><strong>مراجعة الحادثة</strong><span>مسار اعتماد</span></li>
+        <li class="pol-warn pol-tbc"><span class="pol-n">8</span><strong>إجراء الغرامة / المطالبة</strong><span class="st st--tbc">بانتظار التأكيد</span></li>
+      </ol>
+    </div>
+
+    <div class="pol-grid">
+      <div class="pol-card reveal">
+        <h3><i data-lucide="circle-check-big" aria-hidden="true"></i>ما تدعمه المنصة</h3>
+        <ul>
+          <li>عرض سياسة العقار قبل تأكيد الحجز</li>
+          <li>توثيق إقرار الضيف بالتاريخ والوقت</li>
+          <li>سجل فحص ما بعد الإقامة مع الصور</li>
+          <li>فتح حالة حادثة وربطها بالحجز</li>
+          <li>مسار مراجعة واعتماد قبل أي إجراء</li>
+          <li>إشعار الضيف بالحالة ونتيجتها</li>
+        </ul>
+        <span class="st st--proposed">قدرات مقترحة</span>
+      </div>
+      <div class="pol-card pol-card--tbc reveal">
+        <h3><i data-lucide="gavel" aria-hidden="true"></i>يحدّده القرار التجاري والقانوني</h3>
+        <ul>
+          <li>مبالغ الغرامات وطريقة تقديرها</li>
+          <li>الصياغة القانونية للسياسة</li>
+          <li>آلية الخصم أو التحصيل — وهل تكون تلقائية</li>
+          <li>من يقرّر المسؤولية ويعتمد الغرامة</li>
+          <li>حق الضيف في الاعتراض وآليته</li>
+        </ul>
+        <span class="st st--tbc">سياسة تجارية وقانونية — بانتظار التأكيد</span>
+      </div>
+      <div class="pol-card reveal">
+        <h3><i data-lucide="fingerprint" aria-hidden="true"></i>الخصوصية وحماية البيانات</h3>
+        <p>تتعامل المنصة مع بيانات حساسة: هوية الضيف، وسجلات الدخول، وصور الفحص. نوصي بتحديد سياسة الوصول والاحتفاظ والمشاركة لكل نوع منها.</p>
+        <span class="st st--recommended">موصى به</span>
+        <p class="note-line"><i data-lucide="info" aria-hidden="true"></i>الالتزامات النظامية لحماية البيانات تُحدَّد بالمراجعة القانونية.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 17 ECOSYSTEM -->
+<section class="sec sec--feature" id="s17" data-title="منظومة المنتج" data-en="PRODUCT ECOSYSTEM">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">17</span><span class="eyebrow-en">Product Ecosystem</span></p>
+      <h2>اثنا عشر عنصراً، <em>نواة</em> واحدة.</h2>
+      <p class="lede">كل ما سبق في مشهد واحد. مرّر المؤشر فوق أي عنصر — أو اسحب لتدوير المنظومة — لمعرفة غرضه ومستخدمه وقيمته وحالته.</p>
+    </header>
+    <div class="eco">
+      <div class="eco-stage stage" id="ecoStage"><div class="stage-labels"></div>
+        <div class="eco-tip" id="ecoTip" hidden></div>
+      </div>
+      <div class="eco-legend">
+        <span><i class="eco-sw" style="--c:var(--ivory)"></i>الأشخاص</span>
+        <span><i class="eco-sw" style="--c:var(--gold)"></i>الأصول</span>
+        <span><i class="eco-sw" style="--c:var(--steel)"></i>الذكاء والأعمال</span>
+        <span><i class="eco-sw" style="--c:var(--copper)"></i>التكاملات الخارجية</span>
+      </div>
+      <div class="eco-list" id="ecoList" aria-label="عناصر المنظومة"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 18 ARCHITECTURE -->
+<section class="sec" id="s18" data-title="بنية الحل" data-en="SYSTEM ARCHITECTURE">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">18</span><span class="eyebrow-en">Conceptual Solution Architecture</span></p>
+      <h2>بنية حل <em>مفاهيمية</em>.</h2>
+      <p class="lede">طبقات المنصة من المستخدم حتى التكاملات الخارجية. هذه بنية مفاهيمية لا تحدد تقنيات أو مزوّدين بعينهم. مرّر فوق أي وحدة لرؤية ارتباطاتها.</p>
+      <div class="chips"><span class="st st--proposed">بنية حل مفاهيمية</span></div>
+    </header>
+
+    <div class="arch reveal" id="arch">
+      <div class="arch-layer">
+        <p class="arch-k"><span dir="ltr">L1</span>المستخدمون</p>
+        <div class="arch-row">
+          <span class="arch-m" data-id="u-guest">الضيوف</span>
+          <span class="arch-m" data-id="u-owner">الملاك والمشغّلون</span>
+          <span class="arch-m" data-id="u-field">المشرفون والمصورون</span>
+          <span class="arch-m" data-id="u-admin">إدارة المنصة</span>
+        </div>
+      </div>
+      <div class="arch-link" aria-hidden="true"></div>
+      <div class="arch-layer">
+        <p class="arch-k"><span dir="ltr">L2</span>تجربة الويب والجوال</p>
+        <div class="arch-row">
+          <span class="arch-m" data-id="c-guest">تجربة الضيف</span>
+          <span class="arch-m" data-id="c-ops">لوحة المشغّل والإدارة</span>
+          <span class="arch-m" data-id="c-field">أدوات الفريق الميداني</span>
+          <span class="arch-m arch-m--tbc" data-id="c-mobile">تطبيق جوال <em>بانتظار التأكيد</em></span>
+        </div>
+      </div>
+      <div class="arch-link" aria-hidden="true"></div>
+      <div class="arch-layer arch-layer--app">
+        <p class="arch-k"><span dir="ltr">L3</span>طبقة التطبيقات</p>
+        <div class="arch-domains">
+          <div class="arch-dom"><h4>الحجوزات</h4>
+            <span class="arch-m" data-id="m-discover" data-rel="d-prop">الاكتشاف والبحث</span>
+            <span class="arch-m" data-id="m-avail" data-rel="d-book d-prop">الإتاحة</span>
+            <span class="arch-m" data-id="m-book" data-rel="d-book x-shomoos x-nafath x-pay">الحجز</span>
+            <span class="arch-m" data-id="m-access" data-rel="d-access x-lock">الدخول الذكي</span>
+          </div>
+          <div class="arch-dom"><h4>التشغيل</h4>
+            <span class="arch-m" data-id="m-prop" data-rel="d-prop x-ewaa">إدارة العقارات</span>
+            <span class="arch-m" data-id="m-ops" data-rel="d-ops d-prop">الإشراف والفحص</span>
+            <span class="arch-m" data-id="m-media" data-rel="d-prop">المحتوى والتصوير</span>
+            <span class="arch-m" data-id="m-policy" data-rel="d-ops d-book">السياسات والحوادث</span>
+            <span class="arch-m" data-id="m-camp" data-rel="d-analytics">الحملات</span>
+          </div>
+          <div class="arch-dom"><h4>الذكاء</h4>
+            <span class="arch-m" data-id="m-pricing" data-rel="d-analytics d-book d-prop">مساعد التسعير</span>
+            <span class="arch-m" data-id="m-assist" data-rel="d-book d-prop d-access">المساعد الشخصي</span>
+            <span class="arch-m" data-id="m-kpi" data-rel="d-analytics">التحليلات والمؤشرات</span>
+          </div>
+        </div>
+        <div class="arch-cross"><span>خدمات مشتركة:</span><span class="arch-m" data-id="m-iam" data-rel="x-nafath">الهوية والصلاحيات</span><span class="arch-m" data-id="m-notif">الإشعارات</span><span class="arch-m" data-id="m-audit" data-rel="d-access d-ops">سجل التدقيق</span></div>
+      </div>
+      <div class="arch-link" aria-hidden="true"></div>
+      <div class="arch-layer">
+        <p class="arch-k"><span dir="ltr">L4</span>طبقة البيانات</p>
+        <div class="arch-row">
+          <span class="arch-m" data-id="d-prop">بيانات العقارات</span>
+          <span class="arch-m" data-id="d-book">الحجوزات والضيوف</span>
+          <span class="arch-m" data-id="d-access">سجلات الدخول</span>
+          <span class="arch-m" data-id="d-ops">البيانات التشغيلية</span>
+          <span class="arch-m" data-id="d-analytics">بيانات التحليلات</span>
+        </div>
+      </div>
+      <div class="arch-link" aria-hidden="true"></div>
+      <div class="arch-layer arch-layer--ext">
+        <p class="arch-k"><span dir="ltr">L5</span>التكاملات الخارجية</p>
+        <div class="arch-row">
+          <span class="arch-m arch-m--tbc" data-id="x-lock">القفل الذكي</span>
+          <span class="arch-m arch-m--tbc" data-id="x-shomoos">شموس</span>
+          <span class="arch-m arch-m--tbc" data-id="x-nafath">نفاذ</span>
+          <span class="arch-m arch-m--tbc" data-id="x-ewaa">إيواء</span>
+          <span class="arch-m arch-m--tbc" data-id="x-pay">مزوّد الدفع</span>
+        </div>
+        <p class="arch-note">الإطار المتقطع: التكامل مطلوب، ومزوّده أو تفاصيله بانتظار التأكيد.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 19 DATA FLOW -->
+<section class="sec" id="s19" data-title="تدفق البيانات" data-en="DATA FLOW">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">19</span><span class="eyebrow-en">Data Flow</span></p>
+      <h2>كيف <em>تتحرك</em> البيانات.</h2>
+      <p class="lede">من الضيف حتى لوحة المؤشرات: كل حجز يولّد بيانات تفتح الباب، ثم تعود بيانات التشغيل لتغذّي التحليل والتسعير. اختر أي محطة لمعرفة ما يمر بها.</p>
+      <div class="chips"><span class="st st--proposed">تدفق مفاهيمي</span></div>
+    </header>
+
+    <div class="df reveal">
+      <div class="df-top">
+        <button class="btn btn--ghost btn--sm" type="button" id="dfPlay"><i data-lucide="play" aria-hidden="true"></i>تشغيل التدفق</button>
+      </div>
+      <div class="df-scroll">
+        <ol class="df-track" id="dfTrack"></ol>
+      </div>
+      <div class="df-branches">
+        <div class="df-branch"><i data-lucide="git-branch" aria-hidden="true"></i><span>من <b>بيانات الحجز</b>: إلى شموس (بيانات النزيل) ونفاذ (التحقق من الهوية)</span><span class="st st--tbc">بانتظار التأكيد</span></div>
+        <div class="df-branch"><i data-lucide="repeat" aria-hidden="true"></i><span>من <b>التحليلات</b>: تعود إلى مساعد التسعير لتحسين التوصيات التالية</span><span class="st st--proposed">مقترح</span></div>
+      </div>
+      <div class="df-detail panel" id="dfDetail" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 20 REQUIREMENTS -->
+<section class="sec" id="s20" data-title="المتطلبات" data-en="REQUIREMENTS">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">20</span><span class="eyebrow-en">Functional Requirements</span></p>
+      <h2>من الفكرة إلى <em>متطلبات</em> قابلة للبناء.</h2>
+      <p class="lede">متطلبات وظيفية مشتقة من المفهوم الأولي، مصنّفة حسب الوحدة والحالة. ما يحتاج قراراً موسوم بوضوح. ابحث أو صفِّ لاستكشافها.</p>
+    </header>
+
+    <div class="rq reveal">
+      <div class="rq-tools">
+        <label class="search" for="rqSearch"><i data-lucide="search" aria-hidden="true"></i><input id="rqSearch" type="search" placeholder="ابحث في المتطلبات أو رقمها…" autocomplete="off"></label>
+        <div class="rq-status" id="rqStatus" role="group" aria-label="تصفية حسب الحالة"></div>
+      </div>
+      <div class="rq-mods" id="rqMods" role="group" aria-label="تصفية حسب الوحدة"></div>
+      <div class="rq-bar" id="rqBar" aria-hidden="true"></div>
+      <p class="rq-count" id="rqCount" aria-live="polite"></p>
+      <ol class="rq-list" id="rqList"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= 21 BUSINESS RULES -->
+<section class="sec" id="s21" data-title="قواعد الأعمال" data-en="BUSINESS RULES">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">21</span><span class="eyebrow-en">Business Rules</span></p>
+      <h2>القواعد التي <em>تحكم</em> المنصة.</h2>
+      <p class="lede">قواعد مفاهيمية مشتقة من فكرة العميل. القواعد الموسومة بـ«بانتظار التأكيد» تحتاج قراراً تجارياً أو قانونياً قبل اعتمادها.</p>
+    </header>
+    <div class="br-tools reveal">
+      <div class="seg" role="group" aria-label="تصفية القواعد" id="brFilter">
+        <button type="button" class="on" data-f="all">كل القواعد</button>
+        <button type="button" data-f="tbc">تحتاج تأكيداً فقط</button>
+      </div>
+      <p class="rq-count" id="brCount" aria-live="polite"></p>
+    </div>
+    <div class="br-grid" id="brGrid"></div>
+  </div>
+</section>
+
+<!-- ================================================= 22 SCOPE -->
+<section class="sec" id="s22" data-title="النطاق" data-en="SCOPE">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">22</span><span class="eyebrow-en">Scope</span></p>
+      <h2>ما هو <em>مؤكد</em>، وما هو مقترح، وما ينتظر القرار.</h2>
+      <p class="lede">أهم تمييز في هذا العرض. الرؤية الأولية واضحة؛ والمقترحات تحوّلها إلى منتج؛ والبنود المعلّقة تحتاج إجابة قبل التصميم التفصيلي.</p>
+    </header>
+    <div class="scope" id="scope"></div>
+  </div>
+</section>
+
+<!-- ================================================= 23 OPEN QUESTIONS -->
+<section class="sec" id="s23" data-title="الأسئلة المفتوحة" data-en="OPEN QUESTIONS">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">23</span><span class="eyebrow-en">Questions We Need to Answer</span></p>
+      <h2>أسئلة نحتاج <em>إجابتها</em> معاً.</h2>
+      <p class="lede">الإجابة عن هذه الأسئلة تحوّل المفهوم إلى مواصفات. استخدمها أثناء الاجتماع: اضغط على أي سؤال لتعليمه كـ«تمت مناقشته».</p>
+    </header>
+    <div class="oq-top reveal">
+      <div class="oq-meter"><div class="oq-meter-bar"><span id="oqBar"></span></div><p id="oqCount" aria-live="polite"></p></div>
+      <button class="btn btn--ghost btn--sm" type="button" id="oqReset"><i data-lucide="refresh-ccw" aria-hidden="true"></i>إعادة التعيين</button>
+    </div>
+    <div class="oq-grid" id="oqGrid"></div>
+  </div>
+</section>
+
+<!-- ================================================= 24 ROADMAP -->
+<section class="sec" id="s24" data-title="التطوّر المقترح" data-en="PROPOSED ROADMAP">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">24</span><span class="eyebrow-en">Proposed Product Evolution</span></p>
+      <h2>تطوّر <em>مقترح</em> للمنتج.</h2>
+      <p class="lede">تسلسل منطقي لبناء المنصة طبقةً فوق طبقة. هذا ترتيب مقترح للنقاش — وليس جدولاً زمنياً متفقاً عليه.</p>
+      <div class="chips"><span class="st st--proposed">تطوّر مقترح للمنتج</span><span class="st st--tbc">الترتيب والمدد: بانتظار التأكيد</span></div>
+    </header>
+    <ol class="road">
+      <li class="reveal" style="--d:0"><span class="road-n" dir="ltr">PHASE 01</span><h3>الحجز الأساسي</h3><ul><li>الاكتشاف والبحث والتصفية</li><li>ملفات العقارات والإتاحة</li><li>الحجز وإدارته</li><li>الدفع <em>بانتظار التأكيد</em></li></ul></li>
+      <li class="reveal" style="--d:1"><span class="road-n" dir="ltr">PHASE 02</span><h3>الدخول الذكي</h3><ul><li>تكامل القفل الذكي</li><li>إصدار الرموز وربطها بالحجز</li><li>سجل الدخول</li></ul></li>
+      <li class="reveal" style="--d:2"><span class="road-n" dir="ltr">PHASE 03</span><h3>التشغيل ومؤشرات الأداء</h3><ul><li>مسار المشرف والفحص</li><li>مسار المحتوى والتصوير</li><li>لوحة المؤشرات والحملات</li></ul></li>
+      <li class="reveal" style="--d:3"><span class="road-n" dir="ltr">PHASE 04</span><h3>تكاملات الامتثال</h3><ul><li>شموس</li><li>نفاذ</li><li>إيواء</li></ul></li>
+      <li class="reveal" style="--d:4"><span class="road-n" dir="ltr">PHASE 05</span><h3>التسعير الذكي والمساعد الشخصي</h3><ul><li>توصيات التسعير واعتمادها</li><li>المساعد الشخصي للضيف</li></ul></li>
+      <li class="reveal" style="--d:5"><span class="road-n" dir="ltr">PHASE 06</span><h3>الذكاء المتقدم</h3><ul><li>التنبؤ بالطلب <em>مستقبلي</em></li><li>تخصيص تجربة الضيف <em>مستقبلي</em></li><li>رؤى تشغيلية استباقية <em>مستقبلي</em></li></ul></li>
+    </ol>
+    <p class="road-note reveal"><i data-lucide="lightbulb" aria-hidden="true"></i><span><strong>ملاحظة للنقاش:</strong> إذا كانت تكاملات الامتثال شرطاً نظامياً لبدء التشغيل، فقد تنتقل المرحلة الرابعة إلى جانب المرحلة الأولى.</span></p>
+  </div>
+</section>
+
+<!-- ================================================= 25 EXECUTIVE SUMMARY -->
+<section class="sec" id="s25" data-title="الملخص التنفيذي" data-en="EXECUTIVE SUMMARY">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">25</span><span class="eyebrow-en">Executive Summary</span></p>
+      <h2>الرؤية <em>في</em> صفحة واحدة.</h2>
+    </header>
+    <p class="exec-lead reveal">منصة إقامة ذكية تخدم الضيف والمالك معاً: <strong>الضيف</strong> يكتشف ويحجز ويدخل الوحدة برمز رقمي ويجد مساعداً شخصياً طوال إقامته؛ و<strong>المالك أو المشغّل</strong> يدير عقاراته بنموذج إشراف يناسب كل عقار، ويسعّر بذكاء، ويقرأ أداءه في لوحة واحدة — ضمن إطار تكامل وامتثال واضح.</p>
+    <div class="exec-stats reveal" id="execStats"></div>
+    <div class="exec-qa" id="execQA"></div>
+  </div>
+</section>
+
+<!-- ================================================= 26 NEXT STEPS -->
+<section class="sec sec--closing" id="s26" data-title="الخطوات التالية" data-en="NEXT STEPS">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow"><span class="eyebrow-num">26</span><span class="eyebrow-en">Next Steps</span></p>
+      <h2>من رؤية واضحة إلى <em>منتج</em> جاهز للبناء.</h2>
+      <p class="lede">خطوات مقترحة لتحويل هذا المفهوم إلى مواصفات معتمدة. لا تتضمن مدداً زمنية؛ تُحدَّد مع العميل.</p>
+    </header>
+    <ol class="next">
+      <li class="reveal" style="--d:0"><span class="next-n">1</span><div><h3>ورشة تأكيد الرؤية</h3><p>مراجعة هذا العرض واعتماد ما هو مؤكد وما هو مقترح.</p></div></li>
+      <li class="reveal" style="--d:1"><span class="next-n">2</span><div><h3>الإجابة عن الأسئلة المفتوحة</h3><p>البدء بالأسئلة الأعلى أثراً على النطاق: الدفع، والقفل الذكي، والامتثال.</p></div></li>
+      <li class="reveal" style="--d:2"><span class="next-n">3</span><div><h3>اختيار مزوّد القفل الذكي</h3><p>تقييم الخيارات من حيث التكامل وإدارة الرموز والعمل دون اتصال.</p></div></li>
+      <li class="reveal" style="--d:3"><span class="next-n">4</span><div><h3>تحديد متطلبات التكاملات</h3><p>مع شموس ونفاذ وإيواء: البيانات والمحفّزات والجهات المسؤولة.</p></div></li>
+      <li class="reveal" style="--d:4"><span class="next-n">5</span><div><h3>اعتماد السياسات التجارية والقانونية</h3><p>الإلغاء والتعديل، والأضرار والغرامات، والخصوصية.</p></div></li>
+      <li class="reveal" style="--d:5"><span class="next-n">6</span><div><h3>تحديد نطاق الإطلاق الأول</h3><p>ما يدخل في النسخة الأولى وما يُؤجَّل إلى مراحل لاحقة.</p></div></li>
+      <li class="reveal" style="--d:6"><span class="next-n">7</span><div><h3>النماذج الأولية وتصميم التجربة</h3><p>واجهات الضيف والمشغّل والفريق الميداني، واختبارها مع مستخدمين حقيقيين.</p></div></li>
+    </ol>
+    <div class="closing reveal">
+      <p class="closing-q">«هذا الفريق لم يفهم فكرتي فحسب — بل حوّلها إلى رؤية منتج متكاملة.»</p>
+      <p class="closing-sub">هذا هو الأثر الذي نسعى إليه في الخطوة التالية.</p>
+      <div class="hero-cta">
+        <a class="btn btn--gold" href="#s23"><i data-lucide="circle-help" aria-hidden="true"></i>ابدأ بالأسئلة المفتوحة</a>
+        <a class="btn btn--ghost" href="#s01"><i data-lucide="arrow-up-right" aria-hidden="true"></i>العودة إلى البداية</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <p><strong>منصة الإقامة الذكية</strong> — وثيقة رؤية المنتج، مسودة أولى للنقاش · سبتمبر 2026</p>
+    <p>جميع الواجهات والمؤشرات والأمثلة في هذا العرض توضيحية، ولا تمثل بيانات أو أسعاراً أو قرارات معتمدة. اسم المنتج النهائي يُحدَّد لاحقاً.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

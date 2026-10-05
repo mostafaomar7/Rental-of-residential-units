@@ -1,0 +1,96 @@
+@let f = form();
+@let busy = photoAction.busy();
+
+<div class="row between wrap mb-16">
+  <div>
+    <h3 class="h3">{{ 'operator.profile.content.photos' | translate: { count: photos().length } }}</h3>
+    @if (minPhotos(); as min) {
+      <div class="xs muted">{{ 'operator.profile.content.minPhotos' | translate: { count: min } }}</div>
+    }
+  </div>
+  <div class="row">
+    <label class="btn btn-ghost btn-sm upload-btn">
+      @if (busy) {
+        <span class="spin dark"></span>
+      } @else {
+        <app-icon name="upload" size="sm" />
+      }
+      {{ 'operator.profile.content.upload' | translate }}
+      <input type="file" accept="image/jpeg,image/png,image/webp,image/heic" multiple [disabled]="busy" (change)="onPhotos($event)" />
+    </label>
+    <button type="button" class="btn btn-primary btn-sm" (click)="requestingShoot.set(true)">
+      <app-icon name="camera" size="sm" />{{ 'operator.profile.content.requestPhotographer' | translate }}
+    </button>
+  </div>
+</div>
+
+@if (photos().length) {
+  <div class="photo-grid">
+    @for (photo of photos(); track photo.id; let i = $index; let last = $last) {
+      <div class="ph">
+        <img [src]="photo.thumbUrl" alt="" />
+        @if (photo.isCover) {
+          <span class="pill pill-gold">{{ 'operator.profile.content.cover' | translate }}</span>
+        }
+        <button
+          type="button"
+          class="btn btn-danger btn-icon btn-xs ph-del"
+          [disabled]="busy"
+          [attr.aria-label]="'operator.profile.content.deletePhoto' | translate"
+          (click)="removePhoto(photo)"
+        >
+          <app-icon name="x" size="sm" />
+        </button>
+        <div class="row ph-tools">
+          <button type="button" class="btn btn-outline btn-icon btn-xs" [disabled]="busy || i === 0" [attr.aria-label]="'operator.profile.content.moveEarlier' | translate" (click)="move(i, -1)">
+            <app-icon name="chevron-right" size="sm" [mirror]="true" />
+          </button>
+          @if (!photo.isCover) {
+            <button type="button" class="btn btn-outline btn-xs grow" [disabled]="busy" (click)="setCover(photo)">{{ 'operator.profile.content.makeCover' | translate }}</button>
+          } @else {
+            <span class="grow"></span>
+          }
+          <button type="button" class="btn btn-outline btn-icon btn-xs" [disabled]="busy || last" [attr.aria-label]="'operator.profile.content.moveLater' | translate" (click)="move(i, 1)">
+            <app-icon name="chevron-left" size="sm" [mirror]="true" />
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="notice amber small">
+    <app-icon name="camera-off" />
+    <div>{{ 'operator.profile.content.noPhotos' | translate }}</div>
+  </div>
+}
+
+<h3 class="h3 mt-24 mb-8">{{ 'operator.profile.content.amenities' | translate }}</h3>
+<div class="chips">
+  @for (a of catalog.amenities(); track a.id) {
+    @let on = f.amenityIds.includes(a.id);
+    <button type="button" class="chip chip-sm" [class.on]="on" [attr.aria-pressed]="on" (click)="toggleAmenity(a.id)">
+      @if (on) {
+        <app-icon name="check" size="sm" />
+      }
+      {{ a | loc }}
+    </button>
+  }
+</div>
+
+<div class="grid g2 mt-24">
+  <app-field [label]="'operator.profile.content.descriptionAr' | translate" for="pc-desc-ar" [help]="'operator.profile.content.descriptionHelp' | translate">
+    <textarea id="pc-desc-ar" class="textarea" dir="rtl" #descAr [value]="f.descriptionAr" (input)="set('descriptionAr', descAr.value)"></textarea>
+  </app-field>
+  <app-field [label]="'operator.profile.content.descriptionEn' | translate" for="pc-desc-en">
+    <textarea id="pc-desc-en" class="textarea" dir="ltr" #descEn [value]="f.descriptionEn" (input)="set('descriptionEn', descEn.value)"></textarea>
+  </app-field>
+</div>
+<app-field [label]="'operator.profile.content.guide' | translate" for="pc-guide" [help]="'operator.profile.content.guideHelp' | translate">
+  <textarea id="pc-guide" class="textarea" dir="rtl" #guide [value]="f.guideAr" (input)="set('guideAr', guide.value)"></textarea>
+</app-field>
+
+<app-save-bar [busy]="saving.busy()" (save)="save()" (revert)="revert()" />
+
+@if (requestingShoot()) {
+  <app-request-shoot-dialog [property]="property()" (closed)="requestingShoot.set(false)" />
+}

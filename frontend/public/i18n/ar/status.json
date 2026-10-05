@@ -1,0 +1,144 @@
+{
+  "status": {
+    "booking": {
+      "PENDING_PAYMENT": "بانتظار الدفع",
+      "CONFIRMED": "مؤكد",
+      "CHECKED_IN": "إقامة جارية",
+      "COMPLETED": "مكتمل",
+      "CANCELLED": "ملغي",
+      "EXPIRED": "منتهي المهلة",
+      "NO_SHOW": "لم يحضر"
+    },
+    "payment": {
+      "PENDING": "بانتظار الدفع",
+      "PAID": "مدفوع",
+      "FAILED": "فشل",
+      "CANCELLED": "ملغي",
+      "REFUNDED": "مسترد",
+      "PARTIALLY_REFUNDED": "مسترد جزئياً"
+    },
+    "key": {
+      "ACTIVE": "فعّال",
+      "PENDING": "قيد الإرسال للقفل",
+      "PREPARING": "قيد التجهيز",
+      "NOT_AVAILABLE": "لا يوجد قفل ذكي",
+      "IDENTITY_REQUIRED": "يتطلب توثيق الهوية",
+      "COMPLIANCE_PENDING": "تسجيل النزيل جارٍ",
+      "COMPLIANCE_FAILED": "تعذّر تسجيل النزيل",
+      "REVOKED": "ملغي",
+      "EXPIRED": "منتهي",
+      "FAILED": "فشل الإصدار"
+    },
+    "lock": {
+      "ONLINE": "متصل",
+      "OFFLINE": "غير متصل",
+      "UNKNOWN": "غير معروف"
+    },
+    "access": {
+      "success": "ناجح",
+      "failed": "فاشل"
+    },
+    "task": {
+      "TODO": "جديدة",
+      "IN_PROGRESS": "قيد التنفيذ",
+      "SUBMITTED": "بانتظار الاعتماد",
+      "DONE": "مكتملة",
+      "BLOCKED": "متوقفة",
+      "CANCELLED": "ملغاة"
+    },
+    "incident": {
+      "OPEN": "مفتوح",
+      "IN_PROGRESS": "قيد المعالجة",
+      "RESOLVED": "تم الحل"
+    },
+    "damage": {
+      "OPENED": "مفتوحة",
+      "UNDER_REVIEW": "قيد المراجعة",
+      "GUEST_NOTIFIED": "بانتظار رد الضيف",
+      "DISPUTED": "معترض عليها",
+      "APPROVED": "معتمدة",
+      "REJECTED": "مرفوضة",
+      "SETTLED": "تمت التسوية",
+      "CLOSED": "مغلقة"
+    },
+    "campaign": {
+      "DRAFT": "مسودة",
+      "ACTIVE": "نشطة",
+      "PAUSED": "متوقفة مؤقتاً",
+      "ARCHIVED": "مؤرشفة"
+    },
+    "user": {
+      "ACTIVE": "نشط",
+      "SUSPENDED": "موقوف"
+    },
+    "refund": {
+      "PENDING": "قيد المعالجة",
+      "SUCCEEDED": "تم الاسترداد",
+      "FAILED": "فشل"
+    },
+    "property": {
+      "DRAFT": "مسودة",
+      "PENDING_REVIEW": "قيد المراجعة",
+      "PUBLISHED": "منشور",
+      "REJECTED": "مرفوض",
+      "SUSPENDED": "موقوف"
+    },
+    "severity": {
+      "LOW": "منخفضة",
+      "MEDIUM": "متوسطة",
+      "HIGH": "عالية",
+      "CRITICAL": "حرجة"
+    },
+    "stayRequest": {
+      "PENDING": "قيد المراجعة",
+      "APPROVED": "موافق عليه",
+      "REJECTED": "مرفوض",
+      "CANCELLED": "ملغي"
+    },
+    "statement": {
+      "ISSUED": "صادر",
+      "PAID": "مدفوع"
+    },
+    "bankAccount": {
+      "PENDING": "بانتظار التوثيق",
+      "VERIFIED": "موثّق",
+      "REJECTED": "مرفوض"
+    },
+    "recommendation": {
+      "PENDING": "بانتظار القرار",
+      "APPLIED": "مطبّق",
+      "REJECTED": "مرفوض",
+      "EXPIRED": "منتهي"
+    },
+    "integrationCall": {
+      "PENDING": "بالانتظار",
+      "RUNNING": "قيد التنفيذ",
+      "SUCCEEDED": "ناجحة",
+      "FAILED": "فاشلة",
+      "DEAD": "متوقفة نهائياً"
+    },
+    "integrationHealth": {
+      "OK": "سليم",
+      "DEGRADED": "أداء متراجع",
+      "ATTENTION": "يحتاج مراجعة",
+      "NOT_CONFIGURED": "غير مفعّل"
+    },
+    "delivery": {
+      "PENDING": "بالانتظار",
+      "SENDING": "قيد الإرسال",
+      "SENT": "أُرسلت",
+      "FAILED": "فشلت"
+    },
+    "review": {
+      "PUBLISHED": "منشور",
+      "HIDDEN": "مخفي"
+    },
+    "nafath": {
+      "WAITING": "بانتظار التأكيد",
+      "COMPLETED": "تم التوثيق",
+      "REJECTED": "مرفوض",
+      "EXPIRED": "انتهت المهلة",
+      "FAILED": "تعذّر التوثيق"
+    }
+  }
+}

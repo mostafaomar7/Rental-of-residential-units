@@ -1,0 +1,104 @@
+<div class="row between wrap mb-16">
+  <div class="row wrap">
+    <select class="select filter" [attr.aria-label]="'admin.finance.statements.status' | translate" [(ngModel)]="status">
+      <option value="">{{ 'admin.common.all' | translate }}</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ 'status.statement.' + s | translate }}</option>
+      }
+    </select>
+    <input class="input filter" type="month" [attr.aria-label]="'admin.finance.statements.period' | translate" [(ngModel)]="period" />
+    @if (owner(); as o) {
+      <span class="chip chip-sm on">
+        {{ o.fullName }}
+        <button type="button" [attr.aria-label]="'admin.finance.statements.clearOwner' | translate" (click)="owner.set(null)"><app-icon name="x" size="sm" /></button>
+      </span>
+    }
+  </div>
+  <button type="button" class="btn btn-primary" (click)="generating.set(true)"><app-icon name="file-text" size="sm" />{{ 'admin.finance.statements.generate' | translate }}</button>
+</div>
+
+<div class="card card-p">
+  <app-resource-state [resource]="statements" />
+  @if (statements.hasValue()) {
+    @let page = statements.value();
+    @if (page.items.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'admin.finance.statements.number' | translate }}</th>
+              <th>{{ 'admin.finance.payouts.owner' | translate }}</th>
+              <th>{{ 'admin.finance.statements.period' | translate }}</th>
+              <th>{{ 'admin.finance.split.gross' | translate }}</th>
+              <th>{{ 'admin.finance.split.commission' | translate }}</th>
+              <th>{{ 'admin.finance.split.net' | translate }}</th>
+              <th>{{ 'admin.finance.statements.status' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (s of page.items; track s.id) {
+              <tr>
+                <td>
+                  <div class="b ltr">{{ s.number }}</div>
+                  <div class="xs muted">{{ 'admin.finance.statements.lines' | translate: { count: s.linesCount } }}</div>
+                </td>
+                <td class="small">{{ s.owner?.fullName ?? ('common.none' | translate) }}</td>
+                <td class="small nowrap">{{ s.period | appDate: 'month' }}</td>
+                <td class="nowrap">{{ s.gross | sar }}</td>
+                <td class="nowrap">{{ s.commission | sar }}</td>
+                <td class="b nowrap">{{ s.net | sar }}</td>
+                <td>
+                  <app-status-pill domain="statement" [code]="s.status" />
+                  @if (s.paidAt) {
+                    <div class="xs muted mt-4">{{ s.paidAt | appDate: 'medium' }} • <span class="ltr">{{ s.bankReference }}</span></div>
+                  }
+                </td>
+                <td class="nowrap">
+                  <button type="button" class="btn btn-ghost btn-xs" (click)="viewing.set(s.id)">{{ 'admin.finance.statements.view' | translate }}</button>
+                  <button type="button" class="btn btn-ghost btn-icon btn-xs" [attr.aria-label]="'admin.finance.statements.csv' | translate" [disabled]="downloading() === s.id" (click)="downloadCsv(s)">
+                    <app-icon name="download" size="sm" />
+                  </button>
+                  @if (s.status === 'ISSUED') {
+                    <button type="button" class="btn btn-success btn-xs" [disabled]="busy()" (click)="paying.set(s)">{{ 'admin.finance.statements.pay' | translate }}</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="file-text" [title]="'admin.finance.statements.empty' | translate" />
+    }
+    <app-pager [meta]="page.meta" (pageChange)="currentPage.set($event)" />
+  }
+</div>
+
+@if (generating()) {
+  <app-modal size="sm" [title]="'admin.finance.statements.generateTitle' | translate" (closed)="generating.set(false)">
+    <app-field [label]="'admin.finance.statements.period' | translate" for="st-period" [help]="'admin.finance.statements.generateHelp' | translate">
+      <input id="st-period" class="input" type="month" [(ngModel)]="generatePeriod" />
+    </app-field>
+    <ng-container modal-footer>
+      <button type="button" class="btn btn-primary" [disabled]="busy()" (click)="generate()">{{ 'admin.finance.statements.generate' | translate }}</button>
+      <button type="button" class="btn btn-ghost" (click)="generating.set(false)">{{ 'common.cancel' | translate }}</button>
+    </ng-container>
+  </app-modal>
+}
+
+@if (paying(); as s) {
+  <app-reason-modal
+    title="admin.finance.statements.payTitle"
+    label="admin.finance.statements.bankReference"
+    okLabel="admin.finance.statements.pay"
+    [danger]="false"
+    [busy]="busy()"
+    (confirmed)="pay(s, $event)"
+    (closed)="paying.set(null)"
+  />
+}
+
+@if (viewing(); as id) {
+  <app-statement-modal [statementId]="id" (closed)="viewing.set(null)" />
+}

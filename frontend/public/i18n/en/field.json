@@ -1,0 +1,187 @@
+{
+  "field": {
+    "titles": {
+      "supervisorTasks": "Supervisor tasks",
+      "supervisorTask": "Task details",
+      "supervisorLocations": "Task locations",
+      "supervisorReports": "Reports",
+      "supervisorMe": "My account",
+      "photographerShoots": "Photo shoots",
+      "photographerShoot": "Photo shoot",
+      "photographerMe": "My account"
+    },
+    "common": {
+      "loading": "Loading…",
+      "retry": "Try again",
+      "refresh": "Refresh",
+      "sending": "Sending…",
+      "overdue": "Overdue",
+      "unassigned": "Unassigned",
+      "navigate": "Navigate",
+      "me": "My account",
+      "mobile": "Mobile",
+      "email": "Email",
+      "signOut": "Sign out",
+      "day": {
+        "previous": "Previous day",
+        "next": "Next day",
+        "backToToday": "Back to today"
+      }
+    },
+    "task": {
+      "fallbackTitle": "Task",
+      "start": "Start task",
+      "resume": "Resume task",
+      "checklist": "Checklist",
+      "required": "Required",
+      "photos": "Photos ({{count}})",
+      "capture": "Capture",
+      "upload": "Upload",
+      "uploading": "Uploading…",
+      "block": "Can't complete — report a blocker",
+      "blockTitle": "Report a blocker",
+      "blockReason": "Reason",
+      "blockPlaceholder": "e.g. No access to the unit, the key is missing",
+      "blockSend": "Mark as blocked",
+      "blockedNotice": "Blocked:",
+      "cancelledNotice": "This task was cancelled",
+      "toast": {
+        "started": "Task started",
+        "uploaded": "{{count}} photo(s) uploaded",
+        "blocked": "Blocker reported to the operator"
+      },
+      "errors": {
+        "checklistMissing": "Complete these items first: {{items}}",
+        "photosRequired": "Not enough photos yet — capture the required photos before finishing"
+      }
+    },
+    "supervisor": {
+      "appName": "Field supervisor app",
+      "appDescription": "Pre-arrival readiness, post-checkout inspections, photo checklists, and damage & incident reporting — linked directly to the operator dashboard.",
+      "tabs": {
+        "tasks": "Tasks",
+        "locations": "Locations",
+        "reports": "Reports",
+        "me": "Me"
+      },
+      "tasks": {
+        "title": "My tasks",
+        "statOpen": "Open",
+        "statClosed": "Handed over",
+        "filter": {
+          "open": "To do",
+          "closed": "Handed over"
+        },
+        "emptyTitle": "No tasks here",
+        "emptyBody": "Well done! Everything is under control"
+      },
+      "task": {
+        "booking": "Booking {{number}}:",
+        "checkIn": "Check-in",
+        "notes": "Hand-over notes",
+        "notesPlaceholder": "Any notes for the operator...",
+        "approved": "This task has been approved",
+        "awaitingApproval": "Sent for approval — waiting for the operator",
+        "declareReady": "Declare unit ready",
+        "finishInspection": "Finish inspection",
+        "finishTask": "Finish task",
+        "report": "Report damage or an issue"
+      },
+      "toast": {
+        "inspectionSent": "Inspection finished and sent to the operator",
+        "taskSent": "Task handed over — the operator has been notified"
+      },
+      "report": {
+        "title": "New report",
+        "task": "Task",
+        "pickTask": "Choose the task (unit) to report on",
+        "noTasks": "No tasks with a unit on this day — pick another day on the Tasks tab",
+        "kind": {
+          "damage": "Damage (charged to guest)",
+          "incident": "Operational issue"
+        },
+        "againstBooking": "Against booking {{number}} • {{guest}}",
+        "category": "Category",
+        "severity": "Severity",
+        "description": "Description",
+        "descriptionPlaceholder": "What happened, where in the unit…",
+        "descriptionRequired": "Description is required",
+        "amount": "Amount claimed (SAR)",
+        "amountRequired": "Enter the amount claimed",
+        "evidence": "Evidence photos",
+        "addPhoto": "Add photo",
+        "removePhoto": "Remove photo",
+        "send": "Send",
+        "damageSent": "Damage case sent to the operator for review",
+        "incidentSent": "Report sent",
+        "photosFailed": "Report filed, but the photos could not be uploaded"
+      },
+      "locations": {
+        "title": "Task locations",
+        "subtitle": "Open tasks by property",
+        "empty": "No open tasks on this day"
+      },
+      "reports": {
+        "title": "My reports",
+        "subtitle": "Damage cases and issues",
+        "newReport": "New report",
+        "damages": "Damage cases",
+        "booking": "Booking {{number}} • {{guest}}",
+        "noDamages": "No cases"
+      }
+    },
+    "photographer": {
+      "appName": "Photographer app",
+      "appDescription": "Assigned photo shoots, the required shot list, uploading photos for platform QA review, and following up on feedback.",
+      "tabs": {
+        "shoots": "Shoots",
+        "me": "Me"
+      },
+      "shoots": {
+        "title": "Photo shoots",
+        "hello": "Hello, {{name}}",
+        "group": {
+          "retake": "Needs retake",
+          "todo": "To shoot",
+          "awaitingQa": "Awaiting QA",
+          "done": "Completed"
+        },
+        "empty": "No shoots on this day"
+      },
+      "shoot": {
+        "fallbackTitle": "Shoot",
+        "qaFeedback": "QA feedback:",
+        "shotList": "Shot list",
+        "otherPhotos": "Other photos",
+        "rejectedCount": "{{count}} rejected",
+        "badge": {
+          "APPROVED": "Approved",
+          "REJECTED": "Retake",
+          "PENDING": "QA",
+          "REJECTED_CLOSED": "Rejected"
+        },
+        "published": "Photos accepted and published on the unit page. The shoot is complete, so no more photos can be added — extra photos need a new shoot.",
+        "inQa": "Photos sent for quality review — usually within 4 hours",
+        "submit": "Submit for QA"
+      },
+      "toast": {
+        "submitted": "Shoot sent for quality review"
+      },
+      "me": {
+        "guideLabel": "Photography standards guide",
+        "view": "View",
+        "guide": {
+          "title": "Rawaaf photography standards",
+          "rules": {
+            "resolution": "Minimum 1920px, landscape 3:2",
+            "lighting": "Natural daylight + all lights switched on",
+            "verticals": "Straight vertical lines (no tilt)",
+            "declutter": "Hide personal items and cables",
+            "lock": "A clear shot of the smart lock and entry panel",
+            "noFilters": "No heavy filters — photos must match reality"
+          }
+        }
+      }
+    }
+  }
+}

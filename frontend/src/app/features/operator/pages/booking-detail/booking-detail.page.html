@@ -1,0 +1,169 @@
+<a class="link small row gap-4" routerLink="/operator/bookings">
+  <app-icon name="arrow-right" size="sm" [mirror]="true" />{{ 'operations.booking.allBookings' | translate }}
+</a>
+
+@if (resource.isLoading() && !resource.hasValue()) {
+  <app-loading />
+} @else if (resource.error()) {
+  <app-load-error [error]="resource.error()" (retry)="resource.reload()" />
+} @else if (resource.hasValue()) {
+  @let b = resource.value();
+  @let busy = stayAction.busy();
+  <div class="mt-12">
+    <app-page-header
+      [title]="b.number"
+      [subtitle]="'operations.booking.subtitle' | translate: { property: (b.property | loc), unit: b.unit.name, date: (b.createdAt | appDate: 'medium') }"
+    >
+      <app-status-pill domain="booking" [code]="b.status" />
+      @if (b.status === 'CONFIRMED') {
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="busy" (click)="runStayAction('checkIn')">
+          <app-icon name="log-in" size="sm" [mirror]="true" />{{ 'operations.booking.actions.checkIn.action' | translate }}
+        </button>
+        <button type="button" class="btn btn-ghost btn-sm" [disabled]="busy" (click)="runStayAction('noShow')">
+          {{ 'operations.booking.actions.noShow.action' | translate }}
+        </button>
+        <button type="button" class="btn btn-danger btn-sm" [disabled]="busy" (click)="modal.set('cancel')">{{ 'operations.booking.cancel.action' | translate }}</button>
+      }
+      @if (b.status === 'CHECKED_IN') {
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="busy" (click)="runStayAction('checkOut')">
+          <app-icon name="log-out" size="sm" [mirror]="true" />{{ 'operations.booking.actions.checkOut.action' | translate }}
+        </button>
+      }
+      @if (b.status === 'CHECKED_IN' || b.status === 'COMPLETED') {
+        <button type="button" class="btn btn-ghost btn-sm" (click)="modal.set('damage')">
+          <app-icon name="shield-alert" size="sm" />{{ 'operations.damages.open' | translate }}
+        </button>
+      }
+    </app-page-header>
+  </div>
+
+  <div class="grid g3 detail-grid">
+    <!-- Guest -->
+    <div class="card card-p">
+      <h3 class="h3 mb-12">{{ 'operations.booking.guest' | translate }}</h3>
+      <div class="row gap-12">
+        <div class="avatar">{{ b.guestName[0] }}</div>
+        <div>
+          <div class="bb">{{ b.guestName }}</div>
+          <div class="small muted ltr">{{ b.guestMobile }}</div>
+        </div>
+      </div>
+      @if (b.account.fullName !== b.guestName) {
+        <div class="xs muted mt-8">{{ 'operations.booking.bookedBy' | translate: { name: b.account.fullName, mobile: b.account.mobile } }}</div>
+      }
+      <app-kv [label]="'operations.booking.guests' | translate">{{ b.guests | num }}</app-kv>
+      <app-kv [label]="'operations.booking.checkIn' | translate">{{ b.checkIn | appDate }} • {{ b.checkInTime | appDate: 'time' }}</app-kv>
+      <app-kv [label]="'operations.booking.checkOut' | translate">{{ b.checkOut | appDate }} • {{ b.checkOutTime | appDate: 'time' }}</app-kv>
+      <app-kv [label]="'operations.booking.nights' | translate">{{ b.nights | num }}</app-kv>
+      @if (b.specialRequests) {
+        <div class="owner-reply">
+          <div class="xs b gold-dark">{{ 'operations.booking.specialRequests' | translate }}</div>
+          {{ b.specialRequests }}
+        </div>
+      }
+      <div class="row mt-12">
+        <a class="btn btn-ghost btn-sm grow" [href]="'tel:' + b.guestMobile"><app-icon name="phone" size="sm" />{{ 'operations.booking.call' | translate }}</a>
+        <a class="btn btn-wa btn-sm grow" [href]="whatsappUrl()" target="_blank" rel="noopener">{{ 'operations.booking.whatsapp' | translate }}</a>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="card card-p">
+      @let price = b.pricing;
+      <h3 class="h3 mb-12">{{ 'operations.booking.payment' | translate }}</h3>
+      <app-kv [label]="b.nights | plural: 'common.nights'">{{ price.originalAmount | sar }}</app-kv>
+      @if (price.discount) {
+        <app-kv [label]="'operations.booking.discount' | translate"><span class="green">- {{ price.discount | sar }}</span></app-kv>
+      }
+      @if (price.promo; as promo) {
+        <app-kv [label]="'operations.booking.promo' | translate: { code: promo.code }"><span class="green">- {{ promo.discount | sar }}</span></app-kv>
+      }
+      <app-kv [label]="'operations.booking.cleaning' | translate">
+        @if (price.freeCleaningApplied) {
+          <span class="green">{{ 'operations.booking.freeCleaning' | translate }}</span>
+        } @else {
+          {{ price.cleaningFee | sar }}
+        }
+      </app-kv>
+      <app-kv [label]="'operations.booking.vat' | translate: { rate: price.vatPercent }">{{ price.vat | sar }}</app-kv>
+      <div class="kv total">
+        <span>{{ 'operations.booking.total' | translate }}</span><span class="b">{{ price.total | sar }}</span>
+      </div>
+      @if (b.cancellation; as c) {
+        <div class="notice red small mt-12">
+          <app-icon name="calendar-x" />
+          <div>
+            <b>{{ 'operations.booking.cancelledBy' | translate: { by: ('domain.api.cancelledBy.' + c.cancelledBy | translate), date: (c.cancelledAt | appDate: 'dateTime') } }}</b>
+            @if (c.reason) {
+              <br />{{ c.reason }}
+            }
+            <br />{{ 'operations.booking.refund' | translate: { amount: (c.refundAmount | sar), percent: c.refundPercent } }}
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="stack">
+      <div class="card card-p"><app-guest-key-card [booking]="b" /></div>
+      <div class="card card-p"><app-compliance-card [booking]="b" /></div>
+    </div>
+  </div>
+
+  <!-- Policy snapshot the guest accepted -->
+  <div class="card card-p mt-20">
+    @let policy = b.policy;
+    <div class="card-h">
+      <h3>{{ 'operations.booking.policy.title' | translate }}</h3>
+      <span class="xs muted">{{ 'operations.booking.policy.accepted' | translate: { version: policy.version, date: (policy.acceptedAt | appDate: 'dateTime') } }}</span>
+    </div>
+    <div class="grid g3">
+      <div>
+        <div class="xs muted b">{{ 'operations.booking.policy.cancellation' | translate }}</div>
+        <div class="b small mt-4">{{ policy.cancellation | loc }}</div>
+        <ul class="xs muted mt-4">
+          @for (rule of policy.cancellation.rules; track rule.minHoursBefore) {
+            <li>{{ 'operations.booking.policy.rule' | translate: { hours: rule.minHoursBefore, percent: rule.refundPercent } }}</li>
+          }
+        </ul>
+      </div>
+      <div>
+        <div class="xs muted b">{{ 'operations.booking.policy.houseRules' | translate }}</div>
+        <div class="small mt-4 lh">{{ policy.houseRulesAr ?? '—' }}</div>
+      </div>
+      <div>
+        <div class="xs muted b">{{ 'operations.booking.policy.damage' | translate }}</div>
+        <div class="small mt-4 lh">{{ policy.damagePolicyAr ?? '—' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access log of this stay -->
+  <div class="card card-p mt-20">
+    <div class="card-h">
+      <h3>{{ 'operations.booking.accessLog' | translate }}</h3>
+      <a class="link" routerLink="/operator/locks">{{ 'operations.booking.allLocks' | translate }}</a>
+    </div>
+    @if (accessLog.isLoading()) {
+      <app-loading />
+    } @else if (accessLog.error()) {
+      <app-load-error [error]="accessLog.error()" (retry)="accessLog.reload()" />
+    } @else if (accessLog.hasValue() && accessLog.value().items.length) {
+      <div class="rows">
+        @for (e of accessLog.value().items; track e.id) {
+          <app-access-event-row [event]="e" />
+        }
+      </div>
+    } @else {
+      <app-empty-state icon="history" [title]="'operations.booking.noEvents' | translate" />
+    }
+  </div>
+
+  @switch (modal()) {
+    @case ('cancel') {
+      <app-booking-cancel-modal [booking]="b" (closed)="modal.set(null)" (cancelled)="onCancelled($event)" />
+    }
+    @case ('damage') {
+      <app-open-damage-dialog [booking]="b" (closed)="modal.set(null)" (opened)="modal.set(null)" />
+    }
+  }
+}

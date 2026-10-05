@@ -1,0 +1,103 @@
+<app-page-header [title]="'admin.users.title' | translate" [subtitle]="'admin.users.subtitle' | translate: { count: users.hasValue() ? users.value().meta.total : 0 }">
+  <button type="button" class="btn btn-primary" (click)="inviting.set(true)"><app-icon name="user-plus" size="sm" />{{ 'admin.users.invite' | translate }}</button>
+</app-page-header>
+
+<div class="card card-p">
+  <div class="row between wrap mb-16">
+    <div class="search search-box">
+      <app-icon name="search" />
+      <input
+        type="search"
+        [placeholder]="'admin.users.searchPlaceholder' | translate"
+        [attr.aria-label]="'common.search' | translate"
+        [ngModel]="search()"
+        (change)="search.set($any($event.target).value.trim())"
+      />
+    </div>
+    <div class="row wrap">
+      <select class="select filter" [attr.aria-label]="'admin.users.roleFilter' | translate" [(ngModel)]="role">
+        <option value="">{{ 'admin.users.allRoles' | translate }}</option>
+        @for (r of roles; track r) {
+          <option [value]="r">{{ 'domain.api.role.' + r | translate }}</option>
+        }
+      </select>
+      <select class="select filter" [attr.aria-label]="'admin.users.statusFilter' | translate" [(ngModel)]="status">
+        <option value="">{{ 'admin.users.allStatuses' | translate }}</option>
+        @for (s of statuses; track s) {
+          <option [value]="s">{{ 'status.user.' + s | translate }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <app-resource-state [resource]="users" />
+  @if (users.hasValue()) {
+    @let page = users.value();
+    @if (page.items.length) {
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>{{ 'admin.users.cols.user' | translate }}</th>
+              <th>{{ 'admin.users.cols.role' | translate }}</th>
+              <th>{{ 'admin.users.cols.status' | translate }}</th>
+              <th>{{ 'admin.users.cols.joined' | translate }}</th>
+              <th>{{ 'admin.users.cols.lastActive' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of page.items; track u.id) {
+              <tr>
+                <td>
+                  <div class="row gap-12">
+                    <div class="avatar avatar-sm">{{ u.fullName[0] }}</div>
+                    <div>
+                      <div class="b">{{ u.fullName }}</div>
+                      <div class="xs muted ltr">{{ u.mobile }}{{ u.email ? ' • ' + u.email : '' }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="pill pill-navy">{{ 'domain.api.role.' + u.role | translate }}</span></td>
+                <td>
+                  <app-status-pill domain="user" [code]="u.status" />
+                  @if (u.nafathVerified) {
+                    <span class="pill pill-green">{{ 'admin.users.nafath' | translate }}</span>
+                  }
+                </td>
+                <td class="small">{{ u.createdAt | appDate: 'medium' }}</td>
+                <td class="small muted">{{ u.lastLoginAt ? (u.lastLoginAt | relTime) : ('common.none' | translate) }}</td>
+                <td class="nowrap">
+                  <button type="button" class="btn btn-ghost btn-xs" [disabled]="busy()" (click)="editing.set(u)">{{ 'admin.users.editRole' | translate }}</button>
+                  @if (u.role === 'GUEST') {
+                    <button type="button" class="btn btn-ghost btn-xs" (click)="balancesOf.set(u)">{{ 'admin.users.balances.open' | translate }}</button>
+                  }
+                  @if (u.status === 'ACTIVE') {
+                    <button type="button" class="btn btn-danger btn-xs" [disabled]="busy()" (click)="toggleSuspension(u)">{{ 'admin.users.suspend' | translate }}</button>
+                  } @else {
+                    <button type="button" class="btn btn-success btn-xs" [disabled]="busy()" (click)="toggleSuspension(u)">{{ 'admin.users.activate' | translate }}</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-empty-state icon="user-x" [title]="'admin.users.empty' | translate" />
+    }
+    <app-pager [meta]="page.meta" (pageChange)="currentPage.set($event)" />
+  }
+</div>
+
+@if (inviting()) {
+  <app-invite-user-modal [busy]="busy()" (invited)="invite($event)" (closed)="inviting.set(false)" />
+}
+
+@if (editing(); as u) {
+  <app-edit-role-modal [user]="u" [busy]="busy()" (saved)="changeRole(u, $event)" (closed)="editing.set(null)" />
+}
+
+@if (balancesOf(); as u) {
+  <app-user-balances-modal [user]="u" (closed)="balancesOf.set(null)" />
+}

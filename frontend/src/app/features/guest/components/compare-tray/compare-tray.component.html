@@ -1,0 +1,126 @@
+@if (visible()) {
+  <div class="compare-tray" role="region" [attr.aria-label]="'guest.compare.region' | translate">
+    <div class="thumbs">
+      @for (p of compare.items(); track p.id) {
+        @if (cover(p); as url) {
+          <img [src]="url" alt="" />
+        }
+      }
+    </div>
+    <div class="hide-sm">
+      <div class="b small">{{ 'guest.compare.count' | translate: { count: compare.items().length } }}</div>
+      <div class="xs tray-hint">{{ 'guest.compare.hint' | translate: { max: compare.max() } }}</div>
+    </div>
+    <button type="button" class="btn btn-gold btn-sm" (click)="open()">{{ 'guest.compare.now' | translate }}</button>
+    <button type="button" class="btn btn-glass btn-icon btn-sm" [attr.aria-label]="'guest.compare.clear' | translate" (click)="compare.clear()">
+      <app-icon name="x" size="sm" />
+    </button>
+  </div>
+}
+
+@if (dialogOpen()) {
+  <app-modal size="xl" [title]="'guest.compare.title' | translate" [subtitle]="'guest.compare.subtitle' | translate" (closed)="dialogOpen.set(false)">
+    @if (result.hasValue()) {
+      @let r = result.value();
+      @let ps = r.properties;
+      <div class="tbl-wrap">
+        <table class="tbl cmp-tbl">
+          <thead>
+            <tr>
+              <th></th>
+              @for (p of ps; track p.id) {
+                <th>
+                  @if (p.coverUrl) {
+                    <img [src]="p.coverUrl" alt="" />
+                  }
+                  <div class="b mt-8 unit-title">{{ p | loc }}</div>
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ 'guest.compare.rows.price' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td><span [class]="p.price.nightly === best().price ? 'best' : 'b'">{{ p.price.nightly | sar }}</span></td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.rating' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>
+                  <span [class]="p.rating === best().rating ? 'best' : 'b'">★ {{ p.rating | num }}</span>
+                  <span class="xs muted">({{ p.reviewsCount }})</span>
+                </td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.city' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>{{ p.city | loc }}</td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.type' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>{{ p.type | loc }}</td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.capacity' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>{{ 'guest.compare.capacityValue' | translate: { guests: p.maxGuests, rooms: p.bedrooms, baths: p.bathrooms } }}</td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.operatingModel' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>
+                  @if (p.operatingModel; as model) {
+                    {{ 'domain.api.operatingModel.' + model | translate }}
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.cancellation' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>{{ p.cancellationPolicy ? (p.cancellationPolicy | loc) : '—' }}</td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.times' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>{{ 'guest.compare.timesValue' | translate: { checkIn: (p.checkInTime | appDate: 'time'), checkOut: (p.checkOutTime | appDate: 'time') } }}</td>
+              }
+            </tr>
+            <tr>
+              <td>{{ 'guest.compare.rows.amenities' | translate }}</td>
+              @for (p of ps; track p.id) {
+                <td>
+                  @for (a of amenitiesOf(r, p.amenityCodes); track a.code) {
+                    <div class="small row gap-4"><app-icon name="check" size="sm" class="green" />{{ a | loc }}</div>
+                  } @empty {
+                    <span class="muted">—</span>
+                  }
+                </td>
+              }
+            </tr>
+            <tr>
+              <td></td>
+              @for (p of ps; track p.id) {
+                <td>
+                  <a class="btn btn-primary btn-sm" [routerLink]="['/property', p.id]" (click)="dialogOpen.set(false)">{{ 'guest.compare.viewAndBook' | translate }}</a>
+                </td>
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <app-load-state [error]="result.error()" (retry)="result.reload()" />
+    }
+  </app-modal>
+}
