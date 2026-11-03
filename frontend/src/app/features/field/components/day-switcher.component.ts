@@ -15,7 +15,7 @@ import { FieldDayService } from '../services/field-day.service';
       </button>
       <div class="center grow">
         <div class="b">{{ day.isToday() ? ('common.today' | translate) : (day.date() | appDate: 'weekday') }}</div>
-        <div class="xs soft">{{ day.date() | appDate: 'short' }}</div>
+        <div class="xs day-date">{{ day.date() | appDate: 'short' }}</div>
       </div>
       <button type="button" class="btn btn-glass btn-icon btn-sm" [attr.aria-label]="'field.common.day.next' | translate" (click)="day.shift(1)">
         <app-icon name="chevron-left" [mirror]="true" />
@@ -39,7 +39,7 @@ import { FieldDayService } from '../services/field-day.service';
     .day-bar {
       padding: 6px 8px;
     }
-    .soft {
+    .day-date {
       color: rgba(255, 255, 255, 0.7);
     }
   `,
